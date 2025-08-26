@@ -1,184 +1,103 @@
-# GruppyOnboarding - Sistema de Aprendizado e Avaliação
+# User Feedback – Sistema de Coleta e Gestão de Feedbacks
+Plataforma completa para criação, gestão e análise de pesquisas e feedbacks em produtos digitais.
 
-Sistema completo de gestão de aprendizado e avaliação de performance para colaboradores da Gruppy.
+---
 
 ## Premissas
+- NÃO criar novos arquivos de documentação sem solicitação explícita.  
+- Documentações adicionais devem ir para `docs/` seguindo o padrão de nomenclatura já existente.  
 
-- **NÃO** crie novos arquivos de documentação a não ser que seja solicitado explicitamente.
-- Se for criar uma nova documentação **específica**, coloque-a na pasta `docs/` e siga o padrão de nomenclatura existente.
+---
 
 ## 🛠️ Comandos Principais
 
 ### Desenvolvimento
-- `make start`: Inicia todos os serviços (aplicação + banco PostgreSQL via Docker)
-- `make dev`: Inicia o servidor de desenvolvimento local (sem Docker)
-- `make stop`: Para todos os serviços
-- `make restart`: Reinicia os serviços
-- `make build`: Rebuild das imagens Docker
-- `make status`: Mostra status dos serviços e health checks
-- `make logs`: Mostra logs em tempo real de todos os serviços
-- `make logs-app`: Mostra logs apenas da aplicação
-- `make install`: Instala dependências npm
+```bash
+pnpm dev        # Inicia o servidor Next.js em modo desenvolvimento
+pnpm build      # Gera build de produção
+pnpm start      # Roda build em produção
+pnpm lint       # Verifica padrões de código
+```
 
 ### Banco de Dados
-- `make db-info`: Mostra informações de conexão do PostgreSQL
-- `make db-shell`: Abre shell do PostgreSQL
-- `make db-tables`: Lista todas as tabelas do banco
-- `make backup`: Cria backup do banco de dados
-- `make migrate`: Executa migrações manualmente
-- Schema definido em `shared/schema.ts` (Drizzle ORM)
-- Migrations geradas em `migrations/` pelo Drizzle Kit
-- **Local**: Configuração via `drizzle.config.ts`
-- **Produção**: Configuração via `drizzle.config.aws.js` para AWS RDS
-
-## 📁 Estrutura do Projeto
-
-```
-client/          # Frontend React + Vite + TypeScript
-├── src/         # Código React
-└── index.html   # Template HTML
-
-server/          # Backend Express + TypeScript
-├── index.ts     # Servidor principal
-├── routes.ts    # Rotas da API
-├── db.ts        # Configuração do banco
-└── *.ts         # Serviços e utilitários
-
-shared/          # Código compartilhado
-└── schema.ts    # Schema Drizzle ORM
-
-scripts/         # Scripts de migração e setup
-kubernetes/      # Configurações K8s
-attached_assets/ # Arquivos anexos
-```
-
-## 🎯 Tecnologias Principais
-
-### Frontend
-- **React 18** + TypeScript
-- **Vite** (build tool)
-- **Wouter** (routing)
-- **TanStack Query** (estado/cache)
-- **Radix UI** + **Tailwind CSS** (interface)
-- **Framer Motion** (animações)
-
-### Backend
-- **Node.js** + **Express** + TypeScript
-- **Drizzle ORM** (PostgreSQL)
-- **Replit Auth** (autenticação)
-- **AWS S3** (arquivos)
-- **OpenAI GPT-4o** (IA para avaliações)
-
-### Infraestrutura
-- **Docker** + **Kubernetes**
-- **AWS RDS PostgreSQL**
-- **AWS S3** (storage)
-
-## 📝 Diretrizes de Código
-
-### IMPORTANTE - Padrões Obrigatórios
-- **SEMPRE use ES modules** (`import/export`), NUNCA CommonJS (`require`)
-- **SEMPRE destructure imports** quando possível: `import { foo } from 'bar'`
-- **SEMPRE use TypeScript** para novos arquivos
-- **SEMPRE mantenha consistência** entre `client/` e `server/` para tipos compartilhados
-
-### Estrutura de Arquivos
-- Componentes React em `client/src/components/`
-- Serviços de backend em `server/`
-- Schemas e tipos em `shared/schema.ts`
-- Scripts de banco em arquivos `.sql` na raiz
-- Scripts de migração em `scripts/`
-
-### Estilo de Código
-- Use **camelCase** para variáveis e funções
-- Use **PascalCase** para componentes React
-- Use **kebab-case** para arquivos e diretórios
-- Prefira **arrow functions** para componentes funcionais
-- Use **const assertions** quando apropriado
-
-## 🗃️ Banco de Dados
-
-### Configuração
-- **Local**: PostgreSQL via `drizzle.config.ts`
-- **Produção**: AWS RDS via `drizzle.config.aws.js`
-- **ORM**: Drizzle ORM com TypeScript
-
-### Migrações
-- Schemas definidos em `shared/schema.ts`
-- Drizzle Kit gera migrations automaticamente em `migrations/`
-- **Desenvolvimento**: Execute `make migrate` ou `npm run db:push`
-- **Produção**: Use `npx drizzle-kit push` no ambiente de produção
-- Scripts manuais de migração estão na raiz (`.sql` e `.js`)
-- **IMPORTANTE**: O projeto usa Drizzle Kit Push (aplica mudanças diretamente)
-
-### IMPORTANTE - Dados Sensíveis
-- **NUNCA commite** arquivos `.env*`
-- **NUNCA commite** arquivos `cookies_*`
-- **SEMPRE use** variáveis de ambiente para credenciais
-
-## 🔐 Autenticação & Segurança
-
-- **Replit Auth** para autenticação
-- **Express Session** para sessões
-- **bcrypt** para senhas
-- **Passport.js** para estratégias de login
-
-## 🧪 Testing & Debug
-
-### Comandos de Debug
-- `npm run check`: Verificação de tipos
-- Logs de desenvolvimento em `server/index.ts`
-- Use **console.log** temporariamente (remova antes do commit)
-
-### Arquivos de Teste
-- Scripts `.cjs` para testes específicos
-- Arquivos `test-*.ts` para validações
-- Use `tsx` para executar TypeScript diretamente
-
-## ⚠️ Comportamentos Específicos
-
-### Vite + Express
-- Frontend e backend rodam juntos em desenvolvimento
-- Build separado para produção
-- Rotas da API em `/api/*`
-
-### Drizzle ORM
-- Schema único em `shared/schema.ts`
-- Migrações automáticas com `db:push`
-- **SEMPRE** que alterar um modelo, crie uma nova migração (migration)
-- **CUIDADO**: Sempre backup antes de mudanças em produção
-
-### Replit Integration
-- Configuração específica em `replit.md`
-- Auth integrado com Replit
-- Deploy automático configurado
-
-## 🔧 Troubleshooting
-
-### Problemas Comuns
-1. **Erro de tipos**: Execute `npm run check`
-2. **Banco não conecta**: Execute `make db-info` e verifique `.env` e credenciais AWS
-3. **Build falha**: Execute `make clean` e depois `make build`
-4. **Docker não inicia**: Execute `make status` para diagnóstico e verifique se Docker está rodando
-5. **Serviços não respondem**: Use `make logs` para ver logs em tempo real
-6. **Problemas de dependências**: Execute `make install` para reinstalar
-
-### Arquivos de Referência
-- `TROUBLESHOOTING.md`: Guia detalhado de problemas
-- `DEPLOYMENT.md`: Instruções de deploy
-- `AWS_RDS_*.md`: Configuração de banco
-
-## 📋 Workflow
-
-### Desenvolvimento
-1. **SEMPRE** rode `npm run check` antes de commits
-2. **PREFIRA** commits pequenos e frequentes
-3. **DOCUMENTE** mudanças importantes neste arquivo
-
-### IMPORTANTE - Antes de Commit
-- [ ] Código buildando sem erros (`npm run build` para verificar)
-- [ ] Removidos logs e comentários temporários
+- Configuração inicial via endpoints:
+  - `/api/setup-database`
+  - `/api/setup-projects`
+- Schemas definidos diretamente na camada de API (rotas em `app/api/...`)  
+- Não há migrations automáticas: a configuração inicial é feita por rotas de setup.
 
 ---
 
-💡 **Dica**: Use `#` para adicionar instruções que serão automaticamente incorporadas neste arquivo!
+## 📁 Estrutura do Projeto
+```plaintext
+app/                 # Aplicação Next.js (App Router)
+ ├── globals.css     # Estilos globais
+ ├── layout.tsx      # Layout base
+ ├── page.tsx        # Página inicial
+ ├── admin/          # Área administrativa
+ ├── api/            # Rotas de API (Next.js API Routes)
+ │    ├── auth/      # Login, registro e troca de senha
+ │    ├── projects/  # CRUD de projetos
+ │    ├── surveys/   # CRUD de surveys, métricas, respostas
+ │    ├── feedbacks/ # Feedbacks diretos
+ │    └── setup-*    # Endpoints de inicialização do sistema
+ └── embed/          # Rotas de embed de surveys
+
+components.json      # Configuração de componentes
+tailwind.config.ts   # Configuração do Tailwind
+tsconfig.json        # Configuração do TypeScript
+```
+
+---
+
+## 🎯 Tecnologias Principais
+- **Frontend / Fullstack**: Next.js (App Router) + TypeScript  
+- **Estilização**: Tailwind CSS  
+- **Autenticação**: Rotas próprias (`/api/auth`) com bcrypt  
+- **Banco de Dados**: Integração via rotas de setup (sem ORM explícito)  
+- **Infraestrutura**: Deploy agnóstico (Docker configurável, suporte a Vercel/Node)  
+
+---
+
+## 📝 Diretrizes de Código
+
+### Estilo de Código
+- Sempre usar **TypeScript**  
+- Imports com **ES Modules** (`import/export`), nunca `require`  
+- `camelCase` para variáveis/funções  
+- `PascalCase` para componentes React/Next.js  
+- `kebab-case` para arquivos e diretórios  
+
+### Estrutura de Arquivos
+- APIs em `app/api/*`  
+- Componentes React em `app/*`  
+- Configurações raiz (`tsconfig.json`, `tailwind.config.ts`)  
+
+---
+
+## 🔐 Autenticação & Segurança
+- Sistema próprio de login/registro em `/api/auth`  
+- Senhas protegidas com **bcrypt**  
+- Sessões e tokens customizados via API  
+
+---
+
+## 🧪 Testing & Debug
+- `pnpm lint` para checar padrões  
+- Logs de debug disponíveis nos endpoints de API (`console.log`)  
+- Recomenda-se Postman/Insomnia para testar rotas REST  
+
+---
+
+## ⚠️ Comportamentos Específicos
+- Surveys podem ser **embeddados** em outras aplicações (`/api/embed/[id]`)  
+- O setup inicial precisa rodar via rotas dedicadas (`/api/setup-database`, `/api/setup-projects`)  
+- Respostas e métricas são versionadas dentro da pasta `app/api/surveys/[id]/...`  
+
+---
+
+## 🔧 Troubleshooting
+Problemas comuns:
+- **Banco não configurado** → Rodar `/api/setup-database`  
+- **Erro de autenticação** → Verificar bcrypt e variáveis de ambiente  
+- **Build falhando** → Rodar `pnpm install && pnpm build`  
