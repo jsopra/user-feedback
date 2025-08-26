@@ -1,0 +1,16 @@
+name: Claude Code v2
+on:
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened, edited, labeled, unlabeled, assigned, unassigned]
+
+jobs:
+  agent:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+    uses: LinkedFarma/workflows/.github/workflows/claude.yml@master
+    with:
+      source_branch: main
+    secrets: inherit
