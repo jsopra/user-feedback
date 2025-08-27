@@ -95,16 +95,18 @@ function minifyJS(code: string): string {
   }
   
   return code
-    // Remove comments
+    // Remove single-line comments (but preserve URLs with //)
+    .replace(/\/\/(?![^'"]*['"][^'"]*\/\/)[^\r\n]*/g, '')
+    // Remove multi-line comments
     .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/.*$/gm, '')
-    // Remove extra whitespace
+    // Remove extra whitespace but preserve single spaces in strings and around certain operators
     .replace(/\s+/g, ' ')
-    // Remove spaces around operators and punctuation
+    // Remove spaces around specific punctuation (but be careful with strings)
     .replace(/\s*([{}();,])\s*/g, '$1')
-    .replace(/\s*([=<>!+\-*/&|])\s*/g, '$1')
     // Remove trailing semicolons before }
     .replace(/;}/g, '}')
+    // Clean up multiple spaces that might remain
+    .replace(/\s{2,}/g, ' ')
     .trim();
 }
 
@@ -187,7 +189,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         trigger_mode: config.triggerMode
       };
       
-      var apiUrl = 'https://v0-user-feedback-pearl.vercel.app/api/surveys/' + surveyData.id + '/hits';
+      var apiUrl = '/api/surveys/' + surveyData.id + '/hits';
       
       fetch(apiUrl, {
         method: 'POST',
@@ -221,7 +223,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         trigger_mode: config.triggerMode
       };
       
-      var apiUrl = 'https://v0-user-feedback-pearl.vercel.app/api/surveys/' + surveyData.id + '/exposures';
+      var apiUrl = '/api/surveys/' + surveyData.id + '/exposures';
       
       fetch(apiUrl, {
         method: 'POST',
@@ -354,7 +356,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       // Domain validation - only show on project domain
       if (surveyData.projects && surveyData.projects.base_domain) {
         var currentDomain = window.location.hostname;
-        var baseDomainRaw = surveyData.projects.base_domain.trim();
+        var baseDomainRaw = String(surveyData.projects.base_domain).trim();
         
         var baseDomain = baseDomainRaw;
         try {
@@ -362,12 +364,14 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           if (baseDomainRaw.includes('://')) {
             baseDomain = new URL(baseDomainRaw).hostname;
           } else {
-            // Clean domain string - remove www and paths
-            baseDomain = baseDomainRaw.replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
+            // Clean domain string - remove www, paths, and port numbers
+            baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '');
+            baseDomain = baseDomain.replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
           }
         } catch (e) {
           // Fallback for malformed URLs
-          baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '').replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
+          baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '');
+          baseDomain = baseDomain.replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
         }
         
         console.log('Domain validation - Current:', currentDomain, 'Required:', baseDomain, 'Raw:', baseDomainRaw);
@@ -797,18 +801,18 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         
         if (element.type === 'multiple_choice') {
           if (element.config && element.config.allowMultiple) {
-            var checkboxes = document.querySelectorAll('input[name="response-' + currentStep + '"]:checked');
+            var checkboxes = widget.querySelectorAll('input[name="response-' + currentStep + '"]:checked');
             var values = [];
             for (var i = 0; i < checkboxes.length; i++) {
               values.push(checkboxes[i].value);
             }
             value = values;
           } else {
-            var radio = document.querySelector('input[name="response-' + currentStep + '"]:checked');
+            var radio = widget.querySelector('input[name="response-' + currentStep + '"]:checked');
             value = radio ? radio.value : '';
           }
         } else {
-          var input = document.getElementById('response-' + currentStep);
+          var input = widget.querySelector('#response-' + currentStep);
           value = input ? input.value : '';
         }
         
@@ -837,7 +841,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           trigger_mode: config.triggerMode
         };
         
-        var apiUrl = 'https://v0-user-feedback-pearl.vercel.app/api/surveys/' + surveyData.id + '/responses';
+        var apiUrl = '/api/surveys/' + surveyData.id + '/responses';
         
         fetch(apiUrl, {
           method: 'POST',
@@ -890,7 +894,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       function resetSubmitButton() {
         isSubmitting = false;
-        var nextButton = document.getElementById('next-button-' + surveyData.id);
+        var nextButton = widget.querySelector('#next-button-' + surveyData.id);
         if (nextButton) {
           nextButton.textContent = 'Finalizar';
           nextButton.style.opacity = '1';
@@ -921,7 +925,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             renderWidget();
           } else {
             isSubmitting = true;
-            var nextButton = document.getElementById('next-button-' + surveyData.id);
+            var nextButton = widget.querySelector('#next-button-' + surveyData.id);
             if (nextButton) {
               nextButton.textContent = 'Enviando...';
               nextButton.style.opacity = '0.6';
