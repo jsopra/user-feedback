@@ -151,9 +151,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     var currentStep = 0;
     var responses = {};
     var isCompleted = false;
-    var isClosing = false;
     var isSubmitting = false;
-    var widgetInstance = null;
     var widgetNamespace = 'surveyWidget_' + surveyData.id.replace(/-/g, '_');
     var sessionId = 'embed_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     var exposureTracked = false;
@@ -357,35 +355,32 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       if (surveyData.projects && surveyData.projects.base_domain) {
         var currentDomain = window.location.hostname;
         var baseDomainRaw = String(surveyData.projects.base_domain).trim();
-        
-        var baseDomain = baseDomainRaw;
+        var baseDomain;
+
         try {
-          // Handle full URLs (with protocol)
           if (baseDomainRaw.includes('://')) {
             baseDomain = new URL(baseDomainRaw).hostname;
           } else {
-            // Clean domain string - remove www, paths, and port numbers
-            baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '');
+            baseDomain = baseDomainRaw;
+            baseDomain = baseDomain.replace(/^https?:\\/\\//, '');
             baseDomain = baseDomain.replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
           }
         } catch (e) {
-          // Fallback for malformed URLs
-          baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '');
-          baseDomain = baseDomain.replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
+          baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '')
+                                    .replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
         }
-        
+
         console.log('Domain validation - Current:', currentDomain, 'Required:', baseDomain, 'Raw:', baseDomainRaw);
-        
-        // Exact match or subdomain match
-        var isValidDomain = currentDomain === baseDomain || 
-                           currentDomain.endsWith('.' + baseDomain) || 
-                           baseDomain.endsWith('.' + currentDomain);
-        
+
+        var isValidDomain =
+          currentDomain === baseDomain ||
+          currentDomain.endsWith('.' + baseDomain) ||
+          baseDomain.endsWith('.' + currentDomain);
+
         if (!isValidDomain) {
           console.log('Domain validation failed - survey restricted to project domain');
           return false;
         }
-        
         console.log('Domain validation passed');
       } else {
         console.log('No domain restriction configured');
@@ -492,7 +487,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       var widget = document.createElement('div');
       widget.id = 'survey-widget-' + surveyData.id;
-      widgetInstance = widget;
       
       var positionStyles = getPositionStyles(config.position);
       var baseStyles = [
@@ -565,7 +559,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       var widget = document.createElement('div');
       widget.id = 'survey-widget-' + surveyData.id;
-      widgetInstance = widget;
       
       var positionStyles = getPositionStyles(config.position);
       var sizeStyles = getSizeStyles(config.size);
