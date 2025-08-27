@@ -340,6 +340,12 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
     )
   }
 
+  const handleProjectClick = () => {
+    if (survey?.project_id) {
+      onBack()
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AppHeader
@@ -347,7 +353,30 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
         showSurveysLink={false}
         showHomeLink={true}
         currentProject={projectData?.name || "Projeto"}
+        onProjectClick={handleProjectClick}
       />
+
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onBack}
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">{survey?.title || "Carregando..."} - Dashboard</h1>
+                <p className="text-gray-600 mt-1">Métricas e análises desta survey</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card className="mb-8">

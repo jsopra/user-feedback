@@ -13,6 +13,7 @@ interface AppHeaderProps {
   showSurveysLink?: boolean
   showHomeLink?: boolean
   currentProject?: string
+  onProjectClick?: () => void
 }
 
 export default function AppHeader({
@@ -20,6 +21,7 @@ export default function AppHeader({
   showSurveysLink = true,
   showHomeLink = true,
   currentProject,
+  onProjectClick,
 }: AppHeaderProps) {
   const { user, logout } = useAuth()
   const router = useRouter()
@@ -78,7 +80,16 @@ export default function AppHeader({
                 {currentProject && (
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <span>/</span>
-                    <span className="font-medium text-gray-900">{currentProject}</span>
+                    {onProjectClick ? (
+                      <button
+                        onClick={onProjectClick}
+                        className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                      >
+                        {currentProject}
+                      </button>
+                    ) : (
+                      <span className="font-medium text-gray-900">{currentProject}</span>
+                    )}
                   </div>
                 )}
               </nav>
