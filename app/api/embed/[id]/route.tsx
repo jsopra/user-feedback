@@ -336,12 +336,14 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       var baseDomain;
 
       try {
-        if (baseDomainRaw.includes('://')) {
-          baseDomain = new URL(baseDomainRaw).hostname;
+        if (String(baseDomainRaw).includes('://')) {
+          baseDomain = new URL(String(baseDomainRaw)).hostname;
         } else {
-          baseDomain = String(baseDomainRaw);
-          baseDomain = baseDomain.replace(/^https?:\/\//, '');
-          baseDomain = baseDomain.replace(/^www\./, '').replace(/\/.*$/, '').split(':')[0];
+          baseDomain = String(baseDomainRaw)
+            .replace(/^https?:\/\//, '')
+            .replace(/^www\./, '')
+            .replace(/\/.*$/, '')
+            .split(':')[0];
         }
       } catch (e) {
         baseDomain = String(baseDomainRaw)
