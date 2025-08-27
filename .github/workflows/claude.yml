@@ -13,4 +13,5 @@ jobs:
     uses: LinkedFarma/workflows/.github/workflows/claude.yml@master
     with:
       source_branch: main
+      target_branch: main
     secrets: inherit
