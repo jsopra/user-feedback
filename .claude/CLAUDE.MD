@@ -12,12 +12,12 @@ Plataforma completa para criação, gestão e análise de pesquisas e feedbacks 
 ## 🛠️ Comandos Principais
 
 ### Desenvolvimento
-```bash
+\`\`\`bash
 pnpm dev        # Inicia o servidor Next.js em modo desenvolvimento
 pnpm build      # Gera build de produção
 pnpm start      # Roda build em produção
 pnpm lint       # Verifica padrões de código
-```
+\`\`\`
 
 ### Banco de Dados
 - Configuração inicial via endpoints:
@@ -29,7 +29,7 @@ pnpm lint       # Verifica padrões de código
 ---
 
 ## 📁 Estrutura do Projeto
-```plaintext
+\`\`\`plaintext
 app/                 # Aplicação Next.js (App Router)
  ├── globals.css     # Estilos globais
  ├── layout.tsx      # Layout base
@@ -46,7 +46,7 @@ app/                 # Aplicação Next.js (App Router)
 components.json      # Configuração de componentes
 tailwind.config.ts   # Configuração do Tailwind
 tsconfig.json        # Configuração do TypeScript
-```
+\`\`\`
 
 ---
 
@@ -100,4 +100,4 @@ tsconfig.json        # Configuração do TypeScript
 Problemas comuns:
 - **Banco não configurado** → Rodar `/api/setup-database`  
 - **Erro de autenticação** → Verificar bcrypt e variáveis de ambiente  
-- **Build falhando** → Rodar `pnpm install && pnpm build`  
+- **Build falhando** → Rodar `pnpm install && pnpm build`
