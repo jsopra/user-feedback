@@ -28,8 +28,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return new NextResponse(`console.error('Survey não encontrada ou inativa: ${surveyId}');`, {
         status: 404,
         headers: {
-          "Content-Type": "application/javascript",
+          "Content-Type": "application/javascript; charset=utf-8",
           "Cache-Control": "public, max-age=300",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "X-Content-Type-Options": "nosniff",
         },
       })
     }
@@ -152,8 +156,9 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     var responses = {};
     var isCompleted = false;
     var isSubmitting = false;
-    var widgetNamespace = 'surveyWidget_' + surveyData.id.replace(/-/g, '_');
+    var widgetNamespace = 'surveyWidget_' + surveyData.id.replace(/-/g,'_') + '_' + Math.random().toString(36).slice(2,8);
     var sessionId = 'embed_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
     var exposureTracked = false;
     var hitTracked = false;
     var showSoftGate = true;
@@ -331,33 +336,32 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       return false;
     }
     
-    function domainAllowed(baseDomainRaw) {
+    function domainAllowed(baseDomainRaw){
       var currentDomain = window.location.hostname;
-      var baseDomain;
-
       try {
-        if (String(baseDomainRaw).includes('://')) {
-          baseDomain = new URL(String(baseDomainRaw)).hostname;
-        } else {
-          baseDomain = String(baseDomainRaw)
-            .replace(/^https?:\/\//, '')
-            .replace(/^www\./, '')
-            .replace(/\/.*$/, '')
-            .split(':')[0];
+        var raw = String(baseDomainRaw || '').trim();
+        var base = raw;
+        if (raw.indexOf('://') >= 0) {
+          // tem protocolo: usa URL para extrair hostname
+          try { base = new URL(raw).hostname; } catch (e) { base = raw; }
         }
-      } catch (e) {
-        baseDomain = String(baseDomainRaw)
-          .replace(/^https?:\/\//, '')
-          .replace(/^www\./, '')
-          .replace(/\/.*$/, '')
-          .split(':')[0];
-      }
+        // normaliza: tira "www.", porta e path
+        base = String(base);
+        if (base.indexOf('://') >= 0) base = base.split('://')[1];
+        base = base.split('/')[0].split(':')[0];
+        if (base.slice(0,4).toLowerCase()==='www.') base = base.slice(4);
 
-      return (
-        currentDomain === baseDomain ||
-        currentDomain.endsWith('.' + baseDomain) ||
-        baseDomain.endsWith('.' + currentDomain)
-      );
+        if (!base) return true; // sem restrição => libera
+
+        return (
+          currentDomain === base ||
+          currentDomain.endsWith('.' + base) ||
+          base.endsWith('.' + currentDomain)
+        );
+      } catch (e) {
+        // fallback permissivo em caso de erro de parsing
+        return true;
+      }
     }
     
     function shouldShowSurvey() {
