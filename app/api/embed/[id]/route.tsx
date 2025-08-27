@@ -89,8 +89,27 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
+function minifyJS(code: string): string {
+  if (process.env.NODE_ENV !== 'production') {
+    return code; // Don't minify in development
+  }
+  
+  return code
+    // Remove comments
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '')
+    // Remove extra whitespace
+    .replace(/\s+/g, ' ')
+    // Remove spaces around operators and punctuation
+    .replace(/\s*([{}();,])\s*/g, '$1')
+    .replace(/\s*([=<>!+\-*/&|])\s*/g, '$1')
+    // Remove trailing semicolons before }
+    .replace(/;}/g, '}')
+    .trim();
+}
+
 function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, isApp: boolean, hasApiKey: boolean) {
-  return `
+  const script = `
 (function() {
   'use strict';
   
@@ -121,7 +140,8 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       size: targetSettings.size || 'medium',
       delayTime: targetSettings.delay || 0,
       triggerMode: targetSettings.triggerMode || 'time',
-      recurrence: targetSettings.recurrence || 'once'
+      recurrence: targetSettings.recurrence || 'one_response',
+      recurrenceConfig: targetSettings.recurrenceConfig || {}
     };
     
     console.log('Widget config:', config);
@@ -231,6 +251,9 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       var currentUrl = window.location.href;
       var currentPath = window.location.pathname;
       
+      console.log('Current URL:', currentUrl);
+      console.log('Current path:', currentPath);
+      
       var includeRules = [];
       var excludeRules = [];
       
@@ -243,6 +266,9 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         }
       }
       
+      console.log('Include rules:', includeRules.length, 'Exclude rules:', excludeRules.length);
+      
+      // Check exclude rules first - if any match, don't show survey
       for (var i = 0; i < excludeRules.length; i++) {
         var rule = excludeRules[i];
         var matches = false;
@@ -255,7 +281,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             matches = currentUrl.includes(rule.pattern) || currentPath.includes(rule.pattern);
           }
           
-          console.log('Exclude rule check:', rule.pattern, 'matches:', matches);
+          console.log('Exclude rule check:', rule.pattern, 'regex:', rule.is_regex, 'matches:', matches);
           
           if (matches) {
             console.log('Exclude rule matched - not showing survey');
@@ -266,7 +292,9 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         }
       }
       
+      // If there are include rules, at least one must match
       if (includeRules.length > 0) {
+        var hasMatch = false;
         for (var i = 0; i < includeRules.length; i++) {
           var rule = includeRules[i];
           var matches = false;
@@ -279,22 +307,27 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
               matches = currentUrl.includes(rule.pattern) || currentPath.includes(rule.pattern);
             }
             
-            console.log('Include rule check:', rule.pattern, 'matches:', matches);
+            console.log('Include rule check:', rule.pattern, 'regex:', rule.is_regex, 'matches:', matches);
             
             if (matches) {
-              console.log('Include rule matched - showing survey');
-              return true;
+              hasMatch = true;
+              break;
             }
           } catch (error) {
             console.error('Error checking include rule:', error);
           }
         }
         
-        console.log('No include rules matched - not showing survey');
-        return false;
+        if (!hasMatch) {
+          console.log('No include rules matched - not showing survey');
+          return false;
+        }
+        
+        console.log('Include rule matched - showing survey');
+        return true;
       }
       
-      console.log('No include rules defined - not showing survey (default behavior)');
+      console.log('No include rules defined but exclude rules passed - not showing survey (default behavior)');
       return false;
     }
     
@@ -318,27 +351,40 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         return false;
       }
       
+      // Domain validation - only show on project domain
       if (surveyData.projects && surveyData.projects.base_domain) {
         var currentDomain = window.location.hostname;
-        var baseDomainRaw = surveyData.projects.base_domain;
+        var baseDomainRaw = surveyData.projects.base_domain.trim();
         
         var baseDomain = baseDomainRaw;
         try {
+          // Handle full URLs (with protocol)
           if (baseDomainRaw.includes('://')) {
             baseDomain = new URL(baseDomainRaw).hostname;
           } else {
-            baseDomain = baseDomainRaw.replace(/^www\\./, '').replace(/\\/.*$/, '');
+            // Clean domain string - remove www and paths
+            baseDomain = baseDomainRaw.replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
           }
         } catch (e) {
-          baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '').replace(/^www\\./, '').replace(/\\/.*$/, '');
+          // Fallback for malformed URLs
+          baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '').replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
         }
         
-        console.log('Domain check - Current:', currentDomain, 'Base:', baseDomain, 'Raw:', baseDomainRaw);
+        console.log('Domain validation - Current:', currentDomain, 'Required:', baseDomain, 'Raw:', baseDomainRaw);
         
-        if (currentDomain !== baseDomain && !currentDomain.endsWith('.' + baseDomain) && !baseDomain.endsWith('.' + currentDomain)) {
-          console.log('Domain mismatch - not showing survey');
+        // Exact match or subdomain match
+        var isValidDomain = currentDomain === baseDomain || 
+                           currentDomain.endsWith('.' + baseDomain) || 
+                           baseDomain.endsWith('.' + currentDomain);
+        
+        if (!isValidDomain) {
+          console.log('Domain validation failed - survey restricted to project domain');
           return false;
         }
+        
+        console.log('Domain validation passed');
+      } else {
+        console.log('No domain restriction configured');
       }
       
       console.log('All checks passed - showing survey');
@@ -346,23 +392,52 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     }
     
     function checkRecurrence() {
+      console.log('Checking recurrence with mode:', config.recurrence);
+      
       if (config.recurrence === 'always') {
         console.log('Recurrence set to always - showing survey');
         return true;
       }
       
       var storageKey = 'survey_response_' + surveyData.id;
-      var lastResponse = localStorage.getItem(storageKey);
-      if (lastResponse) {
-        var lastResponseTime = new Date(lastResponse);
-        var now = new Date();
-        var diffHours = (now - lastResponseTime) / (1000 * 60 * 60);
-        if (diffHours < 24) {
-          console.log('Survey already responded in last 24h');
+      var sessionKey = 'survey_session_' + surveyData.id;
+      
+      if (config.recurrence === 'one_response') {
+        // Check session-level response for this execution
+        if (sessionStorage.getItem(sessionKey)) {
+          console.log('Survey already responded in current session');
           return false;
         }
+        console.log('One response - first time in session, showing survey');
+        return true;
       }
-      console.log('Recurrence check passed');
+      
+      if (config.recurrence === 'time_sequence') {
+        var interval = config.recurrenceConfig.interval || 30; // days
+        var maxResponses = config.recurrenceConfig.maxResponses || 1;
+        
+        var responseHistory = JSON.parse(localStorage.getItem(storageKey + '_history') || '[]');
+        var now = new Date();
+        
+        // Filter responses within the interval
+        var validResponses = responseHistory.filter(function(timestamp) {
+          var responseTime = new Date(timestamp);
+          var diffDays = (now - responseTime) / (1000 * 60 * 60 * 24);
+          return diffDays <= interval;
+        });
+        
+        console.log('Time sequence check - valid responses in last', interval, 'days:', validResponses.length, 'max:', maxResponses);
+        
+        if (validResponses.length >= maxResponses) {
+          console.log('Maximum responses reached for this interval');
+          return false;
+        }
+        
+        console.log('Time sequence - can show survey');
+        return true;
+      }
+      
+      console.log('Recurrence check passed for mode:', config.recurrence);
       return true;
     }
     
@@ -773,9 +848,32 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         }).then(function(response) {
           console.log('Response status:', response.status);
           if (response.ok) {
-            if (config.recurrence !== 'always') {
-              localStorage.setItem('survey_response_' + surveyData.id, new Date().toISOString());
+            // Track response completion based on recurrence mode
+            var now = new Date().toISOString();
+            var storageKey = 'survey_response_' + surveyData.id;
+            var sessionKey = 'survey_session_' + surveyData.id;
+            
+            if (config.recurrence === 'one_response') {
+              // Mark as responded in current session
+              sessionStorage.setItem(sessionKey, now);
+              console.log('Marked survey as completed for current session');
+            } else if (config.recurrence === 'time_sequence') {
+              // Add to response history for time-based tracking
+              var responseHistory = JSON.parse(localStorage.getItem(storageKey + '_history') || '[]');
+              responseHistory.push(now);
+              
+              // Keep only recent responses (last year) to prevent storage bloat
+              var oneYearAgo = new Date();
+              oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+              responseHistory = responseHistory.filter(function(timestamp) {
+                return new Date(timestamp) > oneYearAgo;
+              });
+              
+              localStorage.setItem(storageKey + '_history', JSON.stringify(responseHistory));
+              console.log('Added response to history for time sequence tracking');
             }
+            // For 'always' mode, we don't store anything to allow repeated responses
+            
             isCompleted = true;
             renderWidget();
           } else {
@@ -847,6 +945,13 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           if (widget && widget.parentNode) {
             widget.parentNode.removeChild(widget);
           }
+          
+          // Cleanup event listeners if in event mode
+          if (window[widgetNamespace + '_cleanup']) {
+            window[widgetNamespace + '_cleanup']();
+            delete window[widgetNamespace + '_cleanup'];
+          }
+          
           if (window[widgetNamespace]) {
             delete window[widgetNamespace];
           }
@@ -859,18 +964,58 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     }
     
     function initializeWidget() {
-      console.log('Initializing widget with delay:', config.delayTime, 'seconds');
+      console.log('Initializing widget with trigger mode:', config.triggerMode, 'delay:', config.delayTime, 'seconds');
       
       if (config.triggerMode === 'event') {
-        console.log('Event mode - widget will be triggered by custom event');
+        console.log('Event mode - setting up event listener for survey trigger');
+        
+        // Listen for custom survey trigger event
+        var eventName = 'showSurvey_' + surveyData.id;
+        var globalEventName = 'showUserFeedbackSurvey';
+        
+        function handleSurveyEvent(event) {
+          console.log('Survey trigger event received:', event.type);
+          if (event.detail && event.detail.surveyId && event.detail.surveyId !== surveyData.id) {
+            console.log('Event for different survey, ignoring');
+            return;
+          }
+          createSoftGate();
+        }
+        
+        // Listen for survey-specific event
+        document.addEventListener(eventName, handleSurveyEvent);
+        
+        // Listen for global event with survey ID in detail
+        document.addEventListener(globalEventName, handleSurveyEvent);
+        
+        console.log('Event listeners set up for:', eventName, 'and', globalEventName);
+        
+        // Store cleanup function
+        window[widgetNamespace + '_cleanup'] = function() {
+          document.removeEventListener(eventName, handleSurveyEvent);
+          document.removeEventListener(globalEventName, handleSurveyEvent);
+        };
+        
         return;
       }
       
-      var delayMs = config.delayTime * 1000;
-      console.log('Applying delay:', delayMs, 'ms');
+      // Time-based triggering with delay
+      var delayMs = Math.max(0, config.delayTime * 1000);
+      console.log('Time mode - applying delay:', delayMs, 'ms');
       
       if (delayMs > 0) {
-        setTimeout(createSoftGate, delayMs);
+        setTimeout(function() {
+          if (!isPreview && !isApp && !hasApiKey) {
+            // Double-check conditions before showing (they might have changed)
+            if (shouldShowSurvey() && checkRecurrence()) {
+              createSoftGate();
+            } else {
+              console.log('Conditions no longer met after delay');
+            }
+          } else {
+            createSoftGate();
+          }
+        }, delayMs);
       } else {
         createSoftGate();
       }
@@ -883,5 +1028,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
   }
   
 })();
-`
+`;
+  
+  return minifyJS(script);
 }
