@@ -331,6 +331,33 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       return false;
     }
     
+    function domainAllowed(baseDomainRaw) {
+      var currentDomain = window.location.hostname;
+      var baseDomain;
+
+      try {
+        if (baseDomainRaw.includes('://')) {
+          baseDomain = new URL(baseDomainRaw).hostname;
+        } else {
+          baseDomain = String(baseDomainRaw);
+          baseDomain = baseDomain.replace(/^https?:\/\//, '');
+          baseDomain = baseDomain.replace(/^www\./, '').replace(/\/.*$/, '').split(':')[0];
+        }
+      } catch (e) {
+        baseDomain = String(baseDomainRaw)
+          .replace(/^https?:\/\//, '')
+          .replace(/^www\./, '')
+          .replace(/\/.*$/, '')
+          .split(':')[0];
+      }
+
+      return (
+        currentDomain === baseDomain ||
+        currentDomain.endsWith('.' + baseDomain) ||
+        baseDomain.endsWith('.' + currentDomain)
+      );
+    }
+    
     function shouldShowSurvey() {
       console.log('Checking if should show survey...');
       if (isPreview) {
@@ -351,36 +378,8 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         return false;
       }
       
-      // Domain validation - only show on project domain
       if (surveyData.projects && surveyData.projects.base_domain) {
-        var currentDomain = window.location.hostname;
-        var baseDomainRaw = String(surveyData.projects.base_domain).trim();
-        var baseDomain;
-
-        try {
-          if (baseDomainRaw.includes('://')) {
-            baseDomain = new URL(baseDomainRaw).hostname;
-          } else {
-            baseDomain = baseDomainRaw;
-            baseDomain = baseDomain.replace(/^https?:\/\//, '');
-            baseDomain = baseDomain.replace(/^www\./, '').replace(/\/.*$/, '').split(':')[0];
-          }
-        } catch (e) {
-          baseDomain = baseDomainRaw
-            .replace(/^https?:\/\//, '')
-            .replace(/^www\./, '')
-            .replace(/\/.*$/, '')
-            .split(':')[0];
-        }
-
-        console.log('Domain validation - Current:', currentDomain, 'Required:', baseDomain, 'Raw:', baseDomainRaw);
-
-        var isValidDomain =
-          currentDomain === baseDomain ||
-          currentDomain.endsWith('.' + baseDomain) ||
-          baseDomain.endsWith('.' + currentDomain);
-
-        if (!isValidDomain) {
+        if (!domainAllowed(surveyData.projects.base_domain)) {
           console.log('Domain validation failed - survey restricted to project domain');
           return false;
         }
