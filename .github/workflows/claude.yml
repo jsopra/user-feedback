@@ -12,6 +12,7 @@ jobs:
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     uses: LinkedFarma/workflows/.github/workflows/claude.yml@master
     with:
+      enable_deploy: false
       source_branch: main
       target_branch: main
     secrets: inherit
