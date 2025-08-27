@@ -362,12 +362,15 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             baseDomain = new URL(baseDomainRaw).hostname;
           } else {
             baseDomain = baseDomainRaw;
-            baseDomain = baseDomain.replace(/^https?:\\/\\//, '');
-            baseDomain = baseDomain.replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
+            baseDomain = baseDomain.replace(/^https?:\/\//, '');
+            baseDomain = baseDomain.replace(/^www\./, '').replace(/\/.*$/, '').split(':')[0];
           }
         } catch (e) {
-          baseDomain = baseDomainRaw.replace(/^https?:\\/\\//, '')
-                                    .replace(/^www\\./, '').replace(/\\/.*$/, '').split(':')[0];
+          baseDomain = baseDomainRaw
+            .replace(/^https?:\/\//, '')
+            .replace(/^www\./, '')
+            .replace(/\/.*$/, '')
+            .split(':')[0];
         }
 
         console.log('Domain validation - Current:', currentDomain, 'Required:', baseDomain, 'Raw:', baseDomainRaw);
