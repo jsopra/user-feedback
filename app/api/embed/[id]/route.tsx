@@ -76,7 +76,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     return new NextResponse(widgetScript, {
       headers: {
         "Content-Type": "application/javascript",
-        "Cache-Control": "public, max-age=300",
+        "Cache-Control": "public, max-age=60",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET",
         "Access-Control-Allow-Headers": "Content-Type",
@@ -117,7 +117,17 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     var isPreview = ${isPreview};
     var isApp = ${isApp};
     var hasApiKey = ${hasApiKey};
+    // Ensure we always use absolute URLs for API calls - never relative URLs
     var apiBaseUrl = 'https://v0-user-feedback-pearl.vercel.app';
+    
+    // Double check that we have a proper absolute URL
+    if (!apiBaseUrl.startsWith('http')) {
+      console.error('Invalid API base URL - must be absolute:', apiBaseUrl);
+      apiBaseUrl = 'https://v0-user-feedback-pearl.vercel.app';
+    }
+    
+    console.log('API Base URL configured:', apiBaseUrl);
+    console.log('Current domain (for reference):', window.location.hostname);
     
     console.log('Survey data loaded successfully');
     
@@ -181,7 +191,9 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         trigger_mode: config.triggerMode
       };
       
+      // Construct absolute URL for hit tracking
       var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/hits';
+      console.log('Hit tracking API URL:', apiUrl);
       
       fetch(apiUrl, {
         method: 'POST',
@@ -215,7 +227,9 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         trigger_mode: config.triggerMode
       };
       
+      // Construct absolute URL for exposure tracking
       var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/exposures';
+      console.log('Exposure tracking API URL:', apiUrl);
       
       fetch(apiUrl, {
         method: 'POST',
@@ -831,7 +845,9 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           trigger_mode: config.triggerMode
         };
         
+        // Construct absolute URL for response submission
         var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/responses';
+        console.log('Response submission API URL:', apiUrl);
         
         fetch(apiUrl, {
           method: 'POST',
