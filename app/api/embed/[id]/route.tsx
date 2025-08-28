@@ -167,7 +167,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     }
     
     function trackHit() {
-      if (hitTracked || isPreview) return;
+      if (hitTracked) return;
       
       console.log('Tracking survey hit...');
       
@@ -193,7 +193,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           console.log('Hit tracked successfully');
           hitTracked = true;
         } else {
-          console.log('Failed to track hit');
+          console.log('Failed to track hit:', response.status);
         }
       }).catch(function(error) {
         console.log('Error tracking hit:', error);
@@ -201,7 +201,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     }
     
     function trackExposure() {
-      if (exposureTracked || isPreview) return;
+      if (exposureTracked) return;
       
       console.log('Tracking survey exposure...');
       
@@ -227,7 +227,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           console.log('Exposure tracked successfully');
           exposureTracked = true;
         } else {
-          console.log('Failed to track exposure');
+          console.log('Failed to track exposure:', response.status);
         }
       }).catch(function(error) {
         console.log('Error tracking exposure:', error);
