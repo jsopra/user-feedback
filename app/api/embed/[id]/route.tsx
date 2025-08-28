@@ -89,24 +89,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-function minifyJS(code: string): string {
-  if (process.env.NODE_ENV !== 'production') {
-    return code; // Don't minify in development
-  }
-  
+function formatJS(code: string): string {
+  // Only do basic formatting to ensure clean, readable JavaScript
+  // No aggressive minification that breaks syntax
   return code
-    // Remove single-line comments (but preserve URLs with //)
-    .replace(/\/\/(?![^'"]*['"][^'"]*\/\/)[^\r\n]*/g, '')
-    // Remove multi-line comments
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    // Remove extra whitespace but preserve single spaces in strings and around certain operators
-    .replace(/\s+/g, ' ')
-    // Remove spaces around specific punctuation (but be careful with strings)
-    .replace(/\s*([{}();,])\s*/g, '$1')
-    // Remove trailing semicolons before }
-    .replace(/;}/g, '}')
-    // Clean up multiple spaces that might remain
-    .replace(/\s{2,}/g, ' ')
+    .replace(/^\s+/gm, '') // Remove leading whitespace from each line
+    .replace(/\n\s*\n/g, '\n') // Remove empty lines
     .trim();
 }
 
@@ -1031,5 +1019,5 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
 })();
 `;
   
-  return minifyJS(script);
+  return formatJS(script);
 }
