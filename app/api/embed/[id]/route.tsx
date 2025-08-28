@@ -117,6 +117,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     var isPreview = ${isPreview};
     var isApp = ${isApp};
     var hasApiKey = ${hasApiKey};
+    var apiBaseUrl = 'https://v0-user-feedback-pearl.vercel.app';
     
     console.log('Survey data loaded successfully');
     
@@ -180,7 +181,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         trigger_mode: config.triggerMode
       };
       
-      var apiUrl = '/api/surveys/' + surveyData.id + '/hits';
+      var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/hits';
       
       fetch(apiUrl, {
         method: 'POST',
@@ -214,7 +215,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         trigger_mode: config.triggerMode
       };
       
-      var apiUrl = '/api/surveys/' + surveyData.id + '/exposures';
+      var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/exposures';
       
       fetch(apiUrl, {
         method: 'POST',
@@ -830,7 +831,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           trigger_mode: config.triggerMode
         };
         
-        var apiUrl = '/api/surveys/' + surveyData.id + '/responses';
+        var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/responses';
         
         fetch(apiUrl, {
           method: 'POST',
