@@ -2,6 +2,12 @@ import { type NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  }
+
   try {
     const surveyId = params.id
     const body = await request.json()
@@ -20,13 +26,24 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     if (error) {
       console.error("[v0] Error tracking hit:", error)
-      return NextResponse.json({ error: "Failed to track hit" }, { status: 500 })
+      return NextResponse.json({ error: "Failed to track hit" }, { status: 500, headers })
     }
 
     console.log("[v0] Hit tracked successfully")
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true }, { status: 200, headers })
   } catch (error) {
     console.error("[v0] Error in hits API:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ error: "Internal server error" }, { status: 500, headers })
   }
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  })
 }
