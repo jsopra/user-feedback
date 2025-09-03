@@ -467,7 +467,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
                 <MousePointer className="h-8 w-8 text-orange-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Hits</p>
-                  <p className="text-2xl font-bold text-gray-900">{data.businessMetrics.hits || 0}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(data.businessMetrics.hits || 0).toLocaleString('pt-BR')}</p>
                   <p className="text-xs text-gray-500">soft gate aparições</p>
                 </div>
               </div>
@@ -480,7 +480,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
                 <Eye className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Exposures</p>
-                  <p className="text-2xl font-bold text-gray-900">{data.businessMetrics.exposures}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(data.businessMetrics.exposures || 0).toLocaleString('pt-BR')}</p>
                   <p className="text-xs text-gray-500">usuários únicos que viram</p>
                 </div>
               </div>
@@ -506,7 +506,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
                 <BarChart3 className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Responses</p>
-                  <p className="text-2xl font-bold text-gray-900">{data.businessMetrics.responses}</p>
+                  <p className="text-2xl font-bold text-gray-900">{(data.businessMetrics.responses || 0).toLocaleString('pt-BR')}</p>
                   <p className="text-xs text-gray-500">total de respostas</p>
                 </div>
               </div>
@@ -752,7 +752,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
           <CardHeader>
             <CardTitle className="flex items-center">
               <BarChart3 className="h-5 w-5 mr-2" />
-              Todas as Respostas ({data.totalResponses})
+              Todas as Respostas ({(data.totalResponses || 0).toLocaleString('pt-BR')})
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -761,6 +761,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
               elements={data.elements}
               surveyId={surveyId}
               onDataChange={handleDataChange}
+              onExport={handleExportData}
             />
           </CardContent>
         </Card>
