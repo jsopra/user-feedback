@@ -4,17 +4,18 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, ChevronLeft, ChevronRight, Flag, Loader2 } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight, Flag, Loader2, Download } from "lucide-react"
 import { toast } from "sonner"
 
 interface SurveyResponsesTableProps {
   data: any[]
   elements: any[]
-  surveyId: string // Added surveyId prop
+  surveyId: string
   onDataChange?: () => void
+  onExport?: () => void
 }
 
-export default function SurveyResponsesTable({ data, elements, surveyId, onDataChange }: SurveyResponsesTableProps) {
+export default function SurveyResponsesTable({ data, elements, surveyId, onDataChange, onExport }: SurveyResponsesTableProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({})
@@ -152,6 +153,12 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
         <div className="text-sm text-gray-600">
           {filteredData.length} de {data.length} respostas
         </div>
+        {onExport && (
+          <Button onClick={onExport} variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Exportar CSV
+          </Button>
+        )}
       </div>
 
       {/* Tabela */}
