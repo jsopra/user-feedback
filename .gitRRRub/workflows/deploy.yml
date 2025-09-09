@@ -1,0 +1,18 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - master
+      - development
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: LinkedFarma/workflows/.github/workflows/argo-cd.yml@master
+    secrets: inherit
