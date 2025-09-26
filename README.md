@@ -1,30 +1,126 @@
-# User Feedback
+# User Feedback System
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+Sistema completo de coleta e gestão de feedbacks para produtos digitais.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/gruppyprojects/v0-user-feedback)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/uYefomjUM4C)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-14.x-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-## Overview
+## Visão Geral
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+Plataforma completa para criação, gestão e análise de pesquisas e feedbacks em produtos digitais. Permite criar surveys customizáveis, coletar respostas, analisar métricas e exportar dados.
 
-## Deployment
+### Funcionalidades
 
-Your project is live at:
+- 🎯 **Criação de Surveys**: Interface intuitiva para criar pesquisas personalizadas
+- 📊 **Dashboard de Métricas**: Análise detalhada de respostas e engajamento
+- 🔗 **Embed System**: Integração fácil em qualquer website
+- 👥 **Gestão de Usuários**: Sistema completo de autenticação e autorização
+- 📈 **Analytics**: Métricas em tempo real e relatórios detalhados
 
-**[https://vercel.com/gruppyprojects/v0-user-feedback](https://vercel.com/gruppyprojects/v0-user-feedback)**
+## Setup Local
 
-## Build your app
+### Pré-requisitos
 
-Continue building your app on:
+- Node.js 18.x ou superior
+- pnpm (recomendado) ou npm
+- Conta no Supabase (para banco de dados)
 
-**[https://v0.app/chat/projects/uYefomjUM4C](https://v0.app/chat/projects/uYefomjUM4C)**
+### Instalação
 
-## How It Works
+1. Clone o repositório:
+\`\`\`bash
+git clone https://github.com/your-username/user-feedback-system.git
+cd user-feedback-system
+\`\`\`
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+2. Instale as dependências:
+\`\`\`bash
+pnpm install
+\`\`\`
+
+3. Configure as variáveis de ambiente:
+\`\`\`bash
+cp .env.example .env.local
+\`\`\`
+
+Edite o arquivo \`.env.local\` com suas credenciais do Supabase.
+
+4. Execute a aplicação:
+\`\`\`bash
+pnpm dev
+\`\`\`
+
+A aplicação estará disponível em [http://localhost:3000](http://localhost:3000).
+
+### Configuração do Banco de Dados
+
+1. Acesse \`/api/setup-database\` para criar as tabelas necessárias
+2. Acesse \`/api/setup-projects\` para configurar os projetos iniciais
+
+## Como Rodar com Docker
+
+### Usando Docker Compose (Recomendado)
+
+\`\`\`bash
+docker-compose up -d
+\`\`\`
+
+### Usando Docker diretamente
+
+\`\`\`bash
+docker build -t user-feedback-system .
+docker run -p 3000:3000 --env-file .env.local user-feedback-system
+\`\`\`
+
+## Scripts Disponíveis
+
+- \`pnpm dev\` - Inicia o servidor de desenvolvimento
+- \`pnpm build\` - Gera build de produção
+- \`pnpm start\` - Executa a versão de produção
+- \`pnpm lint\` - Executa verificação de código
+
+## Arquitetura
+
+### Stack Tecnológico
+
+- **Frontend/Backend**: Next.js 14 (App Router) + TypeScript
+- **Estilização**: Tailwind CSS + Radix UI
+- **Banco de Dados**: Supabase (PostgreSQL)
+- **Autenticação**: Sistema customizado com bcrypt
+- **Deploy**: Docker + Node.js
+
+### Estrutura do Projeto
+
+\`\`\`
+app/                 # Next.js App Router
+├── api/            # API Routes
+│   ├── auth/       # Autenticação
+│   ├── surveys/    # CRUD de surveys
+│   └── projects/   # Gestão de projetos
+components/          # Componentes React
+├── ui/             # Componentes base (Radix UI)
+├── surveys/        # Componentes de surveys
+└── auth/           # Componentes de autenticação
+lib/                # Utilitários e configurações
+types/              # Definições TypeScript
+\`\`\`
+
+## Limitações Conhecidas
+
+- Sistema de autenticação customizado (não usa NextAuth.js)
+- Configuração de banco via endpoints HTTP (não migrations automáticas)
+- Suporte limitado a tipos de elementos de survey
+- Analytics básicos (sem integração com Google Analytics)
+
+## Contribuindo
+
+Leia o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes sobre como contribuir com o projeto.
+
+## Código de Conduta
+
+Este projeto adere ao [Código de Conduta](CODE_OF_CONDUCT.md). Ao participar, você concorda em seguir estas diretrizes.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.

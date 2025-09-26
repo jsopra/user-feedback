@@ -1,6 +1,17 @@
 import { supabase } from "./supabase"
 import bcrypt from "bcryptjs"
 
+/**
+ * Sistema de autenticação customizado usando Supabase e bcrypt
+ * Gerencia login, registro e validação de sessões
+ */
+
+/**
+ * Autentica um usuário com email e senha
+ * @param email - Email do usuário
+ * @param password - Senha do usuário
+ * @returns Objeto com dados do usuário e token de sessão
+ */
 export async function loginUser(email: string, password: string) {
   try {
     console.log("=== LOGIN ATTEMPT ===")
@@ -65,6 +76,11 @@ export async function loginUser(email: string, password: string) {
   }
 }
 
+/**
+ * Registra um novo usuário no sistema
+ * @param userData - Dados do usuário (nome, email, senha, role opcional)
+ * @returns Dados do usuário criado
+ */
 export async function registerUser(userData: {
   name: string
   email: string
@@ -105,6 +121,11 @@ export async function registerUser(userData: {
   }
 }
 
+/**
+ * Valida um token de sessão e retorna os dados do usuário
+ * @param sessionToken - Token da sessão
+ * @returns Dados da sessão e usuário
+ */
 export async function validateSession(sessionToken: string) {
   try {
     const { data: session, error } = await supabase
@@ -127,6 +148,10 @@ export async function validateSession(sessionToken: string) {
   }
 }
 
+/**
+ * Gera um token de sessão único
+ * @returns Token de sessão gerado
+ */
 function generateSessionToken(): string {
   return Math.random().toString(36).substring(2) + Date.now().toString(36)
 }
