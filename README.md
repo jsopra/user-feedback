@@ -44,7 +44,18 @@ pnpm install
 cp .env.example .env.local
 \`\`\`
 
-Edite o arquivo \`.env.local\` com suas credenciais do Supabase.
+Edite o arquivo \`.env.local\` com suas credenciais do Supabase:
+
+### Variáveis de Ambiente Necessárias
+
+| Variável | Descrição | Onde Obter |
+|----------|-----------|------------|
+| \`NEXT_PUBLIC_SUPABASE_URL\` | URL pública do projeto Supabase | Dashboard do Supabase → Settings → API |
+| \`NEXT_PUBLIC_SUPABASE_ANON_KEY\` | Chave pública (anon) para operações client-side | Dashboard do Supabase → Settings → API |
+| \`SUPABASE_SERVICE_ROLE_KEY\` | Chave de serviço para operações admin/server-side | Dashboard do Supabase → Settings → API |
+| \`NODE_ENV\` | Ambiente de execução (\`development\` ou \`production\`) | Configuração automática |
+
+**⚠️ Importante**: A chave \`SUPABASE_SERVICE_ROLE_KEY\` deve ser mantida segura e nunca exposta no frontend.
 
 4. Execute a aplicação:
 \`\`\`bash
