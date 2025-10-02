@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import { parseDeviceFromUserAgent } from "@/lib/device-parser"
 
 function corsHeaders() {
@@ -19,6 +19,7 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     console.log("[v0] === SURVEY RESPONSES API DEBUG ===")
     console.log("[v0] Survey ID:", params.id)
 

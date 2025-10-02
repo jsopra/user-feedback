@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
 
 const CREATE_PROJECTS_TABLE_SQL = `-- Execute este SQL no Supabase SQL Editor:
 
@@ -59,6 +57,7 @@ WHERE NOT EXISTS (SELECT 1 FROM projects LIMIT 1);`
 
 export async function POST() {
   try {
+    const supabase = getSupabaseServiceRoleClient()
     // Verificar se a tabela projects já existe
     const { data: existingProjects, error: checkError } = await supabase.from("projects").select("id").limit(1)
 

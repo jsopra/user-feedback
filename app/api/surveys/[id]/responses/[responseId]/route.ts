@@ -1,9 +1,8 @@
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
 
 export async function PATCH(request: Request, { params }: { params: { id: string; responseId: string } }) {
   try {
+    const supabase = getSupabaseServiceRoleClient()
     const { is_test } = await request.json()
 
     console.log("[v0] PATCH request received:", {

@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   const headers = {
@@ -9,6 +9,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 
   try {
+    const supabase = getSupabaseClient()
     const surveyId = params.id
     const body = await request.json()
 

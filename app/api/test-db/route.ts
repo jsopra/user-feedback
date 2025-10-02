@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 export async function GET() {
   try {
+    const supabase = getSupabaseClient()
     console.log("=== TESTE DE CONFIGURAÇÃO DO BANCO ===")
 
     // Verificar variáveis de ambiente

@@ -1,11 +1,10 @@
-import { createClient } from "@supabase/supabase-js"
 import { type NextRequest, NextResponse } from "next/server"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
 
 // GET - Buscar elementos ativos da survey
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseServiceRoleClient()
     const { data: elements, error } = await supabase
       .from("survey_elements")
       .select("*")
@@ -28,6 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 // DELETE - Soft delete de elemento (NUNCA hard delete)
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseServiceRoleClient()
     const { elementId } = await request.json()
 
     const { error } = await supabase
