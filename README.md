@@ -22,8 +22,9 @@ Plataforma completa para criação, gestão e análise de pesquisas e feedbacks 
 
 ### Pré-requisitos
 
-- Node.js 18.x ou superior
+- Node.js 20.x ou superior
 - pnpm (recomendado) ou npm
+- Cliente PostgreSQL (`psql`)
 - Conta no Supabase (para banco de dados)
 
 ### Instalação
@@ -44,32 +45,46 @@ pnpm install
 cp .env.example .env.local
 \`\`\`
 
-Edite o arquivo \`.env.local\` com suas credenciais do Supabase:
+Edite o arquivo \`.env.local\` com as credenciais do Supabase **e** com a URL de conexão do PostgreSQL.
 
 ### Variáveis de Ambiente Necessárias
 
 | Variável | Descrição | Onde Obter |
 |----------|-----------|------------|
+| \`DATABASE_URL\` | String de conexão do banco PostgreSQL usada pelo Supabase ou instância local | Supabase → Project Settings → Database, Railway ou banco local |
 | \`NEXT_PUBLIC_SUPABASE_URL\` | URL pública do projeto Supabase | Dashboard do Supabase → Settings → API |
 | \`NEXT_PUBLIC_SUPABASE_ANON_KEY\` | Chave pública (anon) para operações client-side | Dashboard do Supabase → Settings → API |
 | \`SUPABASE_SERVICE_ROLE_KEY\` | Chave de serviço para operações admin/server-side | Dashboard do Supabase → Settings → API |
-| \`NODE_ENV\` | Ambiente de execução (\`development\` ou \`production\`) | Configuração automática |
 
 **⚠️ Importante**: A chave \`SUPABASE_SERVICE_ROLE_KEY\` deve ser mantida segura e nunca exposta no frontend.
 
-4. Execute a aplicação:
+4. Execute as migrations (é necessário ter o `psql` instalado e a variável `DATABASE_URL` configurada):
+\`\`\`bash
+pnpm migrate
+\`\`\`
+
+5. Inicie a aplicação de desenvolvimento:
 \`\`\`bash
 pnpm dev
 \`\`\`
 
 A aplicação estará disponível em [http://localhost:3000](http://localhost:3000).
 
-### Configuração do Banco de Dados
+As migrations ficam em `scripts/migrations/*.sql` com nomes ordenados por timestamp e são executadas sequencialmente pelo script. O diretório `scripts/migrations/legacy/` mantém consultas de troubleshooting usadas anteriormente.
 
-1. Acesse \`/api/setup-database\` para criar as tabelas necessárias
-2. Acesse \`/api/setup-projects\` para configurar os projetos iniciais
+### Usuário admin padrão
+
+Ao rodar as migrations é criado (caso ainda não exista) o usuário administrativo inicial:
+
+| Email                | Senha       |
+|----------------------|-------------|
+| `admin@example.com`  | `admin123`  |
+
+> Recomenda-se alterar a senha em produção imediatamente após o primeiro acesso.
 
 ## Como Rodar com Docker
+
+O container precisa da variável `DATABASE_URL` apontando para o Postgres. Garanta que o arquivo `.env.local` (ou variáveis de ambiente no provider) contenha essa configuração. O comando `pnpm migrate` é executado automaticamente no start da imagem.
 
 ### Usando Docker Compose (Recomendado)
 
@@ -86,6 +101,7 @@ docker run -p 3000:3000 --env-file .env.local user-feedback-system
 
 ## Scripts Disponíveis
 
+- \`pnpm migrate\` - Executa todas as migrations SQL usando o `DATABASE_URL`
 - \`pnpm dev\` - Inicia o servidor de desenvolvimento
 - \`pnpm build\` - Gera build de produção
 - \`pnpm start\` - Executa a versão de produção
@@ -120,7 +136,7 @@ types/              # Definições TypeScript
 ## Limitações Conhecidas
 
 - Sistema de autenticação customizado (não usa NextAuth.js)
-- Configuração de banco via endpoints HTTP (não migrations automáticas)
+- Fluxo de migrations baseado em scripts SQL (não há histórico automático de execuções)
 - Suporte limitado a tipos de elementos de survey
 - Analytics básicos (sem integração com Google Analytics)
 

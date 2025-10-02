@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "migrate": "sh scripts/run-migrations.sh",
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
