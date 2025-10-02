@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 export async function GET() {
   try {
+    const supabase = getSupabaseClient()
     // Buscar respostas das últimas 24 horas
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 

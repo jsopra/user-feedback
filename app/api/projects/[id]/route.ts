@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     const { data: project, error } = await supabase
       .from("projects")
       .select(`
@@ -47,6 +48,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     const body = await request.json()
     const { name, description, base_domain } = body
 
@@ -115,6 +117,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     const { data: existingProject, error: checkError } = await supabase
       .from("projects")
       .select("id")

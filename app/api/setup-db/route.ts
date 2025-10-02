@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 export async function POST() {
   try {
+    const supabase = getSupabaseClient()
     console.log("=== CONFIGURANDO BANCO DE DADOS ===")
 
     // Verificar se a função update_updated_at_column existe

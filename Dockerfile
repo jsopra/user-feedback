@@ -1,5 +1,5 @@
-# Use the official Node.js 18 runtime as the base image
-FROM node:18-alpine AS base
+# Use the official Node.js 20 runtime as the base image
+FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps

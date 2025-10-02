@@ -1,10 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import bcrypt from "bcryptjs"
 
 // GET - Listar usuários (apenas para admins)
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 
@@ -55,6 +56,7 @@ export async function GET(request: NextRequest) {
 // POST - Criar usuário (apenas para admins)
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 

@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import type { Survey } from "@/types/survey"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     // Buscar survey principal
     const { data: survey, error: surveyError } = await supabase.from("surveys").select("*").eq("id", params.id).single()
 
@@ -82,6 +83,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     const surveyData: Survey = await request.json()
 
     const { data: existingSurvey, error: checkError } = await supabase
@@ -164,6 +166,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     const { error } = await supabase.from("surveys").delete().eq("id", params.id)
 
     if (error) {

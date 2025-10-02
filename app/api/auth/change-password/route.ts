@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import bcrypt from "bcryptjs"
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     const { currentPassword, newPassword } = await request.json()
 
     if (!currentPassword || !newPassword) {

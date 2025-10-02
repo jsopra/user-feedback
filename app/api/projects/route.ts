@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     const { searchParams } = new URL(request.url)
     const search = searchParams.get("search") || ""
     const sortBy = searchParams.get("sortBy") || "newest"
@@ -75,6 +76,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     const body = await request.json()
     const { name, description, base_domain, created_by } = body
 

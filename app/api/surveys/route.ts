@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import type { Survey } from "@/types/survey"
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     console.log("=== API GET SURVEYS ===")
 
     const { searchParams } = new URL(request.url)
@@ -178,6 +179,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     const surveyData: Survey = await request.json()
 
     console.log("=== API POST SURVEY ===")

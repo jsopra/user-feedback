@@ -1,10 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabaseClient } from "@/lib/supabaseClient"
 import bcrypt from "bcryptjs"
 
 // PUT - Atualizar usuário (apenas para admins)
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 
@@ -87,6 +88,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 // DELETE - Excluir usuário (apenas para admins)
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const supabase = getSupabaseClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 
