@@ -63,12 +63,10 @@ export default function SurveyDashboardPage() {
 
   const handlePreview = () => {
     // Implementar preview
-    console.log("Preview survey:", surveyId)
   }
 
   const handleEmbed = () => {
     // Implementar embed
-    console.log("Embed survey:", surveyId)
   }
 
   // Loading de autenticação

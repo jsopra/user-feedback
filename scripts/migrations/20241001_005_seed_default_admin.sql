@@ -1,10 +1,21 @@
 -- Cria usuário administrador padrão para novos ambientes
-INSERT INTO users (email, name, password_hash, role, is_active)
-VALUES (
-    'admin@example.com',
-    'Administrador do Sistema',
-    '$2b$10$.USalquyiPdH1F3qHS0A.OfMM.7MfzIilaCYhxhWkThTzTA3OI6fC',
-    'admin',
-    TRUE
-)
-ON CONFLICT (email) DO NOTHING;
+-- IMPORTANTE: A senha padrão foi removida por questões de segurança.
+-- 
+-- Para criar o primeiro usuário admin, você tem duas opções:
+--
+-- OPÇÃO 1 (Recomendada): Definir senha via variável de ambiente
+-- Execute: ADMIN_PASSWORD_HASH=$(node -e "console.log(require('bcryptjs').hashSync('SUA_SENHA_AQUI', 10))")
+-- Depois substitua 'CHANGE_ME_HASH' abaixo pelo valor gerado
+--
+-- OPÇÃO 2: Criar manualmente após instalação via interface web
+--
+-- Descomente e modifique a linha abaixo após definir uma senha segura:
+-- INSERT INTO users (email, name, password_hash, role, is_active)
+-- VALUES (
+--     'admin@example.com',
+--     'Administrador do Sistema',
+--     'CHANGE_ME_HASH',  -- Substitua por um hash bcrypt gerado
+--     'admin',
+--     TRUE
+-- )
+-- ON CONFLICT (email) DO NOTHING;

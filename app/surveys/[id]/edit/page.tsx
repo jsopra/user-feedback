@@ -47,7 +47,6 @@ export default function EditSurveyPage() {
         throw new Error(data.error || "Erro ao carregar survey")
       }
     } catch (error) {
-      console.error("Erro ao carregar survey:", error)
       setError(error instanceof Error ? error.message : "Erro ao carregar survey")
     } finally {
       setIsLoading(false)
@@ -63,7 +62,6 @@ export default function EditSurveyPage() {
         setProject(data.project)
       }
     } catch (error) {
-      console.error("Erro ao carregar projeto:", error)
     }
   }
 
@@ -94,7 +92,6 @@ export default function EditSurveyPage() {
         throw new Error(data.error || "Erro ao atualizar survey")
       }
     } catch (error) {
-      console.error("Erro ao atualizar survey:", error)
       setError(error instanceof Error ? error.message : "Erro ao atualizar survey")
       throw error
     } finally {

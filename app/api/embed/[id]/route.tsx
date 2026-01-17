@@ -10,12 +10,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const isApp = url.searchParams.get("app") === "true"
     const apiKey = url.searchParams.get("key")
 
-    console.log("=== EMBED API DEBUG ===")
-    console.log("Survey ID:", surveyId)
-    console.log("Is Preview:", isPreview)
-    console.log("Is App:", isApp)
-    console.log("API Key:", apiKey)
-
     const { data: survey, error: surveyError } = await supabase
       .from("surveys")
       .select("*, design_settings, target_settings")
@@ -23,9 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .eq("is_active", true)
       .single()
 
-    console.log("Survey encontrada:", !!survey)
     if (surveyError) {
-      console.log("Erro na consulta:", surveyError)
       return new NextResponse(`console.error('Survey não encontrada ou inativa: ${surveyId}');`, {
         status: 404,
         headers: {
@@ -47,8 +39,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         .eq("id", survey.project_id)
         .single()
       projectData = project
-      console.log("Projeto encontrado:", !!project)
-      console.log("Base domain:", project?.base_domain)
     }
 
     const { data: pageRules } = await supabase
@@ -56,15 +46,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .select("pattern, rule_type, is_regex")
       .eq("survey_id", surveyId)
 
-    console.log("Regras de página:", pageRules?.length || 0)
-
     const { data: elements } = await supabase
       .from("survey_elements")
       .select("id, survey_id, question, type, config, required, order_index")
       .eq("survey_id", surveyId)
       .order("order_index")
-
-    console.log("Elementos encontrados:", elements?.length || 0)
 
     const surveyWithProject = {
       ...survey,
@@ -108,10 +94,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
 (function() {
   'use strict';
   
-  console.log('=== SURVEY WIDGET DEBUG ===');
-  console.log('Survey ID:', '${survey.id}');
-  console.log('Elements count:', ${elements.length});
-  
   try {
     var surveyData = ${JSON.stringify(survey)};
     var elementsData = ${JSON.stringify(elements)};
@@ -123,14 +105,8 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     
     // Double check that we have a proper absolute URL
     if (!apiBaseUrl.startsWith('http')) {
-      console.error('Invalid API base URL - must be absolute:', apiBaseUrl);
       apiBaseUrl = 'https://v0-user-feedback-pearl.vercel.app';
     }
-    
-    console.log('API Base URL configured:', apiBaseUrl);
-    console.log('Current domain (for reference):', window.location.hostname);
-    
-    console.log('Survey data loaded successfully');
     
     var designSettings = surveyData.design_settings || {};
     var targetSettings = surveyData.target_settings || {};
@@ -149,8 +125,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       recurrence: targetSettings.recurrence || 'one_response',
       recurrenceConfig: targetSettings.recurrenceConfig || {}
     };
-    
-    console.log('Widget config:', config);
     
     var currentStep = 0;
     var responses = {};
@@ -181,8 +155,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     function trackHit() {
       if (hitTracked) return;
       
-      console.log('Tracking survey hit...');
-      
       var hitData = {
         sessionId: sessionId,
         route: window.location.pathname,
@@ -194,7 +166,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       // Construct absolute URL for hit tracking
       var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/hits';
-      console.log('Hit tracking API URL:', apiUrl);
       
       fetch(apiUrl, {
         method: 'POST',
@@ -204,20 +175,15 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         body: JSON.stringify(hitData)
       }).then(function(response) {
         if (response.ok) {
-          console.log('Hit tracked successfully');
           hitTracked = true;
-        } else {
-          console.log('Failed to track hit:', response.status);
         }
       }).catch(function(error) {
-        console.log('Error tracking hit:', error);
+        // Silent fail
       });
     }
     
     function trackExposure() {
       if (exposureTracked) return;
-      
-      console.log('Tracking survey exposure...');
       
       var exposureData = {
         sessionId: sessionId,
@@ -230,7 +196,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       // Construct absolute URL for exposure tracking
       var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/exposures';
-      console.log('Exposure tracking API URL:', apiUrl);
       
       fetch(apiUrl, {
         method: 'POST',
@@ -240,28 +205,21 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         body: JSON.stringify(exposureData)
       }).then(function(response) {
         if (response.ok) {
-          console.log('Exposure tracked successfully');
           exposureTracked = true;
-        } else {
-          console.log('Failed to track exposure:', response.status);
         }
       }).catch(function(error) {
-        console.log('Error tracking exposure:', error);
+        // Silent fail
       });
     }
     
     function checkPageRules() {
-      console.log('Checking page rules...');
       if (!surveyData.survey_page_rules || surveyData.survey_page_rules.length === 0) {
-        console.log('No page rules defined - not showing survey (default behavior)');
         return false;
       }
       
       var currentUrl = window.location.href;
       var currentPath = window.location.pathname;
       
-      console.log('Current URL:', currentUrl);
-      console.log('Current path:', currentPath);
       
       var includeRules = [];
       var excludeRules = [];
@@ -275,7 +233,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         }
       }
       
-      console.log('Include rules:', includeRules.length, 'Exclude rules:', excludeRules.length);
       
       // Check exclude rules first - if any match, don't show survey
       for (var i = 0; i < excludeRules.length; i++) {
@@ -290,10 +247,8 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             matches = currentUrl.includes(rule.pattern) || currentPath.includes(rule.pattern);
           }
           
-          console.log('Exclude rule check:', rule.pattern, 'regex:', rule.is_regex, 'matches:', matches);
           
           if (matches) {
-            console.log('Exclude rule matched - not showing survey');
             return false;
           }
         } catch (error) {
@@ -316,7 +271,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
               matches = currentUrl.includes(rule.pattern) || currentPath.includes(rule.pattern);
             }
             
-            console.log('Include rule check:', rule.pattern, 'regex:', rule.is_regex, 'matches:', matches);
             
             if (matches) {
               hasMatch = true;
@@ -328,15 +282,12 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         }
         
         if (!hasMatch) {
-          console.log('No include rules matched - not showing survey');
           return false;
         }
         
-        console.log('Include rule matched - showing survey');
         return true;
       }
       
-      console.log('No include rules defined but exclude rules passed - not showing survey (default behavior)');
       return false;
     }
     
@@ -369,44 +320,33 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     }
     
     function shouldShowSurvey() {
-      console.log('Checking if should show survey...');
       if (isPreview) {
-        console.log('Preview mode - showing survey');
         return true;
       }
       if (isApp) {
-        console.log('App mode - showing survey');
         return true;
       }
       if (hasApiKey) {
-        console.log('Has API key - showing survey');
         return true;
       }
       
       if (!checkPageRules()) {
-        console.log('Page rules check failed - not showing survey');
         return false;
       }
       
       if (surveyData.projects && surveyData.projects.base_domain) {
         if (!domainAllowed(surveyData.projects.base_domain)) {
-          console.log('Domain validation failed - survey restricted to project domain');
           return false;
         }
-        console.log('Domain validation passed');
       } else {
-        console.log('No domain restriction configured');
       }
       
-      console.log('All checks passed - showing survey');
       return true;
     }
     
     function checkRecurrence() {
-      console.log('Checking recurrence with mode:', config.recurrence);
       
       if (config.recurrence === 'always') {
-        console.log('Recurrence set to always - showing survey');
         return true;
       }
       
@@ -416,10 +356,8 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       if (config.recurrence === 'one_response') {
         // Check session-level response for this execution
         if (sessionStorage.getItem(sessionKey)) {
-          console.log('Survey already responded in current session');
           return false;
         }
-        console.log('One response - first time in session, showing survey');
         return true;
       }
       
@@ -437,23 +375,18 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           return diffDays <= interval;
         });
         
-        console.log('Time sequence check - valid responses in last', interval, 'days:', validResponses.length, 'max:', maxResponses);
         
         if (validResponses.length >= maxResponses) {
-          console.log('Maximum responses reached for this interval');
           return false;
         }
         
-        console.log('Time sequence - can show survey');
         return true;
       }
       
-      console.log('Recurrence check passed for mode:', config.recurrence);
       return true;
     }
     
     function getPositionStyles(position) {
-      console.log('Getting position styles for:', position);
       var positions = {
         'top-left': 'top: 20px; left: 20px;',
         'top-center': 'top: 20px; left: 50%; transform: translateX(-50%);',
@@ -466,27 +399,22 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         'bottom-right': 'bottom: 20px; right: 20px;'
       };
       var result = positions[position] || positions['bottom-right'];
-      console.log('Position styles result:', result);
       return result;
     }
     
     function getSizeStyles(size) {
-      console.log('Getting size styles for:', size);
       var sizes = {
         'small': 'width: 280px;',
         'medium': 'width: 320px;',
         'large': 'width: 400px;'
       };
       var result = sizes[size] || sizes['medium'];
-      console.log('Size styles result:', result);
       return result;
     }
     
     function createSoftGate() {
-      console.log('Creating soft gate...');
       
       if (!shouldShowSurvey() || !checkRecurrence()) {
-        console.log('Survey should not be shown');
         return;
       }
       
@@ -535,14 +463,12 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       window[widgetNamespace] = {
         acceptSoftGate: function() {
-          console.log('Soft gate accepted');
           showSoftGate = false;
           trackExposure();
           createSurveyWidget();
         },
         
         rejectSoftGate: function() {
-          console.log('Soft gate rejected');
           if (widget && widget.parentNode) {
             widget.parentNode.removeChild(widget);
           }
@@ -553,14 +479,11 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       };
       
       document.body.appendChild(widget);
-      console.log('Soft gate created and rendered');
     }
     
     function createSurveyWidget() {
-      console.log('Creating survey widget...');
       
       if (elementsData.length === 0) {
-        console.log('Survey has no elements configured');
         return;
       }
       
@@ -659,7 +582,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       }
       
       function renderWidget() {
-        console.log('Rendering widget, step:', currentStep, 'completed:', isCompleted);
         
         if (isCompleted) {
           renderCompletionScreen();
@@ -825,7 +747,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       }
       
       function submitResponses() {
-        console.log('Submitting responses:', responses);
         
         var formattedResponses = {};
         
@@ -848,7 +769,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         
         // Construct absolute URL for response submission
         var apiUrl = apiBaseUrl + '/api/surveys/' + surveyData.id + '/responses';
-        console.log('Response submission API URL:', apiUrl);
         
         fetch(apiUrl, {
           method: 'POST',
@@ -857,7 +777,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           },
           body: JSON.stringify(requestBody)
         }).then(function(response) {
-          console.log('Response status:', response.status);
           if (response.ok) {
             // Track response completion based on recurrence mode
             var now = new Date().toISOString();
@@ -867,7 +786,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             if (config.recurrence === 'one_response') {
               // Mark as responded in current session
               sessionStorage.setItem(sessionKey, now);
-              console.log('Marked survey as completed for current session');
             } else if (config.recurrence === 'time_sequence') {
               // Add to response history for time-based tracking
               var responseHistory = JSON.parse(localStorage.getItem(storageKey + '_history') || '[]');
@@ -881,7 +799,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
               });
               
               localStorage.setItem(storageKey + '_history', JSON.stringify(responseHistory));
-              console.log('Added response to history for time sequence tracking');
             }
             // For 'always' mode, we don't store anything to allow repeated responses
             
@@ -913,7 +830,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         nextStep: function() {
           if (isSubmitting) return;
           
-          console.log('Next step clicked, current step:', currentStep);
           
           var validation = validateCurrentStep();
           if (!validation.isValid) {
@@ -925,7 +841,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           var value = getElementValue(currentElement);
           
           responses[currentElement.id] = value;
-          console.log('Response saved:', currentElement.id, value);
           
           if (currentStep < elementsData.length - 1) {
             currentStep++;
@@ -952,7 +867,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         },
         
         closeSurvey: function() {
-          console.log('Closing survey widget');
           if (widget && widget.parentNode) {
             widget.parentNode.removeChild(widget);
           }
@@ -971,23 +885,18 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       document.body.appendChild(widget);
       renderWidget();
-      console.log('Survey widget created and rendered');
     }
     
     function initializeWidget() {
-      console.log('Initializing widget with trigger mode:', config.triggerMode, 'delay:', config.delayTime, 'seconds');
       
       if (config.triggerMode === 'event') {
-        console.log('Event mode - setting up event listener for survey trigger');
         
         // Listen for custom survey trigger event
         var eventName = 'showSurvey_' + surveyData.id;
         var globalEventName = 'showUserFeedbackSurvey';
         
         function handleSurveyEvent(event) {
-          console.log('Survey trigger event received:', event.type);
           if (event.detail && event.detail.surveyId && event.detail.surveyId !== surveyData.id) {
-            console.log('Event for different survey, ignoring');
             return;
           }
           createSoftGate();
@@ -999,7 +908,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         // Listen for global event with survey ID in detail
         document.addEventListener(globalEventName, handleSurveyEvent);
         
-        console.log('Event listeners set up for:', eventName, 'and', globalEventName);
         
         // Store cleanup function
         window[widgetNamespace + '_cleanup'] = function() {
@@ -1012,7 +920,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       // Time-based triggering with delay
       var delayMs = Math.max(0, config.delayTime * 1000);
-      console.log('Time mode - applying delay:', delayMs, 'ms');
       
       if (delayMs > 0) {
         setTimeout(function() {
@@ -1021,7 +928,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             if (shouldShowSurvey() && checkRecurrence()) {
               createSoftGate();
             } else {
-              console.log('Conditions no longer met after delay');
             }
           } else {
             createSoftGate();

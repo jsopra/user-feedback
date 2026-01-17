@@ -42,8 +42,6 @@ export default function UsersPage() {
 
   const loadUsers = async () => {
     try {
-      console.log("=== CARREGANDO USUÁRIOS ===")
-
       const sessionToken = localStorage.getItem("sessionToken")
 
       const headers: HeadersInit = {
@@ -55,18 +53,10 @@ export default function UsersPage() {
       }
 
       const response = await fetch("/api/admin/users", { headers })
-      console.log("Response status:", response.status)
 
       if (response.ok) {
         const data = await response.json()
-        console.log("Dados recebidos da API:", data)
-        console.log("Usuários encontrados:", data.users?.length || 0)
-        console.log("Primeiro usuário:", data.users?.[0])
         setUsers(data.users || [])
-      } else {
-        console.error("Erro na resposta:", response.status, response.statusText)
-        const errorText = await response.text()
-        console.error("Erro detalhado:", errorText)
       }
     } catch (error) {
       console.error("Erro ao carregar usuários:", error)

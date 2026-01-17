@@ -6,6 +6,16 @@ Sistema completo de coleta e gestão de feedbacks para produtos digitais.
 [![Next.js](https://img.shields.io/badge/Next.js-14.x-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 
+## ⚠️ Aviso de Segurança
+
+**Antes de usar este sistema em produção:**
+
+1. 🔒 **Leia o arquivo [SECURITY.md](SECURITY.md)** para conhecer as melhores práticas de segurança
+2. 🔑 **Crie credenciais de administrador seguras** - não há usuário padrão pré-configurado
+3. 🔐 **Configure todas as variáveis de ambiente** conforme documentado
+4. 🛡️ **Implemente rate limiting e CORS** apropriados para seu ambiente
+5. 🔍 **Execute auditorias de segurança** regularmente com `pnpm audit`
+
 ## Visão Geral
 
 Plataforma completa para criação, gestão e análise de pesquisas e feedbacks em produtos digitais. Permite criar surveys customizáveis, coletar respostas, analisar métricas e exportar dados.
@@ -22,7 +32,7 @@ Plataforma completa para criação, gestão e análise de pesquisas e feedbacks 
 
 ### Pré-requisitos
 
-- Node.js 20.x ou superior
+- Node.js 22.x LTS (recomendado) ou 20.x
 - pnpm (recomendado) ou npm
 - Cliente PostgreSQL (`psql`)
 - Conta no Supabase (para banco de dados)
@@ -72,15 +82,33 @@ A aplicação estará disponível em [http://localhost:3000](http://localhost:30
 
 As migrations ficam em `scripts/migrations/*.sql` com nomes ordenados por timestamp e são executadas sequencialmente pelo script. O diretório `scripts/migrations/legacy/` mantém consultas de troubleshooting usadas anteriormente.
 
-### Usuário admin padrão
+### Primeiro Usuário Administrador
 
-Ao rodar as migrations é criado (caso ainda não exista) o usuário administrativo inicial:
+⚠️ **IMPORTANTE:** Por questões de segurança, não há usuário administrador pré-configurado.
 
-| Email                | Senha       |
-|----------------------|-------------|
-| `admin@example.com`  | `admin123`  |
+Você tem duas opções para criar o primeiro admin:
 
-> Recomenda-se alterar a senha em produção imediatamente após o primeiro acesso.
+**Opção 1 - Manual via Banco (Recomendado para produção):**
+
+1. Gere um hash bcrypt para sua senha:
+\`\`\`bash
+node -e "console.log(require('bcryptjs').hashSync('SUA_SENHA_SEGURA', 12))"
+\`\`\`
+
+2. Edite o arquivo `scripts/migrations/20241001_005_seed_default_admin.sql` e descomente as linhas INSERT, substituindo o hash
+
+3. Execute as migrations:
+\`\`\`bash
+pnpm migrate
+\`\`\`
+
+**Opção 2 - Via Interface (Apenas Desenvolvimento):**
+
+1. Inicie a aplicação
+2. Acesse a página de registro
+3. Crie o primeiro usuário (será automaticamente admin se for o primeiro)
+
+> 🔒 **Produção:** Sempre use senhas fortes (mínimo 12 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos)
 
 ## Como Rodar com Docker
 
@@ -105,8 +133,29 @@ docker run -p 3000:3000 --env-file .env.local user-feedback-system
 - \`pnpm dev\` - Inicia o servidor de desenvolvimento
 - \`pnpm build\` - Gera build de produção
 - \`pnpm start\` - Executa a versão de produção
-- \`pnpm lint\` - Executa verificação de código
+- \`pnpm lint\` - Executa verificação de código- \`pnpm audit\` - Verifica vulnerabilidades de segurança
 
+## Segurança
+
+Este projeto leva segurança a sério. Consulte [SECURITY.md](SECURITY.md) para:
+
+- Relatar vulnerabilidades de segurança
+- Melhores práticas de deployment
+- Checklist de segurança para produção
+- Configurações de headers de segurança
+- Compliance com GDPR/LGPD
+
+### Recursos de Segurança
+
+- ✅ Senhas com bcrypt (12 salt rounds)
+- ✅ Sessões com expiração automática (24h)
+- ✅ Validação de entrada de dados
+- ✅ Proteção contra SQL injection (via Supabase)
+- ✅ Node.js 22 LTS e Next.js 14.2.35 (versões seguras)
+- ✅ Dependências auditadas regularmente
+- ⚠️ Rate limiting - **Implementar em produção**
+- ⚠️ CSRF protection - **Implementar em produção**
+- ⚠️ CSP headers - **Configurar em produção**
 ## Arquitetura
 
 ### Stack Tecnológico
