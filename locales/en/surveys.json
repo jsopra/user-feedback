@@ -13,6 +13,10 @@
     "pt-br": "Portuguese (Brazil)",
     "es": "Spanish"
   },
+  "settings": {
+    "title": "Settings",
+    "basicInfo": "Basic Information"
+  },
   "elements": {
     "title": "Elements",
     "addElement": "Add Element",

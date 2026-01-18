@@ -31,8 +31,8 @@ export default function SurveySettings({ survey, setSurvey }: SurveySettingsProp
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>{t("surveyName")}</CardTitle>
-          <CardDescription>Configure o nome e descrição básica da survey</CardDescription>
+          <CardTitle>{t("settings.title")}</CardTitle>
+          <CardDescription>{t("settings.basicInfo")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
