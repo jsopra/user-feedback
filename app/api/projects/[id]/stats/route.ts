@@ -24,8 +24,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .select("id, name, created_by")
       .limit(10)
 
-    console.log("Todos os projetos disponíveis:", allProjects)
-    console.log("Erro ao buscar todos os projetos:", allProjectsError)
+    if (allProjectsError) {
+      console.error("Erro ao buscar todos os projetos:", allProjectsError)
+    }
 
     // Verificar se o projeto existe
     const { data: project, error: projectError } = await db
@@ -34,8 +35,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .eq("id", projectId)
       .single()
 
-    console.log("Projeto encontrado:", project)
-    console.log("Erro do projeto:", projectError)
+    if (projectError) {
+      console.error("Erro ao buscar projeto:", projectError)
+    }
 
     if (projectError || !project) {
       return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 })
@@ -46,9 +48,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .from("surveys")
       .select("is_active")
       .eq("project_id", projectId)
-
-    console.log("Surveys encontradas:", surveys)
-    console.log("Erro das surveys:", surveysError)
 
     if (surveysError) {
       console.error("Erro ao buscar surveys:", surveysError)

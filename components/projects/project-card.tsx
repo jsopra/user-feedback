@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Eye, Edit, Trash2, MoreHorizontal, Calendar, Globe, BarChart3, CheckCircle, XCircle } from "lucide-react"
+import { Eye, Edit, Trash2, MoreHorizontal, Globe, BarChart3, CheckCircle, XCircle } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import type { Project } from "@/types/project"
 
@@ -79,14 +79,6 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
   const handleEdit = () => {
     setDropdownOpen(false)
     onEdit(project)
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
   }
 
   return (
@@ -164,14 +156,6 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
               </div>
             </div>
           )}
-        </div>
-
-        {/* Informações do Projeto */}
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center space-x-2">
-            <Calendar className="h-4 w-4 text-gray-400" />
-            <span className="text-gray-600">{formatDate(project.created_at)}</span>
-          </div>
         </div>
 
         {/* Botão Principal */}

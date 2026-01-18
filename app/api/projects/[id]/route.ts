@@ -51,6 +51,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const db = getDbClient()
     const projectId = params?.id
 
+    console.log("=== PUT PROJECT ===")
+    console.log("Project ID:", projectId)
+
     if (!projectId || projectId === "undefined") {
       return NextResponse.json({ error: "Project ID é obrigatório" }, { status: 400 })
     }
@@ -61,6 +64,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
     const body = await request.json()
     const { name, description, base_domain } = body
+
+    console.log("Body recebido:", { name, description, base_domain })
 
     // Validações
     if (!name || name.trim().length < 2 || name.trim().length > 100) {
@@ -80,11 +85,20 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     cleanDomain = cleanDomain.replace(/^https?:\/\//, "")
     cleanDomain = cleanDomain.replace(/\/$/, "")
 
+    console.log("Domínio limpo:", cleanDomain)
+
     // Validar formato de domínio
     const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9]$/
     if (!domainRegex.test(cleanDomain)) {
+      console.error("Domínio inválido:", cleanDomain)
       return NextResponse.json({ error: "Formato de domínio inválido" }, { status: 400 })
     }
+
+    console.log("Atualizando projeto com dados:", {
+      name: name.trim(),
+      description: description?.trim() || null,
+      base_domain: cleanDomain,
+    })
 
     const { data: project, error } = await db
       .from("projects")
@@ -99,6 +113,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     if (error) {
       console.error("Erro ao atualizar projeto:", error)
+      console.error("Código do erro:", error.code)
+      console.error("Mensagem do erro:", error.message)
 
       if (error.code === "PGRST116") {
         return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 })
@@ -107,11 +123,15 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    console.log("Projeto atualizado com sucesso:", project)
+
     // Buscar contagem de surveys
     const { count } = await db
       .from("surveys")
       .select("*", { count: "exact", head: true })
       .eq("project_id", project.id)
+
+    console.log("Contagem de surveys:", count)
 
     return NextResponse.json({
       project: {
