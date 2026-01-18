@@ -146,20 +146,24 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     const responseRate = exposures > 0 ? ((responses || 0) / exposures) * 100 : 0
 
-    // Buscar respostas de rating (usando survey_element_responses)
-    const ratingElementsData = await db
-      .from("survey_element_responses")
+    // Buscar elementos da survey para processar ratings (se necessário no futuro)
+    const { data: surveyElements } = await db
+      .from("survey_elements")
       .select("*")
-      .in(
-        "element_id",
-        (elements || []).filter((e: any) => e.type === "rating").map((e: any) => e.id),
-      )
+      .eq("survey_id", surveyId)
 
-    if (!ratingElementsData.error && ratingElementsData.data) {
-      // Processar dados de rating
-      // (omitindo implementação completa pois a tabela pode não existir)
-      console.log("Rating elements data found, but table may not exist")
-    }
+    // Buscar respostas de rating (usando survey_element_responses) - comentado por enquanto
+    // const ratingElementsData = await db
+    //   .from("survey_element_responses")
+    //   .select("*")
+    //   .in(
+    //     "element_id",
+    //     (surveyElements || []).filter((e: any) => e.type === "rating").map((e: any) => e.id),
+    //   )
+
+    // if (!ratingElementsData.error && ratingElementsData.data) {
+    //   console.log("Rating elements data found, but table may not exist")
+    // }
 
     const ratings: number[] = []
     const xsScore = 0
