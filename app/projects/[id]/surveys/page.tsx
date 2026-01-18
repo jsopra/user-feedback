@@ -18,7 +18,7 @@ export default function ProjectSurveysPage() {
   const params = useParams()
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("surveys")
   const [project, setProject] = useState<Project | null>(null)
   const [surveys, setSurveys] = useState<Survey[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -159,7 +159,7 @@ export default function ProjectSurveysPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
+          <p className="text-gray-600">{t("messages.loading")}</p>
         </div>
       </div>
     )
@@ -169,10 +169,10 @@ export default function ProjectSurveysPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Acesso Negado</h2>
-          <p className="text-gray-600 mb-6">Você precisa estar logado para acessar esta página.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("messages.accessDenied")}</h2>
+          <p className="text-gray-600 mb-6">{t("messages.mustBeLoggedIn")}</p>
           <Button onClick={() => router.push("/")} className="bg-blue-600 hover:bg-blue-700">
-            Fazer Login
+            {t("messages.login")}
           </Button>
         </div>
       </div>
@@ -194,21 +194,21 @@ export default function ProjectSurveysPage() {
                 className="text-blue-600 hover:text-blue-700"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar
+                {t("backToProjects")}
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{project?.name || "Carregando..."} - Surveys</h1>
-                <p className="text-gray-600 mt-1">Gerencie as surveys deste projeto</p>
+                <h1 className="text-2xl font-bold text-gray-900">{project?.name || t("loading")} - {t("title")}</h1>
+                <p className="text-gray-600 mt-1">{t("manageProjectSurveys")}</p>
               </div>
             </div>
             <div className="flex space-x-3">
               <Button onClick={loadProjectAndSurveys} variant="outline" size="sm">
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Atualizar
+                {t("refresh")}
               </Button>
               <Button onClick={handleCreateSurvey} className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="h-4 w-4 mr-2" />
-                Nova Survey
+                {t("createNew")}
               </Button>
             </div>
           </div>
@@ -225,7 +225,7 @@ export default function ProjectSurveysPage() {
         {isLoading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Carregando projeto...</p>
+            <p className="text-gray-600">{t("loadingProject")}</p>
           </div>
         ) : project ? (
           <>
@@ -258,11 +258,11 @@ export default function ProjectSurveysPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium text-gray-900 mb-2">Nenhuma survey criada ainda</h3>
-                <p className="text-gray-600 mb-6">Crie sua primeira survey para este projeto</p>
+                <h3 className="text-xl font-medium text-gray-900 mb-2">{t("noSurveysYet")}</h3>
+                <p className="text-gray-600 mb-6">{t("createFirstSurvey")}</p>
                 <Button onClick={handleCreateSurvey} size="lg" className="bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
-                  Criar Primeira Survey
+                  {t("createFirst")}
                 </Button>
               </div>
             )}

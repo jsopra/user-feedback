@@ -18,23 +18,38 @@ const translations: Record<Locale, Record<string, any>> = {
   es: {},
 }
 
+let translationsLoaded = false
+
 // Load all translations
 async function loadTranslations() {
+  if (translationsLoaded) return
+  
   try {
     // English
     translations.en.common = (await import("@/locales/en/common.json")).default
     translations.en.projects = (await import("@/locales/en/projects.json")).default
     translations.en.surveys = (await import("@/locales/en/surveys.json")).default
+    translations.en.auth = (await import("@/locales/en/auth.json")).default
+    translations.en.users = (await import("@/locales/en/users.json")).default
+    translations.en.setup = (await import("@/locales/en/setup.json")).default
 
     // Portuguese
     translations["pt-br"].common = (await import("@/locales/pt-br/common.json")).default
     translations["pt-br"].projects = (await import("@/locales/pt-br/projects.json")).default
     translations["pt-br"].surveys = (await import("@/locales/pt-br/surveys.json")).default
+    translations["pt-br"].auth = (await import("@/locales/pt-br/auth.json")).default
+    translations["pt-br"].users = (await import("@/locales/pt-br/users.json")).default
+    translations["pt-br"].setup = (await import("@/locales/pt-br/setup.json")).default
 
     // Spanish
     translations.es.common = (await import("@/locales/es/common.json")).default
     translations.es.projects = (await import("@/locales/es/projects.json")).default
     translations.es.surveys = (await import("@/locales/es/surveys.json")).default
+    translations.es.auth = (await import("@/locales/es/auth.json")).default
+    translations.es.users = (await import("@/locales/es/users.json")).default
+    translations.es.setup = (await import("@/locales/es/setup.json")).default
+    
+    translationsLoaded = true
   } catch (error) {
     console.error("Failed to load translations:", error)
   }

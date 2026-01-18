@@ -54,17 +54,17 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Language Selector - Top Right */}
-        <div className="flex justify-end mb-4">
-          <LanguageSelector />
-        </div>
-
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <MessageSquare className="h-12 w-12 text-blue-600" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">UserFeedback</h1>
           <p className="text-gray-600 mt-2">{t("messages.feedbackCollection")}</p>
+          
+          {/* Language Selector - Below description */}
+          <div className="flex justify-center mt-4">
+            <LanguageSelector />
+          </div>
         </div>
 
         <Card>
