@@ -20,7 +20,20 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
     survey.elements.forEach((element) => {
       if (element.required && element.id) {
         const value = formData[element.id]
-        if (!value || (Array.isArray(value) && value.length === 0) || value === "") {
+        let isEmpty = false
+        
+        if (value === null || value === undefined) {
+          isEmpty = true
+        } else if (Array.isArray(value)) {
+          isEmpty = value.length === 0
+        } else if (typeof value === 'string') {
+          isEmpty = value.trim() === ''
+        } else if (typeof value === 'number') {
+          // Para rating, 0 é inválido (ratings começam de 1)
+          isEmpty = value === 0
+        }
+        
+        if (isEmpty) {
           newErrors[element.id] = true
         }
       }

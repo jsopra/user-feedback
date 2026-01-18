@@ -12,17 +12,28 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       is_test,
     })
 
-    const { data, error } = await db
+    const { error: updateError } = await db
       .from("survey_responses")
       .update({ is_test })
       .eq("id", params.responseId)
       .eq("survey_id", params.id)
-      .select()
+
+    if (updateError) {
+      console.log("[v0] Update error:", updateError)
+      return NextResponse.json({ error: updateError.message }, { status: 400 })
+    }
+
+    // Buscar o registro atualizado separadamente
+    const { data, error: fetchError } = await db
+      .from("survey_responses")
+      .select("*")
+      .eq("id", params.responseId)
       .single()
 
-    if (error) {
-      console.log("[v0] Supabase error:", error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if (fetchError) {
+      console.log("[v0] Fetch error:", fetchError)
+      // Mesmo com erro no fetch, update funcionou
+      return NextResponse.json({ success: true })
     }
 
     console.log("[v0] Update successful:", data)
