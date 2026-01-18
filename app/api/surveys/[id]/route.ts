@@ -157,7 +157,76 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       }
     }
 
-    return NextResponse.json({ success: true })
+    // Fetch the updated survey to return
+    const { data: updatedSurvey, error: fetchError } = await db.from("surveys").select("*").eq("id", params.id).single()
+
+    if (fetchError || !updatedSurvey) {
+      console.error("Erro ao buscar survey atualizada:", fetchError)
+      return NextResponse.json({ error: "Erro ao buscar survey atualizada" }, { status: 500 })
+    }
+
+    // Fetch updated elements
+    const { data: updatedElements, error: elementsError } = await db
+      .from("survey_elements")
+      .select("*")
+      .eq("survey_id", params.id)
+      .order("order_index", { ascending: true })
+
+    if (elementsError) {
+      console.error("Erro ao buscar elementos atualizados:", elementsError)
+    }
+
+    // Fetch updated rules
+    const { data: updatedRules, error: rulesError: updatedRulesError } = await db
+      .from("survey_page_rules")
+      .select("*")
+      .eq("survey_id", params.id)
+
+    if (updatedRulesError) {
+      console.error("Erro ao buscar regras atualizadas:", updatedRulesError)
+    }
+
+    // Transform updated data to match Survey type
+    const transformedUpdatedSurvey: Survey = {
+      id: updatedSurvey.id,
+      title: updatedSurvey.title,
+      description: updatedSurvey.description,
+      project_id: updatedSurvey.project_id,
+      design: updatedSurvey.design_settings || {
+        colorTheme: "default",
+        primaryColor: "#3b82f6",
+        backgroundColor: "#ffffff",
+        textColor: "#000000",
+        widgetPosition: "bottom-right",
+      },
+      target: updatedSurvey.target_settings || {
+        delay: 0,
+        recurrence: "one_response",
+        recurrenceConfig: {},
+      },
+      elements: (updatedElements || []).map((element: any) => ({
+        id: element.id,
+        survey_id: element.survey_id,
+        type: element.type,
+        question: element.question,
+        required: element.required,
+        order_index: element.order_index,
+        config: element.config || {},
+      })),
+      pageRules: (updatedRules || []).map((rule: any) => ({
+        id: rule.id,
+        survey_id: rule.survey_id,
+        rule_type: rule.rule_type,
+        pattern: rule.pattern,
+        is_regex: rule.is_regex,
+      })),
+      is_active: updatedSurvey.is_active,
+      created_at: updatedSurvey.created_at,
+      updated_at: updatedSurvey.updated_at,
+      created_by: updatedSurvey.created_by,
+    }
+
+    return NextResponse.json({ survey: transformedUpdatedSurvey })
   } catch (error) {
     console.error("Erro ao atualizar survey:", error)
     return NextResponse.json({ error: "Erro ao atualizar survey" }, { status: 500 })

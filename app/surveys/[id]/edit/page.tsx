@@ -84,19 +84,13 @@ export default function EditSurveyPage() {
       const data = await response.json()
 
       if (response.ok) {
-        setSurvey(data.survey)
+        // Update survey state if API returns updated survey data
+        if (data.survey) {
+          setSurvey(data.survey)
+        }
         setSuccess("Survey atualizada com sucesso!")
         
-        // Redirect to surveys index after successful save
-        setTimeout(() => {
-          if (data.survey.project_id) {
-            router.push(`/projects/${data.survey.project_id}/surveys`)
-          } else {
-            router.push("/")
-          }
-        }, 1500) // Show success message briefly before redirecting
-        
-        return data.survey
+        return data.survey || survey
       } else {
         throw new Error(data.error || "Erro ao atualizar survey")
       }
