@@ -52,6 +52,17 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
     if (savedLocale && ["en", "pt-br", "es"].includes(savedLocale)) {
       setLocaleState(savedLocale)
     }
+
+    // Listen for localeChange events from auth
+    const handleLocaleChange = (event: Event) => {
+      const customEvent = event as CustomEvent<Locale>
+      if (customEvent.detail && ["en", "pt-br", "es"].includes(customEvent.detail)) {
+        setLocaleState(customEvent.detail)
+      }
+    }
+
+    window.addEventListener("localeChange", handleLocaleChange)
+    return () => window.removeEventListener("localeChange", handleLocaleChange)
   }, [])
 
   const setLocale = (newLocale: Locale) => {

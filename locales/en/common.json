@@ -13,28 +13,36 @@
     "confirm": "Confirm",
     "back": "Back",
     "add": "Add",
-    "remove": "Remove"
+    "remove": "Remove",
+    "logout": "Logout",
+    "changePassword": "Change Password",
+    "manageUsers": "Manage Users"
   },
   "navigation": {
     "dashboard": "Dashboard",
     "projects": "Projects",
+    "myProjects": "My Projects",
     "surveys": "Surveys",
     "users": "Users",
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "home": "Home"
   },
   "validation": {
     "required": "This field is required",
     "invalidEmail": "Invalid email",
     "invalidUrl": "Invalid URL",
     "minLength": "Minimum {{count}} characters",
-    "maxLength": "Maximum {{count}} characters"
+    "maxLength": "Maximum {{count}} characters",
+    "selectOption": "Please select an option before continuing",
+    "selectRating": "Please select a rating before continuing"
   },
-  "common": {
+  "messages": {
     "loading": "Loading...",
     "noData": "No data available",
     "error": "An error occurred",
     "success": "Success",
+    "confirm": "Are you sure?",
     "search": "Search",
     "filter": "Filter",
     "actions": "Actions",
@@ -42,6 +50,30 @@
     "active": "Active",
     "inactive": "Inactive",
     "createdAt": "Created at",
-    "updatedAt": "Updated at"
+    "updatedAt": "Updated at",
+    "language": "Language",
+    "spanish": "Español",
+    "portuguese": "Português (Brasil)",
+    "english": "English"
+  },
+  "errors": {
+    "loadFailed": "Failed to load data",
+    "saveFailed": "Failed to save",
+    "deleteFailed": "Failed to delete",
+    "updateFailed": "Failed to update",
+    "createFailed": "Failed to create",
+    "networkError": "Network error. Please check your connection",
+    "serverError": "Server error",
+    "unauthorized": "Unauthorized",
+    "notFound": "Not found",
+    "invalidInput": "Invalid input"
+  },
+  "successes": {
+    "saved": "Saved successfully",
+    "created": "Created successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully",
+    "published": "Published successfully",
+    "unpublished": "Unpublished successfully"
   }
 }

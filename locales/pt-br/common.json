@@ -13,28 +13,36 @@
     "confirm": "Confirmar",
     "back": "Voltar",
     "add": "Adicionar",
-    "remove": "Remover"
+    "remove": "Remover",
+    "logout": "Sair",
+    "changePassword": "Alterar Senha",
+    "manageUsers": "Gerenciar Usuários"
   },
   "navigation": {
     "dashboard": "Painel",
     "projects": "Projetos",
+    "myProjects": "Meus Projetos",
     "surveys": "Pesquisas",
     "users": "Usuários",
     "settings": "Configurações",
-    "logout": "Sair"
+    "logout": "Sair",
+    "home": "Início"
   },
   "validation": {
     "required": "Este campo é obrigatório",
     "invalidEmail": "Email inválido",
     "invalidUrl": "URL inválida",
     "minLength": "Mínimo de {{count}} caracteres",
-    "maxLength": "Máximo de {{count}} caracteres"
+    "maxLength": "Máximo de {{count}} caracteres",
+    "selectOption": "Por favor, selecione uma opção antes de continuar",
+    "selectRating": "Por favor, selecione uma avaliação antes de continuar"
   },
-  "common": {
+  "messages": {
     "loading": "Carregando...",
     "noData": "Nenhum dado disponível",
     "error": "Ocorreu um erro",
     "success": "Sucesso",
+    "confirm": "Tem certeza?",
     "search": "Buscar",
     "filter": "Filtrar",
     "actions": "Ações",
@@ -42,6 +50,30 @@
     "active": "Ativo",
     "inactive": "Inativo",
     "createdAt": "Criado em",
-    "updatedAt": "Atualizado em"
+    "updatedAt": "Atualizado em",
+    "language": "Idioma",
+    "spanish": "Español",
+    "portuguese": "Português (Brasil)",
+    "english": "English"
+  },
+  "errors": {
+    "loadFailed": "Falha ao carregar dados",
+    "saveFailed": "Falha ao salvar",
+    "deleteFailed": "Falha ao excluir",
+    "updateFailed": "Falha ao atualizar",
+    "createFailed": "Falha ao criar",
+    "networkError": "Erro de rede. Verifique sua conexão",
+    "serverError": "Erro de servidor",
+    "unauthorized": "Não autorizado",
+    "notFound": "Não encontrado",
+    "invalidInput": "Entrada inválida"
+  },
+  "successes": {
+    "saved": "Salvo com sucesso",
+    "created": "Criado com sucesso",
+    "updated": "Atualizado com sucesso",
+    "deleted": "Excluído com sucesso",
+    "published": "Publicado com sucesso",
+    "unpublished": "Despublicado com sucesso"
   }
 }

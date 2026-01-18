@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import ChangePasswordModal from "./change-password-modal"
 import { LanguageSelector } from "./language-selector"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface AppHeaderProps {
   onHomeClick?: () => void
@@ -25,6 +26,7 @@ export default function AppHeader({
   onProjectClick,
 }: AppHeaderProps) {
   const { user, logout } = useAuth()
+  const { t } = useTranslation("common")
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
@@ -73,7 +75,7 @@ export default function AppHeader({
                 {showHomeLink && (
                   <Button variant="ghost" onClick={handleHomeClick} className="flex items-center space-x-2">
                     <Home className="h-4 w-4" />
-                    <span>Projetos</span>
+                    <span>{t("navigation.myProjects")}</span>
                   </Button>
                 )}
 
@@ -115,21 +117,21 @@ export default function AppHeader({
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleHomeClick} className="cursor-pointer">
                       <Home className="h-4 w-4 mr-2" />
-                      Meus Projetos
+                      {t("navigation.myProjects")}
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem onClick={() => router.push("/admin/users")} className="cursor-pointer">
                         <Users className="h-4 w-4 mr-2" />
-                        Gerenciar Usuários
+                        {t("navigation.users")}
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onClick={() => setShowChangePassword(true)} className="cursor-pointer">
                       <Settings className="h-4 w-4 mr-2" />
-                      Alterar Senha
+                      {t("buttons.changePassword")}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut} className="cursor-pointer">
                       <LogOut className="h-4 w-4 mr-2" />
-                      {isLoggingOut ? "Saindo..." : "Sair"}
+                      {isLoggingOut ? t("messages.loading") : t("buttons.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -47,6 +47,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const { user } = await response.json()
         setUser(user)
+        
+        // Set user's preferred language if available
+        if (user?.preferred_language) {
+          localStorage.setItem("locale", user.preferred_language)
+          window.dispatchEvent(new CustomEvent("localeChange", { detail: user.preferred_language }))
+        }
       } else {
         localStorage.removeItem("sessionToken")
       }
@@ -71,6 +77,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { user, sessionToken } = await response.json()
     localStorage.setItem("sessionToken", sessionToken)
+    
+    // Set user's preferred language if available
+    if (user?.preferred_language) {
+      localStorage.setItem("locale", user.preferred_language)
+      window.dispatchEvent(new CustomEvent("localeChange", { detail: user.preferred_language }))
+    }
+    
     setUser(user)
   }
 
