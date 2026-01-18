@@ -251,58 +251,62 @@ export async function POST(request: NextRequest) {
 
     console.log("Dados preparados para inserção:", surveyInsertData)
 
-    // Inserir survey principal
-    const { data: survey, error: surveyError } = await db
-      .from("surveys")
-      .insert(surveyInsertData)
-      .select()
-      .single()
-
-    console.log("Resposta do insert:", { survey, error: surveyError })
-
-    if (surveyError) {
-      console.error("Erro ao inserir survey:", surveyError)
-      console.error("Erro detalhado:", {
-        code: (surveyError as any).code,
-        message: surveyError.message,
-        details: (surveyError as any).details,
-      })
+    // Inserir survey principal - usar insert() sem select() por causa de problema no QueryBuilder
+    let insertResult: any
+    try {
+      insertResult = await db
+        .from("surveys")
+        .insert(surveyInsertData)
+        .then((res: any) => res, (err: any) => ({ data: null, error: err }))
+      
+      console.log("Resposta do insert:", insertResult)
+    } catch (err) {
+      console.error("Erro ao inserir survey:", err)
       return NextResponse.json(
         {
-          error: `Erro ao criar survey: ${surveyError.message}`,
-          details: surveyError,
+          error: `Erro ao criar survey: ${err instanceof Error ? err.message : String(err)}`,
         },
         { status: 500 },
       )
     }
 
+    if (insertResult.error) {
+      console.error("Erro ao inserir survey:", insertResult.error)
+      console.error("Erro detalhado:", {
+        code: (insertResult.error as any).code,
+        message: insertResult.error.message,
+        details: (insertResult.error as any).details,
+      })
+      return NextResponse.json(
+        {
+          error: `Erro ao criar survey: ${insertResult.error.message}`,
+          details: insertResult.error,
+        },
+        { status: 500 },
+      )
+    }
+
+    // Buscar a survey inserida usando o created_by e project_id como referência
+    console.log("Buscando survey inserida...")
+    const { data: surveyArray, error: searchError } = await db
+      .from("surveys")
+      .select("*")
+      .eq("created_by", surveyData.created_by)
+      .eq("project_id", surveyData.project_id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+
+    console.log("Resultado da busca:", { surveyArray, searchError })
+
+    if (searchError) {
+      console.error("Erro ao buscar survey inserida:", searchError)
+      return NextResponse.json({ error: "Erro ao recuperar survey criada" }, { status: 500 })
+    }
+
+    const survey = surveyArray && surveyArray.length > 0 ? surveyArray[0] : null
+
     if (!survey) {
-      console.error("Survey não foi criada - resposta vazia")
-      console.error("Tentando verificar se foi inserida mesmo assim...")
-      
-      // Buscar a survey mais recente criada por este usuário para este projeto
-      const { data: recentSurvey, error: recentError } = await db
-        .from("surveys")
-        .select("*")
-        .eq("created_by", surveyData.created_by)
-        .eq("project_id", surveyData.project_id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single()
-      
-      if (recentError) {
-        console.error("Erro ao buscar survey recente:", recentError)
-        return NextResponse.json({ error: "Survey não foi criada" }, { status: 500 })
-      }
-      
-      if (recentSurvey) {
-        console.log("Survey foi inserida! Retornando a survey recém criada")
-        return NextResponse.json({
-          survey: recentSurvey,
-          message: "Survey criada com sucesso!",
-        })
-      }
-      
+      console.error("Survey não foi encontrada após inserção")
       return NextResponse.json({ error: "Survey não foi criada" }, { status: 500 })
     }
 
