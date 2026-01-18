@@ -14,6 +14,7 @@ import AppHeader from "@/components/layout/app-header"
 import SurveyElements from "./survey-elements"
 import SurveyDesign from "./survey-design"
 import SurveyTarget from "./survey-target"
+import SurveySettings from "./survey-settings"
 import SurveyPreview from "./survey-preview"
 import SurveyWidgetPreview from "./survey-widget-preview"
 import { useAuth } from "@/hooks/use-auth"
@@ -49,6 +50,7 @@ export default function SurveyBuilder({
     initialSurvey || {
       title: "Nova Survey",
       description: "Descrição da survey",
+      language: "en",
       elements: [],
       design: {
         colorTheme: "default",
@@ -468,11 +470,16 @@ export default function SurveyBuilder({
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="settings">Configurações</TabsTrigger>
             <TabsTrigger value="elements">Elementos</TabsTrigger>
             <TabsTrigger value="design">Design</TabsTrigger>
             <TabsTrigger value="target">Alvo</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="settings">
+            <SurveySettings survey={survey} setSurvey={setSurvey} />
+          </TabsContent>
 
           <TabsContent value="elements">
             <SurveyElements survey={survey} setSurvey={setSurvey} />

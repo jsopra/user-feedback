@@ -113,6 +113,7 @@ export async function GET(request: NextRequest) {
       id: survey.id,
       title: survey.title,
       description: survey.description,
+      language: survey.language || "en",
       design: survey.design_settings || {
         colorTheme: "default",
         primaryColor: "#3b82f6",
@@ -230,6 +231,7 @@ export async function POST(request: NextRequest) {
     const surveyInsertData = {
       title: surveyData.title.trim(),
       description: surveyData.description.trim(),
+      language: surveyData.language || "en",
       design_settings: surveyData.design || {
         colorTheme: "default",
         primaryColor: "#3b82f6",

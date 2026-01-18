@@ -39,6 +39,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       id: survey.id,
       title: survey.title,
       description: survey.description,
+      language: survey.language || "en",
       project_id: survey.project_id,
       design: survey.design_settings || {
         colorTheme: "default",
@@ -108,6 +109,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       .update({
         title: surveyData.title,
         description: surveyData.description,
+        language: surveyData.language || "en",
         design_settings: surveyData.design,
         target_settings: surveyData.target,
         is_active: surveyData.is_active,
@@ -305,6 +307,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       id: updatedSurvey.id,
       title: updatedSurvey.title,
       description: updatedSurvey.description,
+      language: updatedSurvey.language || "en",
       project_id: updatedSurvey.project_id,
       design: updatedSurvey.design_settings || {
         colorTheme: "default",
