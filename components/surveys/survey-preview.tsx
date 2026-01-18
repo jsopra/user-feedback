@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { X, Star } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
@@ -10,51 +11,129 @@ interface SurveyPreviewProps {
 }
 
 export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
+  const [formData, setFormData] = useState<Record<string, any>>({})
+  const [errors, setErrors] = useState<Record<string, boolean>>({})
+
+  const handleSubmit = () => {
+    const newErrors: Record<string, boolean> = {}
+    
+    survey.elements.forEach((element) => {
+      if (element.required) {
+        const value = formData[element.id]
+        if (!value || (Array.isArray(value) && value.length === 0) || value === "") {
+          newErrors[element.id] = true
+        }
+      }
+    })
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+
+    // Preview apenas - não submete de verdade
+    alert("Preview: Respostas validadas com sucesso!")
+  }
+
+  const updateFormData = (elementId: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [elementId]: value }))
+    if (errors[elementId]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev }
+        delete newErrors[elementId]
+        return newErrors
+      })
+    }
+  }
+
   const renderElement = (element: SurveyElement) => {
+    const hasError = errors[element.id]
     switch (element.type) {
       case "text":
         return (
-          <input
-            type="text"
-            placeholder={element.config?.placeholder || "Digite sua resposta..."}
-            className="w-full p-2 border rounded"
-            style={{ borderRadius: (survey.design as any).borderRadius }}
-          />
+          <div>
+            <input
+              type="text"
+              placeholder={element.config?.placeholder || "Digite sua resposta..."}
+              className={`w-full p-2 border rounded ${hasError ? "border-red-500" : ""}`}
+              style={{ borderRadius: (survey.design as any).borderRadius }}
+              value={formData[element.id] || ""}
+              onChange={(e) => updateFormData(element.id, e.target.value)}
+            />
+            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
+          </div>
         )
 
       case "textarea":
         return (
-          <textarea
-            placeholder={element.config?.placeholder || "Digite sua resposta..."}
-            maxLength={element.config?.maxLength}
-            className="w-full p-2 border rounded"
-            style={{ borderRadius: (survey.design as any).borderRadius }}
-            rows={4}
-          />
+          <div>
+            <textarea
+              placeholder={element.config?.placeholder || "Digite sua resposta..."}
+              maxLength={element.config?.maxLength}
+              className={`w-full p-2 border rounded ${hasError ? "border-red-500" : ""}`}
+              style={{ borderRadius: (survey.design as any).borderRadius }}
+              rows={4}
+              value={formData[element.id] || ""}
+              onChange={(e) => updateFormData(element.id, e.target.value)}
+            />
+            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
+          </div>
         )
 
       case "multiple_choice":
+        const isMultiple = element.config?.allowMultiple
         return (
-          <div className="space-y-2">
-            {element.config?.options?.map((option, idx) => (
-              <label key={idx} className="flex items-center space-x-2">
-                <input type="radio" name={element.id} value={option} />
-                <span>{option}</span>
-              </label>
-            ))}
+          <div>
+            <div className="space-y-2">
+              {element.config?.options?.map((option, idx) => (
+                <label key={idx} className="flex items-center space-x-2">
+                  <input
+                    type={isMultiple ? "checkbox" : "radio"}
+                    name={element.id}
+                    value={option}
+                    checked={isMultiple
+                      ? (formData[element.id] || []).includes(option)
+                      : formData[element.id] === option
+                    }
+                    onChange={(e) => {
+                      if (isMultiple) {
+                        const current = formData[element.id] || []
+                        const newValue = e.target.checked
+                          ? [...current, option]
+                          : current.filter((v: string) => v !== option)
+                        updateFormData(element.id, newValue)
+                      } else {
+                        updateFormData(element.id, option)
+                      }
+                    }}
+                  />
+                  <span>{option}</span>
+                </label>
+              ))}
+            </div>
+            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
           </div>
         )
 
       case "rating":
+        const maxRating = element.config?.ratingRange?.max || 5
         return (
-          <div className="flex space-x-1">
-            {Array.from({ length: element.config?.ratingRange?.max || 5 }).map((_, idx) => (
-              <Star
-                key={idx}
-                className="h-6 w-6 cursor-pointer hover:fill-current"
-                style={{ color: (survey.design as any).primaryColor }}
-              />
-            ))}
+          <div>
+            <div className="flex space-x-1">
+              {Array.from({ length: maxRating }).map((_, idx) => {
+                const rating = idx + 1
+                const isSelected = formData[element.id] >= rating
+                return (
+                  <Star
+                    key={idx}
+                    className={`h-6 w-6 cursor-pointer hover:fill-current ${isSelected ? "fill-current" : ""}`}
+                    style={{ color: (survey.design as any).primaryColor }}
+                    onClick={() => updateFormData(element.id, rating)}
+                  />
+                )
+              })}
+            </div>
+            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
           </div>
         )
 
@@ -101,6 +180,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
 
           <div className="mt-8 flex justify-end">
             <Button
+              onClick={handleSubmit}
               style={{
                 backgroundColor: (survey.design as any).primaryColor,
                 borderRadius: (survey.design as any).borderRadius,

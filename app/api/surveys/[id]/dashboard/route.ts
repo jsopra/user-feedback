@@ -257,12 +257,23 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
         const total = choices.length
 
         choices.forEach((choice: any) => {
-          if (Array.isArray(choice)) {
-            choice.forEach((c: any) => {
+          // Se o answer foi salvo como string JSON, fazer parse
+          let parsedChoice = choice
+          if (typeof choice === "string" && (choice.startsWith("[") || choice.startsWith("{"))) {
+            try {
+              parsedChoice = JSON.parse(choice)
+            } catch (e) {
+              // Se não for JSON válido, usar como string
+              parsedChoice = choice
+            }
+          }
+
+          if (Array.isArray(parsedChoice)) {
+            parsedChoice.forEach((c: any) => {
               choiceCount[c] = (choiceCount[c] || 0) + 1
             })
           } else {
-            choiceCount[choice] = (choiceCount[choice] || 0) + 1
+            choiceCount[parsedChoice] = (choiceCount[parsedChoice] || 0) + 1
           }
         })
 
