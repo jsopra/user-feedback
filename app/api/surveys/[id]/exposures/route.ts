@@ -12,6 +12,17 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   try {
     const db = getDbServiceRoleClient()
     const surveyId = params.id
+
+    // Validar UUID
+    if (!surveyId || surveyId === "undefined") {
+      return NextResponse.json({ error: "Survey ID is required" }, { status: 400, headers })
+    }
+
+    const uuidRegex = /^[0-9a-fA-F-]{36}$/
+    if (!uuidRegex.test(surveyId)) {
+      return NextResponse.json({ error: "Invalid Survey ID" }, { status: 400, headers })
+    }
+
     const body = await request.json()
 
     const { sessionId, route, device, userAgent, custom_params, trigger_mode } = body

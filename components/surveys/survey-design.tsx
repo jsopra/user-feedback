@@ -230,7 +230,6 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
                           className="h-2 rounded-full"
                           style={{ backgroundColor: survey.design.primaryColor, width: "60%" }}
                         />
-              {survey.design.softGate && <Badge variant="secondary">Soft Gate Ativado</Badge>}
                       </div>
                       <div
                         className="absolute w-4 h-4 rounded-full border-2 border-white shadow-md"
@@ -257,6 +256,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
             {/* Configurações ativas */}
             <div className="mt-4 flex flex-wrap gap-1">
               {survey.design.colorTheme === "custom" && <Badge variant="secondary">Tema Personalizado</Badge>}
+              {survey.design.softGate && <Badge variant="secondary">Soft Gate Ativado</Badge>}
               <Badge variant="secondary">Cantos Arredondados</Badge>
               <Badge variant="secondary">Barra de Progresso</Badge>
             </div>

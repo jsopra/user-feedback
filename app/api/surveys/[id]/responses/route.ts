@@ -23,6 +23,16 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     console.log("[v0] === SURVEY RESPONSES API DEBUG ===")
     console.log("[v0] Survey ID:", params.id)
 
+    // Validar UUID
+    if (!params.id || params.id === "undefined") {
+      return NextResponse.json({ error: "Survey ID is required" }, { status: 400 })
+    }
+
+    const uuidRegex = /^[0-9a-fA-F-]{36}$/
+    if (!uuidRegex.test(params.id)) {
+      return NextResponse.json({ error: "Invalid Survey ID" }, { status: 400 })
+    }
+
     const body = await request.json()
     const { responses, session_id, user_agent, url, timestamp, custom_params, trigger_mode } = body
 

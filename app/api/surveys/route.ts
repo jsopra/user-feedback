@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getDbClient } from "@/lib/dbClient"
+import { getDbClient, getDbServiceRoleClient } from "@/lib/dbClient"
 import type { Survey } from "@/types/survey"
 
 export async function GET(request: NextRequest) {
@@ -180,7 +180,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const db = getDbClient()
+    const db = getDbServiceRoleClient()
     const surveyData: Survey = await request.json()
 
     console.log("=== API POST SURVEY ===")
@@ -206,8 +206,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "created_by é obrigatório" }, { status: 400 })
     }
 
+    // Validar UUID do created_by
+    const uuidRegex = /^[0-9a-fA-F-]{36}$/
+    if (!uuidRegex.test(surveyData.created_by)) {
+      return NextResponse.json({ error: "created_by é um UUID inválido" }, { status: 400 })
+    }
+
     if (!surveyData.project_id) {
       return NextResponse.json({ error: "project_id é obrigatório" }, { status: 400 })
+    }
+
+    // Validar UUID do project_id
+    if (!uuidRegex.test(surveyData.project_id)) {
+      return NextResponse.json({ error: "project_id é um UUID inválido" }, { status: 400 })
     }
 
     const generateApiKey = () => {

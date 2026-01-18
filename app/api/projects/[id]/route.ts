@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getDbClient } from "@/lib/dbClient"
+import { getDbClient, getDbServiceRoleClient } from "@/lib/dbClient"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const db = getDbClient()
+    const db = getDbServiceRoleClient()
     const projectId = params?.id
 
     console.log("=== PUT PROJECT ===")
