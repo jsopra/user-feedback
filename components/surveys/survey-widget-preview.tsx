@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider"
 import { X, CheckCircle, ThumbsUp, ThumbsDown } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
 import { getDeviceType } from "@/lib/device-parser"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyWidgetPreviewProps {
   survey: Survey
@@ -16,6 +17,7 @@ interface SurveyWidgetPreviewProps {
 }
 
 export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPreviewProps) {
+  const { t } = useTranslation("surveys")
   const [currentStep, setCurrentStep] = useState(0)
   const [responses, setResponses] = useState<Record<string, any>>({})
   const [isCompleted, setIsCompleted] = useState(false)
@@ -305,7 +307,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
       >
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs flex-1" style={{ color: (survey.design as any).textColor }}>
-            Podemos te fazer algumas perguntas rápidas?
+            {t("canMakeQuestions")}
           </p>
 
           <div className="flex items-center gap-2">
@@ -349,7 +351,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
             <X className="h-5 w-5" />
           </Button>
         </div>
-        <p className="text-sm text-gray-500">Nenhum elemento adicionado à survey ainda.</p>
+        <p className="text-sm text-gray-500">{t("noElementsInSurvey")}</p>
       </div>
     )
   }

@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Plus, Type, AlignLeft, CheckCircle, BarChart3, Trash2, GripVertical, Edit3 } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
 import { generateUUID } from "@/lib/uuid"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyElementsProps {
   survey: Survey
@@ -17,6 +18,7 @@ interface SurveyElementsProps {
 
 export default function SurveyElements({ survey, setSurvey }: SurveyElementsProps) {
   const [editingElement, setEditingElement] = useState<string | null>(null)
+  const { t } = useTranslation("surveys")
 
   const elementTypes = [
     {

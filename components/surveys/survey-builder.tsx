@@ -18,6 +18,7 @@ import SurveySettings from "./survey-settings"
 import SurveyPreview from "./survey-preview"
 import SurveyWidgetPreview from "./survey-widget-preview"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyBuilderProps {
   onBack: (savedSurveyId?: string) => void
@@ -42,6 +43,7 @@ export default function SurveyBuilder({
 }: SurveyBuilderProps) {
   const { user } = useAuth()
   const searchParams = useSearchParams()
+  const { t } = useTranslation("surveys")
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [tempTitle, setTempTitle] = useState("")
@@ -49,7 +51,7 @@ export default function SurveyBuilder({
   const [survey, setSurvey] = useState<Survey>(
     initialSurvey || {
       title: "Nova Survey",
-      description: "Descrição da survey",
+      description: t("surveyDescription"),
       language: "en",
       elements: [],
       design: {
@@ -212,11 +214,11 @@ export default function SurveyBuilder({
         await externalOnSave(survey)
 
         setHasUnsavedChanges(false)
-        setSuccess("Survey salva com sucesso!")
+        setSuccess(t("success.updated"))
       } catch (error) {
         console.error("Erro ao salvar via externalOnSave:", error)
         const errorMessage = error instanceof Error ? error.message : String(error)
-        setError(`Erro ao salvar survey: ${errorMessage}`)
+        setError(`${t("errors.updateFailed")}: ${errorMessage}`)
       } finally {
         setIsSaving(false)
       }
@@ -224,7 +226,7 @@ export default function SurveyBuilder({
     }
 
     if (!user) {
-      setError("Você precisa estar logado para salvar")
+      setError(t("errors.authRequired") || "Você precisa estar logado para salvar")
       return
     }
 
@@ -237,12 +239,12 @@ export default function SurveyBuilder({
 
     // Validações básicas
     if (!survey.title.trim()) {
-      setError("Título é obrigatório")
+      setError(t("errors.titleRequired"))
       return
     }
 
     if (!survey.description.trim()) {
-      setError("Descrição é obrigatória")
+      setError(t("errors.descriptionRequired"))
       return
     }
 
@@ -290,7 +292,7 @@ export default function SurveyBuilder({
         }
 
         setHasUnsavedChanges(false)
-        setSuccess("Survey salva com sucesso!")
+        setSuccess(t("success.updated"))
       } else {
         throw new Error(responseData.error || "Erro desconhecido")
       }
@@ -302,7 +304,7 @@ export default function SurveyBuilder({
       if (errorMessage.includes("does not exist") || errorMessage.includes("42P01")) {
         setError(`${errorMessage}. Execute o script SQL para criar as tabelas necessárias.`)
       } else {
-        setError(`Erro ao salvar survey: ${errorMessage}`)
+        setError(`${t("errors.updateFailed")}: ${errorMessage}`)
       }
     } finally {
       setIsSaving(false)
@@ -315,14 +317,14 @@ export default function SurveyBuilder({
   }
 
   const handleBack = () => {
-    if (hasUnsavedChanges && !window.confirm("Você tem alterações não salvas. Deseja sair mesmo assim?")) {
+      if (hasUnsavedChanges && !window.confirm(t("unsavedChanges"))) {
       return
     }
     onBack()
   }
 
   const handleBackToHome = () => {
-    if (hasUnsavedChanges && !window.confirm("Você tem alterações não salvas. Deseja sair mesmo assim?")) {
+    if (hasUnsavedChanges && !window.confirm(t("unsavedChanges"))) {
       return
     }
     if (onBackToHome) {
@@ -366,7 +368,7 @@ export default function SurveyBuilder({
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando survey...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         </div>
       </div>
     )
@@ -390,7 +392,7 @@ export default function SurveyBuilder({
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="sm" onClick={handleBack}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar
+                {t("back")}
               </Button>
               <div className="flex-1">
                 {isEditingTitle ? (
@@ -400,7 +402,7 @@ export default function SurveyBuilder({
                       onChange={(e) => setTempTitle(e.target.value)}
                       onKeyDown={handleTitleKeyDown}
                       className="text-xl font-bold"
-                      placeholder="Nome da survey"
+                      placeholder={t("surveyName")}
                       autoFocus
                     />
                     <Button size="sm" variant="ghost" onClick={saveTitle}>
@@ -424,7 +426,7 @@ export default function SurveyBuilder({
                   </div>
                 )}
                 <p className="text-sm text-gray-500">
-                  {surveyId ? "Editando survey" : "Criando nova survey"}
+                  {surveyId ? t("editing") : t("creating")}
                   {project && <span> • Projeto: {project.name}</span>}
                 </p>
               </div>
@@ -432,11 +434,11 @@ export default function SurveyBuilder({
             <div className="flex items-center space-x-2">
               <Button variant="outline" size="sm" onClick={() => setShowWidgetPreview(true)}>
                 <Eye className="h-4 w-4 mr-2" />
-                Preview
+                {t("preview")}
               </Button>
               <Button size="sm" onClick={(e) => { e.preventDefault(); handleSave(); }} disabled={finalIsLoading}>
                 <Save className="h-4 w-4 mr-2" />
-                {finalIsLoading ? "Salvando..." : "Salvar"}
+                {finalIsLoading ? t("saving") : t("save")}
               </Button>
             </div>
           </div>
@@ -464,7 +466,7 @@ export default function SurveyBuilder({
         {hasUnsavedChanges && !success && (
           <Alert className="mb-6 border-yellow-200 bg-yellow-50">
             <AlertDescription className="text-yellow-800">
-              Você tem alterações não salvas. Lembre-se de salvar antes de sair.
+              {t("unsavedChanges")}
             </AlertDescription>
           </Alert>
         )}

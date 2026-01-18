@@ -1,12 +1,31 @@
 {
   "title": "Projects",
+  "myProjects": "My Projects",
   "createProject": "Create Project",
   "editProject": "Edit Project",
+  "newProject": "New Project",
+  "createNewProject": "Create New Project",
   "projectName": "Project Name",
   "projectDescription": "Description",
+  "descriptionOptional": "Description (optional)",
+  "descriptionMaxLength": "Description must be a maximum of 500 characters",
   "baseDomain": "Base Domain",
   "apiKey": "API Key",
-  "deleteConfirm": "Are you sure you want to delete this project?",
+  "copyApiKey": "Copy API Key",
+  "copiedApiKey": "API Key copied to clipboard",
+  "actions": "Actions",
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteProject": "Delete Project",
+  "save": "Save",
+  "cancel": "Cancel",
+  "saving": "Saving...",
+  "loading": "Loading...",
+  "noProjects": "No projects yet",
+  "noProjectsDescription": "Create your first project to get started",
+  "createFirstProject": "Create First Project",
+  "customizable": "Customizable surveys and targeting",
+  "confirmDelete": "Are you sure you want to delete this project? This action cannot be undone.",
   "stats": {
     "surveys": "Surveys",
     "responses": "Responses",
@@ -16,7 +35,9 @@
     "createFailed": "Failed to create project",
     "updateFailed": "Failed to update project",
     "deleteFailed": "Failed to delete project",
-    "loadFailed": "Failed to load projects"
+    "loadFailed": "Failed to load projects",
+    "invalidInput": "Invalid input",
+    "required": "This field is required"
   },
   "success": {
     "created": "Project created successfully",
@@ -24,3 +45,4 @@
     "deleted": "Project deleted successfully"
   }
 }
+

@@ -9,9 +9,11 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Mail, Lock } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 
 export default function LoginForm() {
   const { login } = useAuth()
+  const { t } = useTranslation("auth")
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,7 +30,7 @@ export default function LoginForm() {
     try {
       await login(formData.email, formData.password)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao fazer login")
+      setError(err instanceof Error ? err.message : t("errors.loginFailed"))
     } finally {
       setIsLoading(false)
     }
@@ -50,14 +52,14 @@ export default function LoginForm() {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("email")}</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             id="email"
             name="email"
             type="email"
-            placeholder="seu@email.com"
+            placeholder={t("email")}
             value={formData.email}
             onChange={handleChange}
             className="pl-10"
@@ -67,14 +69,14 @@ export default function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Senha</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             id="password"
             name="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Sua senha"
+            placeholder={t("password")}
             value={formData.password}
             onChange={handleChange}
             className="pl-10 pr-10"
@@ -93,7 +95,7 @@ export default function LoginForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Entrando..." : "Entrar"}
+        {isLoading ? t("signing_in") : t("sign_in")}
       </Button>
     </form>
   )

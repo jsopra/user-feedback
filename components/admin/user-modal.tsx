@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface User {
   id: string
@@ -25,6 +27,8 @@ interface UserModalProps {
 }
 
 export default function UserModal({ isOpen, onClose, onSave, user }: UserModalProps) {
+  const { t } = useTranslation("users")
+  const { user: currentUser } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -61,7 +65,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
     try {
       const token = localStorage.getItem("sessionToken")
       if (!token) {
-        setError("Sessão expirada. Faça login novamente.")
+        setError(t("sessionExpired"))
         return
       }
 
@@ -92,10 +96,10 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
         onSave()
       } else {
         const { error } = await response.json()
-        setError(error || "Erro ao salvar usuário")
+        setError(error || t("errors.saveFailed"))
       }
     } catch (error) {
-      setError("Erro ao salvar usuário")
+      setError(t("errors.saveFailed"))
     } finally {
       setLoading(false)
     }
@@ -105,12 +109,12 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{user ? "Editar Usuário" : "Novo Usuário"}</DialogTitle>
+          <DialogTitle>{user ? t("editUser") : t("newUser")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="name">Nome</Label>
+            <Label htmlFor="name">{t("userName")}</Label>
             <Input
               id="name"
               value={formData.name}
@@ -120,7 +124,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
           </div>
 
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -131,7 +135,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
           </div>
 
           <div>
-            <Label htmlFor="password">{user ? "Nova Senha (deixe em branco para manter)" : "Senha"}</Label>
+            <Label htmlFor="password">{user ? t("newPassword") : t("password")}</Label>
             <Input
               id="password"
               type="password"
@@ -142,7 +146,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
           </div>
 
           <div>
-            <Label htmlFor="role">Função</Label>
+            <Label htmlFor="role">{t("role")}</Label>
             <Select
               value={formData.role}
               onValueChange={(value: "admin" | "user") => setFormData({ ...formData, role: value })}
@@ -151,8 +155,8 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="user">Membro</SelectItem>
-                <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="user">{t("user")}</SelectItem>
+                <SelectItem value="admin">{t("admin")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -161,10 +165,10 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancelar
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Salvar"}
+              {loading ? t("saving") : t("save")}
             </Button>
           </div>
         </form>

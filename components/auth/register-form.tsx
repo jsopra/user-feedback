@@ -9,12 +9,14 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface RegisterFormProps {
   onSuccess?: () => void
 }
 
 export default function RegisterForm({ onSuccess }: RegisterFormProps) {
+  const { t } = useTranslation("auth")
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -36,7 +38,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
     // Validações
     if (formData.password !== formData.confirmPassword) {
-      setError("As senhas não coincidem")
+      setError(t("errors.passwordsMismatch"))
       setIsLoading(false)
       return
     }
@@ -70,7 +72,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
         throw new Error(error)
       }
 
-      setSuccess("Usuário cadastrado com sucesso!")
+      setSuccess(t("success.registered"))
       setFormData({ name: "", email: "", password: "", confirmPassword: "" })
       setAcceptTerms(false)
 
@@ -79,7 +81,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
         onSuccess?.()
       }, 1000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao criar conta")
+      setError(err instanceof Error ? err.message : t("errors.registerFailed"))
     } finally {
       setIsLoading(false)
     }
@@ -107,14 +109,14 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="name">Nome completo</Label>
+        <Label htmlFor="name">{t("name") || "Nome completo"}</Label>
         <div className="relative">
           <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             id="name"
             name="name"
             type="text"
-            placeholder="Seu nome completo"
+            placeholder={t("name") || "Seu nome completo"}
             value={formData.name}
             onChange={handleChange}
             className="pl-10"
@@ -124,14 +126,14 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="register-email">Email</Label>
+        <Label htmlFor="register-email">{t("email")}</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             id="register-email"
             name="email"
             type="email"
-            placeholder="seu@email.com"
+            placeholder={t("email")}
             value={formData.email}
             onChange={handleChange}
             className="pl-10"
@@ -141,14 +143,14 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="register-password">Senha</Label>
+        <Label htmlFor="register-password">{t("password")}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             id="register-password"
             name="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Mínimo 6 caracteres"
+            placeholder={t("errors.passwordTooShort")}
             value={formData.password}
             onChange={handleChange}
             className="pl-10 pr-10"
@@ -167,14 +169,14 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirmar senha</Label>
+        <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             id="confirmPassword"
             name="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
-            placeholder="Confirme sua senha"
+            placeholder={t("confirmPassword")}
             value={formData.confirmPassword}
             onChange={handleChange}
             className="pl-10 pr-10"
@@ -199,12 +201,12 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       <div className="flex items-center space-x-2">
         <Checkbox id="terms" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} />
         <Label htmlFor="terms" className="text-sm text-gray-600">
-          Confirmo que tenho autorização para cadastrar este usuário no sistema
+          {t("acceptTerms") || "Confirmo que tenho autorização para cadastrar este usuário no sistema"}
         </Label>
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Criando conta..." : "Criar conta"}
+        {isLoading ? t("register_loading") || "Criando conta..." : t("signUp")}
       </Button>
     </form>
   )

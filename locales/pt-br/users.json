@@ -1,0 +1,43 @@
+{
+  "title": "Usuários",
+  "manageUsers": "Gerenciar Usuários",
+  "editUser": "Editar Usuário",
+  "newUser": "Novo Usuário",
+  "userName": "Nome de Usuário",
+  "email": "Email",
+  "password": "Senha",
+  "newPassword": "Nova Senha",
+  "confirmPassword": "Confirmar Senha",
+  "role": "Função",
+  "admin": "Administrador",
+  "user": "Usuário",
+  "status": "Status",
+  "active": "Ativo",
+  "inactive": "Inativo",
+  "created": "Criado",
+  "updated": "Atualizado",
+  "actions": "Ações",
+  "edit": "Editar",
+  "delete": "Excluir",
+  "save": "Salvar",
+  "cancel": "Cancelar",
+  "saving": "Salvando...",
+  "add": "Adicionar",
+  "remove": "Remover",
+  "confirm": "Confirmar",
+  "confirmDelete": "Tem certeza que deseja excluir este usuário?",
+  "sessionExpired": "Sessão expirada. Faça login novamente.",
+  "errors": {
+    "saveFailed": "Erro ao salvar usuário",
+    "loadFailed": "Erro ao carregar usuários",
+    "deleteFailed": "Erro ao excluir usuário",
+    "invalidEmail": "Endereço de email inválido",
+    "passwordTooShort": "A senha deve ter no mínimo 6 caracteres",
+    "passwordMismatch": "As senhas não coincidem"
+  },
+  "success": {
+    "saved": "Usuário salvo com sucesso",
+    "created": "Usuário criado com sucesso",
+    "deleted": "Usuário excluído com sucesso"
+  }
+}

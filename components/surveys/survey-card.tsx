@@ -20,6 +20,7 @@ import {
   Code,
 } from "lucide-react"
 import type { Survey } from "@/types/survey"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyCardProps {
   survey: Survey
@@ -44,6 +45,7 @@ export default function SurveyCard({
   onEmbed,
   onStatusChange,
 }: SurveyCardProps) {
+  const { t } = useTranslation("surveys")
   const [isToggling, setIsToggling] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
@@ -105,7 +107,7 @@ export default function SurveyCard({
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="flex items-center space-x-2">
             <FileText className="h-4 w-4 text-gray-400" />
-            <span className="text-gray-600">{survey.elements?.length || 0} elementos</span>
+            <span className="text-gray-600">{survey.elements?.length || 0} {t("elementsCount").split("(")[0].trim()}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Calendar className="h-4 w-4 text-gray-400" />
@@ -134,16 +136,16 @@ export default function SurveyCard({
                 className="data-[state=checked]:bg-green-600"
               />
               <span className={`text-sm font-medium ${survey.is_active ? "text-green-600" : "text-gray-500"}`}>
-                {survey.is_active ? "Ativa" : "Inativa"}
+                {survey.is_active ? t("publish") : t("unpublish")}
               </span>
             </div>
           </div>
 
           <div className="flex items-center space-x-1">
-            <Button variant="ghost" size="sm" onClick={() => onEdit(survey)} title="Editar Survey">
+            <Button variant="ghost" size="sm" onClick={() => onEdit(survey)} title={t("editSurvey")}>
               <Edit className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => onView(survey)} title="Visualizar Survey">
+            <Button variant="ghost" size="sm" onClick={() => onView(survey)} title={t("previewSurvey")}>
               <Eye className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="sm" onClick={() => onDashboard(survey.id!)} title="Dashboard da Survey">
@@ -157,7 +159,7 @@ export default function SurveyCard({
               size="sm"
               onClick={handleDelete}
               className={showDeleteConfirm ? "text-red-600 bg-red-50" : ""}
-              title={showDeleteConfirm ? "Clique novamente para confirmar" : "Excluir Survey"}
+              title={showDeleteConfirm ? t("confirming") : t("deleteConfirm")}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -168,7 +170,7 @@ export default function SurveyCard({
         {showDeleteConfirm && (
           <Alert variant="destructive" className="mt-2">
             <AlertDescription className="text-sm">
-              Tem certeza que deseja excluir esta survey? Esta ação não pode ser desfeita.
+              {t("deleteConfirm")}
             </AlertDescription>
           </Alert>
         )}

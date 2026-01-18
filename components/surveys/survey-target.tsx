@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Target, Plus, Trash2, Info, Clock, Globe, Repeat, Zap, Code } from "lucide-react"
 import type { Survey, SurveyPageRule } from "@/types/survey"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyTargetProps {
   survey: Survey
@@ -16,6 +17,7 @@ interface SurveyTargetProps {
 }
 
 export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
+  const { t } = useTranslation("surveys")
   const [newPattern, setNewPattern] = useState("")
 
   const updateTarget = (key: keyof Survey["target"], value: any) => {
@@ -255,7 +257,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               <Label>Adicionar Nova Regra</Label>
               <div className="flex space-x-2 mt-2">
                 <div className="w-32 flex items-center justify-center bg-gray-100 border rounded-md px-3 py-2 text-sm">
-                  Mostrar em
+                  {t("showIn")}
                 </div>
                 <Input
                   value={newPattern}
@@ -289,7 +291,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                         variant={rule.rule_type === "include" ? "default" : "destructive"}
                         className="text-xs flex-shrink-0"
                       >
-                        {rule.rule_type === "include" ? "MOSTRAR EM" : "EXCLUIR DE"}
+                        {rule.rule_type === "include" ? t("showIn") : t("hideFrom")}
                       </Badge>
                       <code className="text-sm bg-white px-2 py-1 rounded break-all flex-1">{rule.pattern}</code>
                       <Badge variant="secondary" className="text-xs flex-shrink-0">

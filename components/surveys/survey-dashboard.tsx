@@ -11,6 +11,7 @@ import { ArrowLeft, TrendingUp, BarChart3, Filter, Eye, Target, MousePointer } f
 import AppHeader from "@/components/layout/app-header"
 import SurveyMetricsCard from "./survey-metrics-card"
 import SurveyResponsesTable from "./survey-responses-table"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyDashboardProps {
   surveyId: string
@@ -67,6 +68,7 @@ interface DashboardData {
 }
 
 export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey }: SurveyDashboardProps) {
+  const { t } = useTranslation("surveys")
   const [data, setData] = useState<DashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -333,7 +335,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
           </Alert>
           <Button onClick={onBack} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar
+            {t("back")}
           </Button>
         </div>
       </div>
@@ -367,7 +369,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
                 className="text-blue-600 hover:text-blue-700"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar
+                {t("back")}
               </Button>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">{survey?.title || "Carregando..."} - Dashboard</h1>
