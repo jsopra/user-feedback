@@ -8,6 +8,7 @@ import LoginForm from "@/components/auth/login-form"
 import Dashboard from "@/components/dashboard/dashboard"
 import { MessageSquare } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
+import { LanguageSelector } from "@/components/layout/language-selector"
 
 export default function HomePage() {
   const router = useRouter()
@@ -53,6 +54,11 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Language Selector - Top Right */}
+        <div className="flex justify-end mb-4">
+          <LanguageSelector />
+        </div>
+
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <MessageSquare className="h-12 w-12 text-blue-600" />
