@@ -1,0 +1,66 @@
+{
+  "title": "Encuestas",
+  "createSurvey": "Crear Encuesta",
+  "editSurvey": "Editar Encuesta",
+  "surveyName": "Nombre de la Encuesta",
+  "surveyDescription": "Descripción",
+  "language": "Idioma",
+  "languages": {
+    "en": "Inglés",
+    "pt-br": "Portugués (Brasil)",
+    "es": "Español"
+  },
+  "elements": {
+    "title": "Elementos",
+    "addElement": "Añadir Elemento",
+    "text": "Entrada de Texto",
+    "textarea": "Área de Texto",
+    "multipleChoice": "Opción Múltiple",
+    "rating": "Calificación",
+    "question": "Pregunta",
+    "required": "Campo obligatorio",
+    "placeholder": "Marcador de posición",
+    "maxLength": "Longitud máxima",
+    "options": "Opciones",
+    "addOption": "Añadir Opción",
+    "allowMultiple": "Permitir selección múltiple",
+    "ratingRange": "Rango de calificación",
+    "minValue": "Valor mínimo",
+    "maxValue": "Valor máximo",
+    "defaultValue": "Valor predeterminado"
+  },
+  "design": {
+    "title": "Diseño",
+    "primaryColor": "Color Primario",
+    "backgroundColor": "Color de Fondo",
+    "textColor": "Color del Texto",
+    "borderRadius": "Radio del Borde",
+    "fontFamily": "Familia de Fuente"
+  },
+  "targeting": {
+    "title": "Segmentación",
+    "triggerMode": "Modo de Activación",
+    "time": "Basado en tiempo",
+    "event": "Basado en evento",
+    "delay": "Retraso (segundos)",
+    "position": "Posición",
+    "softGate": "Soft Gate Activado"
+  },
+  "preview": "Vista Previa",
+  "publish": "Publicar",
+  "toggleStatus": "Cambiar Estado",
+  "deleteConfirm": "¿Está seguro de que desea eliminar esta encuesta?",
+  "errors": {
+    "createFailed": "Error al crear encuesta",
+    "updateFailed": "Error al actualizar encuesta",
+    "deleteFailed": "Error al eliminar encuesta",
+    "loadFailed": "Error al cargar encuestas"
+  },
+  "success": {
+    "created": "Encuesta creada exitosamente",
+    "updated": "Encuesta actualizada exitosamente",
+    "deleted": "Encuesta eliminada exitosamente",
+    "published": "Encuesta publicada exitosamente",
+    "unpublished": "Encuesta despublicada exitosamente"
+  }
+}

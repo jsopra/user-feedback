@@ -1,0 +1,66 @@
+{
+  "title": "Pesquisas",
+  "createSurvey": "Criar Pesquisa",
+  "editSurvey": "Editar Pesquisa",
+  "surveyName": "Nome da Pesquisa",
+  "surveyDescription": "Descrição",
+  "language": "Idioma",
+  "languages": {
+    "en": "Inglês",
+    "pt-br": "Português (Brasil)",
+    "es": "Espanhol"
+  },
+  "elements": {
+    "title": "Elementos",
+    "addElement": "Adicionar Elemento",
+    "text": "Entrada de Texto",
+    "textarea": "Área de Texto",
+    "multipleChoice": "Múltipla Escolha",
+    "rating": "Avaliação",
+    "question": "Pergunta",
+    "required": "Campo obrigatório",
+    "placeholder": "Placeholder",
+    "maxLength": "Comprimento máximo",
+    "options": "Opções",
+    "addOption": "Adicionar Opção",
+    "allowMultiple": "Permitir seleção múltipla",
+    "ratingRange": "Intervalo de avaliação",
+    "minValue": "Valor mínimo",
+    "maxValue": "Valor máximo",
+    "defaultValue": "Valor padrão"
+  },
+  "design": {
+    "title": "Design",
+    "primaryColor": "Cor Primária",
+    "backgroundColor": "Cor de Fundo",
+    "textColor": "Cor do Texto",
+    "borderRadius": "Raio da Borda",
+    "fontFamily": "Família da Fonte"
+  },
+  "targeting": {
+    "title": "Segmentação",
+    "triggerMode": "Modo de Ativação",
+    "time": "Baseado em tempo",
+    "event": "Baseado em evento",
+    "delay": "Atraso (segundos)",
+    "position": "Posição",
+    "softGate": "Soft Gate Ativado"
+  },
+  "preview": "Visualizar",
+  "publish": "Publicar",
+  "toggleStatus": "Alternar Status",
+  "deleteConfirm": "Tem certeza que deseja excluir esta pesquisa?",
+  "errors": {
+    "createFailed": "Falha ao criar pesquisa",
+    "updateFailed": "Falha ao atualizar pesquisa",
+    "deleteFailed": "Falha ao excluir pesquisa",
+    "loadFailed": "Falha ao carregar pesquisas"
+  },
+  "success": {
+    "created": "Pesquisa criada com sucesso",
+    "updated": "Pesquisa atualizada com sucesso",
+    "deleted": "Pesquisa excluída com sucesso",
+    "published": "Pesquisa publicada com sucesso",
+    "unpublished": "Pesquisa despublicada com sucesso"
+  }
+}

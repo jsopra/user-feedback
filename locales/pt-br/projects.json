@@ -1,0 +1,26 @@
+{
+  "title": "Projetos",
+  "createProject": "Criar Projeto",
+  "editProject": "Editar Projeto",
+  "projectName": "Nome do Projeto",
+  "projectDescription": "Descrição",
+  "baseDomain": "Domínio Base",
+  "apiKey": "Chave API",
+  "deleteConfirm": "Tem certeza que deseja excluir este projeto?",
+  "stats": {
+    "surveys": "Pesquisas",
+    "responses": "Respostas",
+    "activeUsers": "Usuários Ativos"
+  },
+  "errors": {
+    "createFailed": "Falha ao criar projeto",
+    "updateFailed": "Falha ao atualizar projeto",
+    "deleteFailed": "Falha ao excluir projeto",
+    "loadFailed": "Falha ao carregar projetos"
+  },
+  "success": {
+    "created": "Projeto criado com sucesso",
+    "updated": "Projeto atualizado com sucesso",
+    "deleted": "Projeto excluído com sucesso"
+  }
+}

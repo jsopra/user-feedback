@@ -1,0 +1,66 @@
+{
+  "title": "Surveys",
+  "createSurvey": "Create Survey",
+  "editSurvey": "Edit Survey",
+  "surveyName": "Survey Name",
+  "surveyDescription": "Description",
+  "language": "Language",
+  "languages": {
+    "en": "English",
+    "pt-br": "Portuguese (Brazil)",
+    "es": "Spanish"
+  },
+  "elements": {
+    "title": "Elements",
+    "addElement": "Add Element",
+    "text": "Text Input",
+    "textarea": "Text Area",
+    "multipleChoice": "Multiple Choice",
+    "rating": "Rating",
+    "question": "Question",
+    "required": "Required field",
+    "placeholder": "Placeholder",
+    "maxLength": "Max length",
+    "options": "Options",
+    "addOption": "Add Option",
+    "allowMultiple": "Allow multiple selection",
+    "ratingRange": "Rating range",
+    "minValue": "Minimum value",
+    "maxValue": "Maximum value",
+    "defaultValue": "Default value"
+  },
+  "design": {
+    "title": "Design",
+    "primaryColor": "Primary Color",
+    "backgroundColor": "Background Color",
+    "textColor": "Text Color",
+    "borderRadius": "Border Radius",
+    "fontFamily": "Font Family"
+  },
+  "targeting": {
+    "title": "Targeting",
+    "triggerMode": "Trigger Mode",
+    "time": "Time-based",
+    "event": "Event-based",
+    "delay": "Delay (seconds)",
+    "position": "Position",
+    "softGate": "Soft Gate Enabled"
+  },
+  "preview": "Preview",
+  "publish": "Publish",
+  "toggleStatus": "Toggle Status",
+  "deleteConfirm": "Are you sure you want to delete this survey?",
+  "errors": {
+    "createFailed": "Failed to create survey",
+    "updateFailed": "Failed to update survey",
+    "deleteFailed": "Failed to delete survey",
+    "loadFailed": "Failed to load surveys"
+  },
+  "success": {
+    "created": "Survey created successfully",
+    "updated": "Survey updated successfully",
+    "deleted": "Survey deleted successfully",
+    "published": "Survey published successfully",
+    "unpublished": "Survey unpublished successfully"
+  }
+}

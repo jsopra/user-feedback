@@ -7,6 +7,7 @@ import { User, LogOut, Home, MessageSquare, Settings, Users } from "lucide-react
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import ChangePasswordModal from "./change-password-modal"
+import { LanguageSelector } from "./language-selector"
 
 interface AppHeaderProps {
   onHomeClick?: () => void
@@ -96,7 +97,8 @@ export default function AppHeader({
             </div>
 
             {/* Menu do Usuário */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <LanguageSelector />
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

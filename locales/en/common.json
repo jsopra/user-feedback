@@ -1,0 +1,47 @@
+{
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "next": "Next",
+    "previous": "Previous",
+    "finish": "Finish",
+    "submit": "Submit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "add": "Add",
+    "remove": "Remove"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "surveys": "Surveys",
+    "users": "Users",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email",
+    "invalidUrl": "Invalid URL",
+    "minLength": "Minimum {{count}} characters",
+    "maxLength": "Maximum {{count}} characters"
+  },
+  "common": {
+    "loading": "Loading...",
+    "noData": "No data available",
+    "error": "An error occurred",
+    "success": "Success",
+    "search": "Search",
+    "filter": "Filter",
+    "actions": "Actions",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at"
+  }
+}
