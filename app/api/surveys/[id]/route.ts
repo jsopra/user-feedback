@@ -123,19 +123,33 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       // Get existing elements to determine which ones to update vs insert
       const { data: existingElements, error: fetchError } = await db
         .from("survey_elements")
-        .select("id")
+        .select("*")
         .eq("survey_id", params.id)
 
       if (fetchError) {
         throw fetchError
       }
 
-      const existingIds = new Set(existingElements?.map((el: any) => el.id) || [])
-      const incomingIds = new Set(surveyData.elements.filter((el: any) => el.id).map((el: any) => el.id))
+      // Create a map of existing elements by their order_index for better matching
+      const existingElementsMap = new Map()
+      const existingIds = new Set()
+      
+      existingElements?.forEach((el: any) => {
+        existingElementsMap.set(el.order_index, el)
+        existingIds.add(el.id)
+      })
 
-      // Delete elements that are no longer in the payload
-      const idsToDelete = Array.from(existingIds).filter((id: any) => !incomingIds.has(id))
-      if (idsToDelete.length > 0) {
+      console.log("=== ELEMENT PROCESSING ===")
+      console.log(`Existing elements: ${existingElements?.length || 0}`)
+      console.log(`Incoming elements: ${surveyData.elements.length}`)
+
+      // First pass: Delete elements that are no longer in the payload
+      const incomingOrderIndices = new Set(surveyData.elements.map((_: any, index: number) => index))
+      const elementsToDelete = existingElements?.filter((el: any) => !incomingOrderIndices.has(el.order_index)) || []
+      
+      if (elementsToDelete.length > 0) {
+        const idsToDelete = elementsToDelete.map((el: any) => el.id)
+        console.log(`Deleting ${idsToDelete.length} elements:`, idsToDelete)
         const { error: deleteError } = await db
           .from("survey_elements")
           .delete()
@@ -158,18 +172,28 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
           config: element.config || {},
         }
 
-        if (element.id && existingIds.has(element.id)) {
-          // Update existing element
+        // Check if this element should update an existing one
+        const existingElementAtIndex = existingElementsMap.get(index)
+        const isValidUuid = element.id && !element.id.startsWith('element_')
+        const shouldUpdate = (existingElementAtIndex && (
+          (isValidUuid && element.id === existingElementAtIndex.id) ||
+          (!isValidUuid && existingElementAtIndex)
+        ))
+
+        if (shouldUpdate) {
+          // Update existing element (keep original ID)
+          console.log(`UPDATING element at index ${index}: "${element.question}" (ID: ${existingElementAtIndex.id})`)
           const { error: updateError } = await db
             .from("survey_elements")
             .update(elementData)
-            .eq("id", element.id)
+            .eq("id", existingElementAtIndex.id)
 
           if (updateError) {
             throw updateError
           }
         } else {
           // Insert new element
+          console.log(`INSERTING new element at index ${index}: "${element.question}"`)
           const { error: insertError } = await db
             .from("survey_elements")
             .insert(elementData)

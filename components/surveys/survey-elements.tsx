@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Plus, Type, AlignLeft, CheckCircle, BarChart3, Trash2, GripVertical, Edit3 } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
+import { generateUUID } from "@/lib/uuid"
 
 interface SurveyElementsProps {
   survey: Survey
@@ -46,7 +47,7 @@ export default function SurveyElements({ survey, setSurvey }: SurveyElementsProp
 
   const addElement = (type: SurveyElement["type"]) => {
     const newElement: SurveyElement = {
-      id: `element_${Date.now()}`,
+      id: generateUUID(),
       type,
       question: `Nova pergunta ${type}`,
       required: false,
