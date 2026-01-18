@@ -13,38 +13,53 @@ interface SurveyPreviewProps {
 export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
   const [formData, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, boolean>>({})
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false)
 
   const handleSubmit = () => {
+    setAttemptedSubmit(true)
     const newErrors: Record<string, boolean> = {}
     
     survey.elements.forEach((element) => {
-      if (element.required && element.id) {
-        const value = formData[element.id]
-        let isEmpty = false
-        
-        if (value === null || value === undefined) {
-          isEmpty = true
-        } else if (Array.isArray(value)) {
-          isEmpty = value.length === 0
-        } else if (typeof value === 'string') {
-          isEmpty = value.trim() === ''
-        } else if (typeof value === 'number') {
-          // Para rating, 0 é inválido (ratings começam de 1)
-          isEmpty = value === 0
-        }
-        
-        if (isEmpty) {
-          newErrors[element.id] = true
-        }
+      if (!element.required || !element.id) {
+        return // Pula elementos não obrigatórios
+      }
+      
+      const value = formData[element.id]
+      
+      // Verifica se está vazio baseado no tipo
+      if (value === undefined || value === null) {
+        newErrors[element.id] = true
+        return
+      }
+      
+      if (Array.isArray(value) && value.length === 0) {
+        newErrors[element.id] = true
+        return
+      }
+      
+      if (typeof value === 'string' && value.trim() === '') {
+        newErrors[element.id] = true
+        return
+      }
+      
+      if (typeof value === 'number' && value <= 0) {
+        newErrors[element.id] = true
+        return
       }
     })
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
-      return
+      // Scroll para o primeiro erro
+      const firstErrorElement = document.querySelector('.border-red-500')
+      if (firstErrorElement) {
+        firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return // IMPORTANTE: Não continua se houver erros
     }
 
-    // Preview apenas - não submete de verdade
+    // Só chega aqui se não houver erros
+    setErrors({})
     alert("Preview: Respostas validadas com sucesso!")
   }
 
@@ -189,6 +204,11 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
                   {element.required && <span className="text-red-500 ml-1">*</span>}
                 </label>
                 {renderElement(element)}
+                {attemptedSubmit && element.required && element.id && !formData[element.id] && (
+                  <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded">
+                    <p className="text-red-600 text-sm font-medium">⚠️ Este campo é obrigatório</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
