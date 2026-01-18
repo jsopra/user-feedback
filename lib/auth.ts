@@ -115,21 +115,26 @@ export async function registerUser(userData: {
  */
 export async function validateSession(sessionToken: string) {
   try {
-    const { data: session, error } = await db
+    // Buscar sessão válida
+    const { data: session, error: sessionError } = await db
       .from("user_sessions")
-      .select(`
-        *,
-        users (*)
-      `)
+      .select("*")
       .eq("session_token", sessionToken)
       .gt("expires_at", new Date().toISOString())
       .single()
 
-    if (error || !session) {
+    if (sessionError || !session) {
       throw new Error("Sessão inválida ou expirada")
     }
 
-    return session
+    // Buscar usuário associado
+    const { data: user, error: userError } = await db.from("users").select("*").eq("id", session.user_id).single()
+
+    if (userError || !user) {
+      throw new Error("Dados do usuário não encontrados")
+    }
+
+    return { session, user }
   } catch (error) {
     throw error
   }
