@@ -238,7 +238,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Globe className="h-5 w-5 mr-2" />
-              Regras de Páginas
+              {t("targeting.pageRules")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -246,15 +246,15 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               <div className="flex items-start space-x-2">
                 <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-amber-800">Comportamento Padrão</p>
+                  <p className="text-sm font-medium text-amber-800">{t("targeting.defaultBehavior")}</p>
                   <p className="text-xs text-amber-700 mt-1">
-                    Por padrão, a survey não aparece em nenhuma URL. Você precisa adicionar as URLs específicas onde deseja que a ferramenta seja acionada.
+                    {t("targeting.defaultBehaviorDescription")}
                   </p>
                 </div>
               </div>
             </div>
             <div>
-              <Label>Adicionar Nova Regra</Label>
+              <Label>{t("targeting.addNewRule")}</Label>
               <div className="flex space-x-2 mt-2">
                 <div className="w-32 flex items-center justify-center bg-gray-100 border rounded-md px-3 py-2 text-sm">
                   {t("showIn")}

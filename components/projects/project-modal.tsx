@@ -54,9 +54,9 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
     if (!formData.name.trim()) {
       newErrors.name = t("errors.required")
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Nome deve ter pelo menos 2 caracteres"
+      newErrors.name = t("errors.nameMinLength")
     } else if (formData.name.trim().length > 100) {
-      newErrors.name = "Nome deve ter no máximo 100 caracteres"
+      newErrors.name = t("errors.nameMaxLength")
     }
 
     // Validar domínio
@@ -70,15 +70,15 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
       const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-_.]*[a-zA-Z0-9]$/
 
       if (domain.length < 3) {
-        newErrors.base_domain = "Domínio deve ter pelo menos 3 caracteres"
+        newErrors.base_domain = t("errors.domainMinLength")
       } else if (!domainRegex.test(domain)) {
-        newErrors.base_domain = "Formato de domínio inválido"
+        newErrors.base_domain = t("errors.domainInvalidFormat")
       }
     }
 
     // Validar descrição (opcional)
     if (formData.description && formData.description.length > 500) {
-      newErrors.description = "Descrição deve ter no máximo 500 caracteres"
+      newErrors.description = t("errors.descriptionMaxLength")
     }
 
     setErrors(newErrors)

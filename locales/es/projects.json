@@ -37,7 +37,12 @@
     "deleteFailed": "Error al eliminar proyecto",
     "loadFailed": "Error al cargar proyectos",
     "invalidInput": "Entrada no válida",
-    "required": "Este campo es obligatorio"
+    "required": "Este campo es obligatorio",
+    "nameMinLength": "El nombre debe tener al menos 2 caracteres",
+    "nameMaxLength": "El nombre debe tener un máximo de 100 caracteres",
+    "domainMinLength": "El dominio debe tener al menos 3 caracteres",
+    "domainInvalidFormat": "Formato de dominio inválido",
+    "descriptionMaxLength": "La descripción debe tener un máximo de 500 caracteres"
   },
   "success": {
     "created": "Proyecto creado exitosamente",

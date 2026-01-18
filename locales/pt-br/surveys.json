@@ -54,7 +54,10 @@
     "delay": "Atraso (segundos)",
     "position": "Posição",
     "softGate": "Soft Gate Ativado",
-    "pageRules": "Regras de Página"
+    "pageRules": "Regras de Páginas",
+    "defaultBehavior": "Comportamento Padrão",
+    "defaultBehaviorDescription": "Por padrão, a survey não aparece em nenhuma URL. Você precisa adicionar as URLs específicas onde deseja que a ferramenta seja acionada.",
+    "addNewRule": "Adicionar Nova Regra"
   },
   "preview": "Visualizar",
   "previewSurvey": "Visualizar Pesquisa",

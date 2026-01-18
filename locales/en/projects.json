@@ -37,7 +37,12 @@
     "deleteFailed": "Failed to delete project",
     "loadFailed": "Failed to load projects",
     "invalidInput": "Invalid input",
-    "required": "This field is required"
+    "required": "This field is required",
+    "nameMinLength": "Name must have at least 2 characters",
+    "nameMaxLength": "Name must have a maximum of 100 characters",
+    "domainMinLength": "Domain must have at least 3 characters",
+    "domainInvalidFormat": "Invalid domain format",
+    "descriptionMaxLength": "Description must have a maximum of 500 characters"
   },
   "success": {
     "created": "Project created successfully",

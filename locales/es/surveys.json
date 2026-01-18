@@ -54,7 +54,10 @@
     "delay": "Retraso (segundos)",
     "position": "Posición",
     "softGate": "Soft Gate Activado",
-    "pageRules": "Reglas de Página"
+    "pageRules": "Reglas de Página",
+    "defaultBehavior": "Comportamiento Predeterminado",
+    "defaultBehaviorDescription": "Por defecto, la encuesta no aparece en ninguna URL. Debes agregar las URLs específicas donde deseas que se active la encuesta.",
+    "addNewRule": "Agregar Nueva Regla"
   },
   "preview": "Vista Previa",
   "previewSurvey": "Vista Previa de la Encuesta",

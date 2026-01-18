@@ -54,7 +54,10 @@
     "delay": "Delay (seconds)",
     "position": "Position",
     "softGate": "Soft Gate Enabled",
-    "pageRules": "Page Rules"
+    "pageRules": "Page Rules",
+    "defaultBehavior": "Default Behavior",
+    "defaultBehaviorDescription": "By default, the survey does not appear in any URL. You need to add the specific URLs where you want the survey to be triggered.",
+    "addNewRule": "Add New Rule"
   },
   "preview": "Preview",
   "previewSurvey": "Preview Survey",
