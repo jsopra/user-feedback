@@ -258,8 +258,15 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
+    console.log("Resposta do insert:", { survey, error: surveyError })
+
     if (surveyError) {
       console.error("Erro ao inserir survey:", surveyError)
+      console.error("Erro detalhado:", {
+        code: (surveyError as any).code,
+        message: surveyError.message,
+        details: (surveyError as any).details,
+      })
       return NextResponse.json(
         {
           error: `Erro ao criar survey: ${surveyError.message}`,
@@ -271,6 +278,31 @@ export async function POST(request: NextRequest) {
 
     if (!survey) {
       console.error("Survey não foi criada - resposta vazia")
+      console.error("Tentando verificar se foi inserida mesmo assim...")
+      
+      // Buscar a survey mais recente criada por este usuário para este projeto
+      const { data: recentSurvey, error: recentError } = await db
+        .from("surveys")
+        .select("*")
+        .eq("created_by", surveyData.created_by)
+        .eq("project_id", surveyData.project_id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single()
+      
+      if (recentError) {
+        console.error("Erro ao buscar survey recente:", recentError)
+        return NextResponse.json({ error: "Survey não foi criada" }, { status: 500 })
+      }
+      
+      if (recentSurvey) {
+        console.log("Survey foi inserida! Retornando a survey recém criada")
+        return NextResponse.json({
+          survey: recentSurvey,
+          message: "Survey criada com sucesso!",
+        })
+      }
+      
       return NextResponse.json({ error: "Survey não foi criada" }, { status: 500 })
     }
 
