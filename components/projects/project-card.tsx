@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Eye, Edit, Trash2, MoreHorizontal, Globe, BarChart3, CheckCircle, XCircle } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 import type { Project } from "@/types/project"
 
 interface ProjectCardProps {
@@ -23,6 +24,7 @@ interface ProjectStats {
 }
 
 export default function ProjectCard({ project, onView, onEdit, onDelete }: ProjectCardProps) {
+  const { t } = useTranslation("projects")
   const { user } = useAuth()
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -107,11 +109,11 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleEdit} className="cursor-pointer">
                 <Edit className="h-4 w-4 mr-2" />
-                Editar Projeto
+                {t("editProject")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDelete} className="cursor-pointer text-red-600">
                 <Trash2 className="h-4 w-4 mr-2" />
-                Excluir Projeto
+                {t("deleteProject")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -125,7 +127,7 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
         {/* Estatísticas das Surveys */}
         <div className="bg-gray-50 rounded-lg p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Surveys</span>
+            <span className="text-sm font-medium text-gray-700">{t("stats.surveys")}</span>
             <BarChart3 className="h-4 w-4 text-gray-400" />
           </div>
 
@@ -170,13 +172,13 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
         {showDeleteConfirm && (
           <Alert variant="destructive" className="mt-2">
             <AlertDescription className="text-sm">
-              Tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.
+              {t("confirmDelete")}
               <div className="flex space-x-2 mt-2">
                 <Button size="sm" variant="destructive" onClick={handleDelete} className="h-7 text-xs">
                   Confirmar
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setShowDeleteConfirm(false)} className="h-7 text-xs">
-                  Cancelar
+                  {t("cancel")}
                 </Button>
               </div>
             </AlertDescription>

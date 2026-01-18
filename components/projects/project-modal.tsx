@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, Globe, FileText, Type } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 import type { Project } from "@/types/project"
 
 interface ProjectModalProps {
@@ -20,6 +21,7 @@ interface ProjectModalProps {
 }
 
 export default function ProjectModal({ isOpen, onClose, onSave, project }: ProjectModalProps) {
+  const { t } = useTranslation("projects")
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -50,7 +52,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
 
     // Validar nome
     if (!formData.name.trim()) {
-      newErrors.name = "Nome é obrigatório"
+      newErrors.name = t("errors.required")
     } else if (formData.name.trim().length < 2) {
       newErrors.name = "Nome deve ter pelo menos 2 caracteres"
     } else if (formData.name.trim().length > 100) {
@@ -59,7 +61,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
 
     // Validar domínio
     if (!formData.base_domain.trim()) {
-      newErrors.base_domain = "Domínio base é obrigatório"
+      newErrors.base_domain = t("errors.required")
     } else {
       const domain = formData.base_domain
         .trim()
@@ -132,7 +134,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{project ? "Editar Projeto" : "Criar Novo Projeto"}</DialogTitle>
+          <DialogTitle>{project ? t("editProject") : t("createNewProject")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -140,7 +142,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
           <div className="space-y-2">
             <Label htmlFor="name" className="flex items-center">
               <Type className="h-4 w-4 mr-2" />
-              Nome do Projeto *
+              {t("projectName")} *
             </Label>
             <Input
               id="name"
@@ -162,7 +164,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
           <div className="space-y-2">
             <Label htmlFor="base_domain" className="flex items-center">
               <Globe className="h-4 w-4 mr-2" />
-              Domínio Base *
+              {t("baseDomain")} *
             </Label>
             <Input
               id="base_domain"
@@ -190,7 +192,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
           <div className="space-y-2">
             <Label htmlFor="description" className="flex items-center">
               <FileText className="h-4 w-4 mr-2" />
-              Descrição (opcional)
+              {t("descriptionOptional")}
             </Label>
             <Textarea
               id="description"
@@ -212,18 +214,18 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
           {/* Botões */}
           <div className="flex justify-end space-x-3 pt-4">
             <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-              Cancelar
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Salvando...
+                  {t("saving")}
                 </>
               ) : project ? (
-                "Atualizar Projeto"
+                t("editProject")
               ) : (
-                "Criar Projeto"
+                t("createProject")
               )}
             </Button>
           </div>

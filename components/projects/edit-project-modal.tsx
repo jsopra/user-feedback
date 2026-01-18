@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 import type { Project } from "@/types/project"
 
 interface EditProjectModalProps {
@@ -21,6 +22,7 @@ interface EditProjectModalProps {
 }
 
 export default function EditProjectModal({ project, isOpen, onClose, onSuccess }: EditProjectModalProps) {
+  const { t } = useTranslation("projects")
   const { user } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
@@ -86,7 +88,7 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Editar Projeto</DialogTitle>
+          <DialogTitle>{t("editProject")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -97,7 +99,7 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="edit-name">Nome do Projeto *</Label>
+            <Label htmlFor="edit-name">{t("projectName")} *</Label>
             <Input
               id="edit-name"
               value={formData.name}
@@ -109,7 +111,7 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-domain">Domínio Base *</Label>
+            <Label htmlFor="edit-domain">{t("baseDomain")} *</Label>
             <Input
               id="edit-domain"
               value={formData.base_domain}
@@ -122,7 +124,7 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-description">Descrição</Label>
+            <Label htmlFor="edit-description">{t("projectDescription")}</Label>
             <Textarea
               id="edit-description"
               value={formData.description}
@@ -135,16 +137,16 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
 
           <div className="flex justify-end space-x-3 pt-4">
             <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
-              Cancelar
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Salvando...
+                  {t("saving")}
                 </>
               ) : (
-                "Salvar Alterações"
+                t("save")
               )}
             </Button>
           </div>

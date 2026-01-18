@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { RefreshCw, Plus } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 import { useRouter } from "next/navigation"
 import AppHeader from "@/components/layout/app-header"
 import ProjectCard from "./project-card"
@@ -13,6 +14,7 @@ import EditProjectModal from "./edit-project-modal"
 import type { Project } from "@/types/project"
 
 export default function ProjectsDashboard() {
+  const { t } = useTranslation("projects")
   const { user, isLoading: authLoading } = useAuth()
   const router = useRouter()
   const [projects, setProjects] = useState<Project[]>([])
@@ -124,7 +126,7 @@ export default function ProjectsDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         </div>
       </div>
     )
@@ -155,7 +157,7 @@ export default function ProjectsDashboard() {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Meus Projetos</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t("myProjects")}</h1>
             <p className="text-gray-600 mt-2">Gerencie seus projetos e surveys de feedback</p>
           </div>
           <div className="flex space-x-3">
@@ -165,7 +167,7 @@ export default function ProjectsDashboard() {
             </Button>
             <Button onClick={() => setShowCreateModal(true)} className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />
-              Novo Projeto
+              {t("createProject")}
             </Button>
           </div>
         </div>
@@ -219,11 +221,11 @@ export default function ProjectsDashboard() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-medium text-gray-900 mb-2">Nenhum projeto criado ainda</h3>
-            <p className="text-gray-600 mb-6">Crie seu primeiro projeto para começar a coletar feedback</p>
+            <h3 className="text-xl font-medium text-gray-900 mb-2">{t("noProjects")}</h3>
+            <p className="text-gray-600 mb-6">{t("noProjectsDescription")}</p>
             <Button onClick={() => setShowCreateModal(true)} size="lg" className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />
-              Criar Primeiro Projeto
+              {t("createFirstProject")}
             </Button>
           </div>
         )}

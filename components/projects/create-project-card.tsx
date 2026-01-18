@@ -3,12 +3,14 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface CreateProjectCardProps {
   onCreate: () => void
 }
 
 export default function CreateProjectCard({ onCreate }: CreateProjectCardProps) {
+  const { t } = useTranslation("projects")
   return (
     <Card
       className="cursor-pointer hover:shadow-lg transition-all duration-200 border-2 border-dashed border-gray-300 hover:border-blue-400 bg-gray-50 hover:bg-blue-50"
@@ -18,7 +20,7 @@ export default function CreateProjectCard({ onCreate }: CreateProjectCardProps) 
         <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
           <Plus className="h-6 w-6 text-blue-600" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Criar Novo Projeto</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">{t("createNewProject")}</h3>
         <p className="text-sm text-gray-600 text-center mb-4">
           Organize suas surveys por projeto para melhor gerenciamento
         </p>
@@ -31,7 +33,7 @@ export default function CreateProjectCard({ onCreate }: CreateProjectCardProps) 
           }}
         >
           <Plus className="h-4 w-4 mr-2" />
-          Novo Projeto
+          {t("newProject")}
         </Button>
       </CardContent>
     </Card>
