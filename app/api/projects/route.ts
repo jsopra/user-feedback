@@ -92,6 +92,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "ID do usuário é obrigatório" }, { status: 400 })
     }
 
+    const uuidRegex = /^[0-9a-fA-F-]{36}$/
+    if (typeof created_by !== "string" || !uuidRegex.test(created_by)) {
+      return NextResponse.json({ error: "ID do usuário inválido" }, { status: 400 })
+    }
+
     if (description && description.length > 500) {
       return NextResponse.json({ error: "Descrição deve ter no máximo 500 caracteres" }, { status: 400 })
     }
@@ -115,7 +120,6 @@ export async function POST(request: NextRequest) {
           created_by,
         },
       ])
-      .select()
       .single()
 
     if (error) {
