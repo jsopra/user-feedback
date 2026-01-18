@@ -48,7 +48,8 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
 
   const renderElement = (element: SurveyElement) => {
     if (!element.id) return null
-    const hasError = errors[element.id]
+    const elementId = element.id // TypeScript type narrowing
+    const hasError = errors[elementId]
     switch (element.type) {
       case "text":
         return (
@@ -58,8 +59,8 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
               placeholder={element.config?.placeholder || "Digite sua resposta..."}
               className={`w-full p-2 border rounded ${hasError ? "border-red-500" : ""}`}
               style={{ borderRadius: (survey.design as any).borderRadius }}
-              value={formData[element.id] || ""}
-              onChange={(e) => updateFormData(element.id, e.target.value)}
+              value={formData[elementId] || ""}
+              onChange={(e) => updateFormData(elementId, e.target.value)}
             />
             {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
           </div>
@@ -74,8 +75,8 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
               className={`w-full p-2 border rounded ${hasError ? "border-red-500" : ""}`}
               style={{ borderRadius: (survey.design as any).borderRadius }}
               rows={4}
-              value={formData[element.id] || ""}
-              onChange={(e) => updateFormData(element.id, e.target.value)}
+              value={formData[elementId] || ""}
+              onChange={(e) => updateFormData(elementId, e.target.value)}
             />
             {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
           </div>
@@ -90,21 +91,21 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
                 <label key={idx} className="flex items-center space-x-2">
                   <input
                     type={isMultiple ? "checkbox" : "radio"}
-                    name={element.id}
+                    name={elementId}
                     value={option}
                     checked={isMultiple
-                      ? (formData[element.id] || []).includes(option)
-                      : formData[element.id] === option
+                      ? (formData[elementId] || []).includes(option)
+                      : formData[elementId] === option
                     }
                     onChange={(e) => {
                       if (isMultiple) {
-                        const current = formData[element.id] || []
+                        const current = formData[elementId] || []
                         const newValue = e.target.checked
                           ? [...current, option]
                           : current.filter((v: string) => v !== option)
-                        updateFormData(element.id, newValue)
+                        updateFormData(elementId, newValue)
                       } else {
-                        updateFormData(element.id, option)
+                        updateFormData(elementId, option)
                       }
                     }}
                   />
@@ -123,13 +124,13 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
             <div className="flex space-x-1">
               {Array.from({ length: maxRating }).map((_, idx) => {
                 const rating = idx + 1
-                const isSelected = formData[element.id] >= rating
+                const isSelected = formData[elementId] >= rating
                 return (
                   <Star
                     key={idx}
                     className={`h-6 w-6 cursor-pointer hover:fill-current ${isSelected ? "fill-current" : ""}`}
                     style={{ color: (survey.design as any).primaryColor }}
-                    onClick={() => updateFormData(element.id, rating)}
+                    onClick={() => updateFormData(elementId, rating)}
                   />
                 )
               })}
