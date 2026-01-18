@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Eye, Palette } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { Eye, Palette, Shield } from "lucide-react"
 import type { Survey } from "@/types/survey"
 
 interface SurveyDesignProps {
@@ -153,6 +154,32 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
             </div>
           </CardContent>
         </Card>
+
+        {/* Configurações de Comportamento */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Shield className="h-5 w-5 mr-2" />
+              Comportamento da Pesquisa
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Soft Gate */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label className="text-base font-medium">Soft Gate</Label>
+                <p className="text-sm text-gray-500">
+                  Quando ativado, mostra primeiro uma pergunta pedindo permissão para responder. 
+                  Quando desativado, abre diretamente a pesquisa.
+                </p>
+              </div>
+              <Switch
+                checked={survey.design.softGate || false}
+                onCheckedChange={(checked) => updateDesign("softGate", checked)}
+              />
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Preview */}
@@ -203,6 +230,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
                           className="h-2 rounded-full"
                           style={{ backgroundColor: survey.design.primaryColor, width: "60%" }}
                         />
+              {survey.design.softGate && <Badge variant="secondary">Soft Gate Ativado</Badge>}
                       </div>
                       <div
                         className="absolute w-4 h-4 rounded-full border-2 border-white shadow-md"

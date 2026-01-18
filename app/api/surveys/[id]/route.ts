@@ -46,6 +46,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         backgroundColor: "#ffffff",
         textColor: "#000000",
         widgetPosition: "bottom-right",
+        softGate: true,
       },
       target: survey.target_settings || {
         delay: 0,
@@ -177,7 +178,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Fetch updated rules
-    const { data: updatedRules, error: rulesError: updatedRulesError } = await db
+    const { data: updatedRules, error: updatedRulesError } = await db
       .from("survey_page_rules")
       .select("*")
       .eq("survey_id", params.id)
@@ -197,6 +198,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         primaryColor: "#3b82f6",
         backgroundColor: "#ffffff",
         textColor: "#000000",
+        softGate: true,
         widgetPosition: "bottom-right",
       },
       target: updatedSurvey.target_settings || {

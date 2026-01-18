@@ -119,6 +119,7 @@ export async function GET(request: NextRequest) {
         backgroundColor: "#ffffff",
         textColor: "#000000",
         widgetPosition: "bottom-right",
+        softGate: true,
       },
       target: survey.target_settings || {
         delay: 0,
@@ -224,6 +225,7 @@ export async function POST(request: NextRequest) {
         backgroundColor: "#ffffff",
         textColor: "#000000",
         widgetPosition: "bottom-right",
+        softGate: true,
       },
       target_settings: surveyData.target || {
         delay: 0,

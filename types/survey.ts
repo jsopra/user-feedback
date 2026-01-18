@@ -58,6 +58,7 @@ export interface SurveyDesignSettings {
     | "bottom-left"
     | "bottom-center"
     | "bottom-right"
+  softGate?: boolean
 }
 
 export interface SurveyTargetSettings {

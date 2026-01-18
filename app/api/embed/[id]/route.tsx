@@ -135,7 +135,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     
     var exposureTracked = false;
     var hitTracked = false;
-    var showSoftGate = true;
+    var showSoftGate = designSettings.softGate !== false; // Default to true if not set
     var customParams = {};
     
     if (!window.UserFeedback) {
@@ -899,7 +899,18 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           if (event.detail && event.detail.surveyId && event.detail.surveyId !== surveyData.id) {
             return;
           }
-          createSoftGate();
+          if (showSoftGate) {
+            createSoftGate();
+          } else {
+            console.log('Soft gate disabled - going directly to survey');
+            if (!shouldShowSurvey() || !checkRecurrence()) {
+              console.log('Survey should not be shown');
+              return;
+            }
+            trackHit();
+            trackExposure();
+            createSurveyWidget();
+          }
         }
         
         // Listen for survey-specific event
@@ -926,15 +937,44 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           if (!isPreview && !isApp && !hasApiKey) {
             // Double-check conditions before showing (they might have changed)
             if (shouldShowSurvey() && checkRecurrence()) {
-              createSoftGate();
+              if (showSoftGate) {
+                createSoftGate();
+              } else {
+                console.log('Soft gate disabled - going directly to survey');
+                trackHit();
+                trackExposure();
+                createSurveyWidget();
+              }
             } else {
             }
           } else {
-            createSoftGate();
+            if (showSoftGate) {
+              createSoftGate();
+            } else {
+              console.log('Soft gate disabled - going directly to survey');
+              trackHit();
+              trackExposure();
+              createSurveyWidget();
+            }
           }
         }, delayMs);
       } else {
-        createSoftGate();
+        if (showSoftGate) {
+          createSoftGate();
+        } else {
+          console.log('Soft gate disabled - going directly to survey');
+          if (!isPreview && !isApp && !hasApiKey) {
+            if (shouldShowSurvey() && checkRecurrence()) {
+              trackHit();
+              trackExposure();
+              createSurveyWidget();
+            }
+          } else {
+            trackHit();
+            trackExposure();
+            createSurveyWidget();
+          }
+        }
       }
     }
     

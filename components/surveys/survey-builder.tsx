@@ -57,6 +57,7 @@ export default function SurveyBuilder({
         backgroundColor: "#ffffff",
         textColor: "#000000",
         widgetPosition: "bottom-right",
+        softGate: true,
       },
       target: {
         delay: 0,
