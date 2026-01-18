@@ -118,44 +118,133 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       throw surveyError
     }
 
-    // Remover elementos existentes
-    await db.from("survey_elements").delete().eq("survey_id", params.id)
-
     // Inserir novos elementos
     if (surveyData.elements && surveyData.elements.length > 0) {
-      const elementsToInsert = surveyData.elements.map((element, index) => ({
-        survey_id: params.id,
-        type: element.type,
-        question: element.question,
-        required: element.required,
-        order_index: index,
-        config: element.config || {},
-      }))
+      // Get existing elements to determine which ones to update vs insert
+      const { data: existingElements, error: fetchError } = await db
+        .from("survey_elements")
+        .select("id")
+        .eq("survey_id", params.id)
 
-      const { error: elementsError } = await db.from("survey_elements").insert(elementsToInsert)
-
-      if (elementsError) {
-        throw elementsError
+      if (fetchError) {
+        throw fetchError
       }
-    }
 
-    // Remover regras existentes
-    await db.from("survey_page_rules").delete().eq("survey_id", params.id)
+      const existingIds = new Set(existingElements?.map((el: any) => el.id) || [])
+      const incomingIds = new Set(surveyData.elements.filter((el: any) => el.id).map((el: any) => el.id))
+
+      // Delete elements that are no longer in the payload
+      const idsToDelete = Array.from(existingIds).filter((id: any) => !incomingIds.has(id))
+      if (idsToDelete.length > 0) {
+        const { error: deleteError } = await db
+          .from("survey_elements")
+          .delete()
+          .in("id", idsToDelete)
+
+        if (deleteError) {
+          throw deleteError
+        }
+      }
+
+      // Process each element: update existing or insert new
+      for (let index = 0; index < surveyData.elements.length; index++) {
+        const element = surveyData.elements[index]
+        const elementData = {
+          survey_id: params.id,
+          type: element.type,
+          question: element.question,
+          required: element.required,
+          order_index: index,
+          config: element.config || {},
+        }
+
+        if (element.id && existingIds.has(element.id)) {
+          // Update existing element
+          const { error: updateError } = await db
+            .from("survey_elements")
+            .update(elementData)
+            .eq("id", element.id)
+
+          if (updateError) {
+            throw updateError
+          }
+        } else {
+          // Insert new element
+          const { error: insertError } = await db
+            .from("survey_elements")
+            .insert(elementData)
+
+          if (insertError) {
+            throw insertError
+          }
+        }
+      }
+    } else {
+      // If no elements provided, remove all existing elements
+      await db.from("survey_elements").delete().eq("survey_id", params.id)
+    }
 
     // Inserir novas regras
     if (surveyData.pageRules && surveyData.pageRules.length > 0) {
-      const rulesToInsert = surveyData.pageRules.map((rule: any) => ({
-        survey_id: params.id,
-        rule_type: rule.rule_type,
-        pattern: rule.pattern,
-        is_regex: rule.is_regex,
-      }))
+      // Get existing rules to determine which ones to update vs insert
+      const { data: existingRules, error: fetchRulesError } = await db
+        .from("survey_page_rules")
+        .select("id")
+        .eq("survey_id", params.id)
 
-      const { error: rulesError } = await db.from("survey_page_rules").insert(rulesToInsert)
-
-      if (rulesError) {
-        throw rulesError
+      if (fetchRulesError) {
+        throw fetchRulesError
       }
+
+      const existingRuleIds = new Set(existingRules?.map((rule: any) => rule.id) || [])
+      const incomingRuleIds = new Set(surveyData.pageRules.filter((rule: any) => rule.id).map((rule: any) => rule.id))
+
+      // Delete rules that are no longer in the payload
+      const ruleIdsToDelete = Array.from(existingRuleIds).filter((id: any) => !incomingRuleIds.has(id))
+      if (ruleIdsToDelete.length > 0) {
+        const { error: deleteRulesError } = await db
+          .from("survey_page_rules")
+          .delete()
+          .in("id", ruleIdsToDelete)
+
+        if (deleteRulesError) {
+          throw deleteRulesError
+        }
+      }
+
+      // Process each rule: update existing or insert new
+      for (const rule of surveyData.pageRules) {
+        const ruleData = {
+          survey_id: params.id,
+          rule_type: rule.rule_type,
+          pattern: rule.pattern,
+          is_regex: rule.is_regex,
+        }
+
+        if (rule.id && existingRuleIds.has(rule.id)) {
+          // Update existing rule
+          const { error: updateRuleError } = await db
+            .from("survey_page_rules")
+            .update(ruleData)
+            .eq("id", rule.id)
+
+          if (updateRuleError) {
+            throw updateRuleError
+          }
+        } else {
+          // Insert new rule
+          const { error: insertRuleError } = await db
+            .from("survey_page_rules")
+            .insert(ruleData)
+
+          if (insertRuleError) {
+            throw insertRuleError
+          }
+        }
+      }
+    } else {
+      // If no rules provided, remove all existing rules
+      await db.from("survey_page_rules").delete().eq("survey_id", params.id)
     }
 
     // Fetch the updated survey to return
