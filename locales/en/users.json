@@ -1,15 +1,21 @@
 {
-  "title": "Users",
+  "title": "Manage Users",
+  "description": "Manage users and their permissions in the system",
   "manageUsers": "Manage Users",
   "editUser": "Edit User",
   "newUser": "New User",
+  "usersInSystem": "System Users",
+  "noUsersFound": "No users found in the system.",
+  "deleteConfirmation": "Are you sure you want to delete this user?",
   "userName": "Username",
+  "name": "Name",
   "email": "Email",
   "password": "Password",
   "newPassword": "New Password",
   "confirmPassword": "Confirm Password",
   "role": "Role",
-  "admin": "Admin",
+  "admin": "Administrator",
+  "member": "Member",
   "user": "User",
   "status": "Status",
   "active": "Active",
@@ -22,6 +28,7 @@
   "save": "Save",
   "cancel": "Cancel",
   "saving": "Saving...",
+  "loading": "Loading...",
   "add": "Add",
   "remove": "Remove",
   "confirm": "Confirm",
@@ -38,6 +45,9 @@
   "success": {
     "saved": "User saved successfully",
     "created": "User created successfully",
+    "deleted": "User deleted successfully"
+  }
+}
     "deleted": "User deleted successfully"
   }
 }

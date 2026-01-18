@@ -7,10 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import LoginForm from "@/components/auth/login-form"
 import Dashboard from "@/components/dashboard/dashboard"
 import { MessageSquare } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 export default function HomePage() {
   const router = useRouter()
   const { user, isLoading } = useAuth()
+  const { t } = useTranslation("common")
   const [isCheckingSetup, setIsCheckingSetup] = useState(true)
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function HomePage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <MessageSquare className="h-12 w-12 text-blue-600 mx-auto mb-4 animate-pulse" />
-          <p className="text-gray-600">Carregando...</p>
+          <p className="text-gray-600">{t("messages.loading")}</p>
         </div>
       </div>
     )
@@ -56,13 +58,13 @@ export default function HomePage() {
             <MessageSquare className="h-12 w-12 text-blue-600" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">UserFeedback</h1>
-          <p className="text-gray-600 mt-2">Sistema de coleta de feedback</p>
+          <p className="text-gray-600 mt-2">{t("messages.feedbackCollection")}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">Acesso ao Sistema</CardTitle>
-            <CardDescription className="text-center">Entre com suas credenciais para acessar o painel</CardDescription>
+            <CardTitle className="text-center">{t("messages.systemAccess")}</CardTitle>
+            <CardDescription className="text-center">{t("messages.enterCredentials")}</CardDescription>
           </CardHeader>
           <CardContent>
             <LoginForm />

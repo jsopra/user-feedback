@@ -1,0 +1,36 @@
+{
+  "title": "Assistente de Primeira Configuração",
+  "subtitle": "Crie sua conta de administrador inicial",
+  "description": "Detectamos que ainda não existe nenhum usuário. Vamos criar sua conta de administrador.",
+  "adminSection": "Administrador",
+  "adminDescription": "Esse usuário terá acesso total ao painel.",
+  "labels": {
+    "fullName": "Nome completo",
+    "email": "Email",
+    "password": "Senha",
+    "confirmPassword": "Confirmar senha",
+    "yourName": "Seu nome"
+  },
+  "placeholders": {
+    "fullName": "Seu nome",
+    "email": "seu@email.com",
+    "password": "Mínimo 6 caracteres",
+    "confirmPassword": "Confirme sua senha"
+  },
+  "validation": {
+    "passwordMinChars": "A senha deve ter pelo menos 6 caracteres",
+    "passwordMismatch": "As senhas não coincidem"
+  },
+  "buttons": {
+    "create": "Criar Administrador",
+    "creating": "Criando..."
+  },
+  "messages": {
+    "checkingEnvironment": "Verificando ambiente...",
+    "success": "Administrador criado com sucesso! Redirecionando para o login...",
+    "error": "Falha ao criar administrador"
+  },
+  "errors": {
+    "setupCheckFailed": "Não foi possível verificar o status do setup"
+  }
+}

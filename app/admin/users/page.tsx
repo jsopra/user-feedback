@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "@/hooks/use-translation"
 import AppHeader from "@/components/layout/app-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,6 +23,8 @@ interface UserInterface {
 export default function UsersPage() {
   const { user } = useAuth()
   const router = useRouter()
+  const { t: t_common } = useTranslation("common")
+  const { t: t_users } = useTranslation("users")
   const [users, setUsers] = useState<UserInterface[]>([])
   const [loading, setLoading] = useState(true)
   const [showUserModal, setShowUserModal] = useState(false)
@@ -76,7 +79,7 @@ export default function UsersPage() {
   }
 
   const handleDeleteUser = async (userId: string) => {
-    if (!confirm("Tem certeza que deseja excluir este usuário?")) return
+    if (!confirm(t_users("deleteConfirmation") || "Tem certeza que deseja excluir este usuário?")) return
 
     try {
       const sessionToken = localStorage.getItem("sessionToken")
@@ -119,12 +122,12 @@ export default function UsersPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Gerenciar Usuários</h1>
-              <p className="text-gray-600 mt-2">Gerencie usuários e suas permissões no sistema</p>
+              <h1 className="text-3xl font-bold text-gray-900">{t_users("title")}</h1>
+              <p className="text-gray-600 mt-2">{t_users("description")}</p>
             </div>
             <Button onClick={handleCreateUser} className="flex items-center space-x-2">
               <Plus className="h-4 w-4" />
-              <span>Novo Usuário</span>
+              <span>{t_users("newUser")}</span>
             </Button>
           </div>
         </div>
@@ -133,23 +136,23 @@ export default function UsersPage() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               {/* User icon component */}
-              <span>Usuários do Sistema</span>
+              <span>{t_users("usersInSystem")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8">Carregando usuários...</div>
+              <div className="text-center py-8">{t_common("messages.loading")}</div>
             ) : users.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">Nenhum usuário encontrado no sistema.</div>
+              <div className="text-center py-8 text-gray-500">{t_users("noUsersFound")}</div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Função</TableHead>
-                    <TableHead>Criado em</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
+                    <TableHead>{t_users("name")}</TableHead>
+                    <TableHead>{t_users("email")}</TableHead>
+                    <TableHead>{t_users("role")}</TableHead>
+                    <TableHead>{t_common("messages.createdAt")}</TableHead>
+                    <TableHead className="text-right">{t_common("messages.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -159,7 +162,7 @@ export default function UsersPage() {
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
                         <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                          {user.role === "admin" ? "Administrador" : "Membro"}
+                          {user.role === "admin" ? t_users("admin") : t_users("member")}
                         </Badge>
                       </TableCell>
                       <TableCell>{new Date(user.created_at).toLocaleDateString("pt-BR")}</TableCell>

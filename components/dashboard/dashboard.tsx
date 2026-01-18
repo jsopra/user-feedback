@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 import ProjectsDashboard from "@/components/projects/projects-dashboard"
 import type { Project } from "@/types/project"
 import type { Survey } from "@/types/survey"
@@ -10,6 +11,7 @@ type ViewMode = "projects" | "project-surveys" | "survey-builder" | "survey-dash
 
 export default function Dashboard() {
   const { user, isLoading } = useAuth()
+  const { t } = useTranslation("common")
   const [currentView, setCurrentView] = useState<ViewMode>("projects")
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [selectedSurvey, setSelectedSurvey] = useState<Survey | null>(null)
@@ -19,7 +21,7 @@ export default function Dashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
+          <p className="text-gray-600">{t("messages.loading")}</p>
         </div>
       </div>
     )
@@ -29,13 +31,13 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Acesso Negado</h2>
-          <p className="text-gray-600 mb-6">Você precisa estar logado para acessar esta página.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("messages.accessDenied")}</h2>
+          <p className="text-gray-600 mb-6">{t("messages.mustBeLoggedIn")}</p>
           <button
             onClick={() => (window.location.href = "/")}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
           >
-            Fazer Login
+            {t("messages.login")}
           </button>
         </div>
       </div>

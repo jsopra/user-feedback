@@ -1,0 +1,36 @@
+{
+  "title": "Initial Configuration Wizard",
+  "subtitle": "Create your initial administrator account",
+  "description": "We detected that no user exists yet. Let's create your administrator account.",
+  "adminSection": "Administrator",
+  "adminDescription": "This user will have full access to the dashboard.",
+  "labels": {
+    "fullName": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "yourName": "Your name"
+  },
+  "placeholders": {
+    "fullName": "Your name",
+    "email": "your@email.com",
+    "password": "Minimum 6 characters",
+    "confirmPassword": "Confirm your password"
+  },
+  "validation": {
+    "passwordMinChars": "Password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "buttons": {
+    "create": "Create Administrator",
+    "creating": "Creating..."
+  },
+  "messages": {
+    "checkingEnvironment": "Checking environment...",
+    "success": "Administrator created successfully! Redirecting to login...",
+    "error": "Failed to create administrator"
+  },
+  "errors": {
+    "setupCheckFailed": "Could not verify setup status"
+  }
+}

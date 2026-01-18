@@ -9,9 +9,11 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Shield, User, Mail, Lock, CheckCircle } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 export default function SetupPage() {
   const router = useRouter()
+  const { t } = useTranslation("setup")
   const [isCheckingStatus, setIsCheckingStatus] = useState(true)
   const [needsSetup, setNeedsSetup] = useState(false)
   const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "" })
@@ -32,7 +34,7 @@ export default function SetupPage() {
 
         setNeedsSetup(true)
       } catch (err) {
-        setError("Não foi possível verificar o status do setup")
+        setError(t("errors.setupCheckFailed"))
         setNeedsSetup(true)
       } finally {
         setIsCheckingStatus(false)
@@ -40,7 +42,7 @@ export default function SetupPage() {
     }
 
     fetchStatus()
-  }, [router])
+  }, [router, t])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -48,12 +50,12 @@ export default function SetupPage() {
     setSuccess("")
 
     if (formData.password !== formData.confirmPassword) {
-      setError("As senhas não coincidem")
+      setError(t("validation.passwordMismatch"))
       return
     }
 
     if (formData.password.length < 6) {
-      setError("A senha deve ter pelo menos 6 caracteres")
+      setError(t("validation.passwordMinChars"))
       return
     }
 
@@ -68,15 +70,15 @@ export default function SetupPage() {
 
       if (!response.ok) {
         const { error: apiError } = await response.json()
-        throw new Error(apiError || "Falha ao criar administrador")
+        throw new Error(apiError || t("messages.error"))
       }
 
-      setSuccess("Administrador criado com sucesso! Redirecionando para o login...")
+      setSuccess(t("messages.success"))
       setFormData({ name: "", email: "", password: "", confirmPassword: "" })
 
       setTimeout(() => router.replace("/"), 1200)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao criar administrador")
+      setError(err instanceof Error ? err.message : t("messages.error"))
     } finally {
       setIsSubmitting(false)
     }
@@ -87,7 +89,7 @@ export default function SetupPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center text-slate-200">
           <Shield className="h-12 w-12 mx-auto mb-4 animate-pulse" />
-          Verificando ambiente...
+          {t("messages.checkingEnvironment")}
         </div>
       </div>
     )
@@ -103,16 +105,16 @@ export default function SetupPage() {
         <div className="text-center mb-8 text-slate-100">
           <div className="inline-flex items-center gap-3 px-4 py-2 bg-slate-800/60 border border-slate-700 rounded-full">
             <Shield className="h-5 w-5 text-emerald-400" />
-            <span className="text-sm font-medium">Assistente de Primeira Configuração</span>
+            <span className="text-sm font-medium">{t("title")}</span>
           </div>
-          <h1 className="text-3xl font-bold mt-4">Crie o administrador inicial</h1>
-          <p className="text-slate-300 mt-2">Detectamos que ainda não existe nenhum usuário. Vamos criar sua conta de administrador.</p>
+          <h1 className="text-3xl font-bold mt-4">{t("subtitle")}</h1>
+          <p className="text-slate-300 mt-2">{t("description")}</p>
         </div>
 
         <Card className="border-slate-700 bg-slate-900/70 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-slate-100">Administrador</CardTitle>
-            <CardDescription className="text-slate-400">Esse usuário terá acesso total ao painel.</CardDescription>
+            <CardTitle className="text-slate-100">{t("adminSection")}</CardTitle>
+            <CardDescription className="text-slate-400">{t("adminDescription")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleSubmit}>
@@ -133,7 +135,7 @@ export default function SetupPage() {
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-slate-200">Nome completo</Label>
+                  <Label htmlFor="name" className="text-slate-200">{t("labels.fullName")}</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <Input
@@ -142,14 +144,14 @@ export default function SetupPage() {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                      placeholder="Seu nome"
+                      placeholder={t("placeholders.fullName")}
                       className="pl-10 bg-slate-800/60 border-slate-700 text-slate-100 placeholder:text-slate-500"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-slate-200">Email</Label>
+                  <Label htmlFor="email" className="text-slate-200">{t("labels.email")}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <Input
@@ -158,7 +160,7 @@ export default function SetupPage() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                      placeholder="admin@empresa.com"
+                      placeholder={t("placeholders.email")}
                       className="pl-10 bg-slate-800/60 border-slate-700 text-slate-100 placeholder:text-slate-500"
                     />
                   </div>
@@ -167,7 +169,7 @@ export default function SetupPage() {
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-slate-200">Senha</Label>
+                  <Label htmlFor="password" className="text-slate-200">{t("labels.password")}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <Input
@@ -176,14 +178,14 @@ export default function SetupPage() {
                       required
                       value={formData.password}
                       onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
-                      placeholder="Mínimo 6 caracteres"
+                      placeholder={t("placeholders.password")}
                       className="pl-10 bg-slate-800/60 border-slate-700 text-slate-100 placeholder:text-slate-500"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-slate-200">Confirmar senha</Label>
+                  <Label htmlFor="confirmPassword" className="text-slate-200">{t("labels.confirmPassword")}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <Input
@@ -192,7 +194,7 @@ export default function SetupPage() {
                       required
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
-                      placeholder="Repita a senha"
+                      placeholder={t("placeholders.confirmPassword")}
                       className="pl-10 bg-slate-800/60 border-slate-700 text-slate-100 placeholder:text-slate-500"
                     />
                   </div>
@@ -200,7 +202,7 @@ export default function SetupPage() {
               </div>
 
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Criando administrador..." : "Criar administrador"}
+                {isSubmitting ? t("buttons.creating") : t("buttons.create")}
               </Button>
             </form>
           </CardContent>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
+import { useTranslation } from "@/hooks/use-translation"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ArrowLeft, Plus, RefreshCw } from "lucide-react"
@@ -17,6 +18,7 @@ export default function ProjectSurveysPage() {
   const params = useParams()
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
+  const { t } = useTranslation("common")
   const [project, setProject] = useState<Project | null>(null)
   const [surveys, setSurveys] = useState<Survey[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -47,10 +49,10 @@ export default function ProjectSurveysPage() {
       if (projectResponse.ok) {
         setProject(projectData.project)
       } else if (projectResponse.status === 404) {
-        setError("Projeto não encontrado")
+        setError(t("messages.error"))
         return
       } else {
-        throw new Error(projectData.error || "Erro ao carregar projeto")
+        throw new Error(projectData.error || t("messages.error"))
       }
 
       const surveysResponse = await fetch(`/api/surveys?projectId=${projectId}&userId=${user.id}`)
@@ -64,7 +66,7 @@ export default function ProjectSurveysPage() {
       }
     } catch (error) {
       console.error("Erro ao carregar dados:", error)
-      setError(error instanceof Error ? error.message : "Erro desconhecido")
+      setError(error instanceof Error ? error.message : t("messages.error"))
     } finally {
       setIsLoading(false)
     }
@@ -88,7 +90,7 @@ export default function ProjectSurveysPage() {
   }
 
   const handleDeleteSurvey = async (surveyId: string) => {
-    if (!confirm("Tem certeza que deseja excluir esta survey?")) {
+    if (!confirm(t("messages.confirm"))) {
       return
     }
 
