@@ -13,7 +13,7 @@ interface User {
   id: string
   email: string
   name: string
-  role: "admin" | "member"
+  role: "admin" | "user"
   created_at: string
 }
 
@@ -29,7 +29,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
     name: "",
     email: "",
     password: "",
-    role: "member" as "admin" | "member",
+    role: "user" as "admin" | "user",
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -47,7 +47,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
         name: "",
         email: "",
         password: "",
-        role: "member",
+        role: "user",
       })
     }
     setError("")
@@ -145,13 +145,13 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
             <Label htmlFor="role">Função</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "admin" | "member") => setFormData({ ...formData, role: value })}
+              onValueChange={(value: "admin" | "user") => setFormData({ ...formData, role: value })}
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="member">Membro</SelectItem>
+                <SelectItem value="user">Membro</SelectItem>
                 <SelectItem value="admin">Administrador</SelectItem>
               </SelectContent>
             </Select>

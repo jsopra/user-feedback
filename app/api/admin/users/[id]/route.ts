@@ -31,14 +31,20 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const { name, email, password, role } = await request.json()
+    const normalizedRole = role === "member" ? "user" : role
+    const allowedRoles = ["admin", "moderator", "user"] as const
     const userId = params.id
 
     console.log("=== ATUALIZANDO USUÁRIO ===")
     console.log("User ID:", userId)
-    console.log("Dados recebidos:", { name, email, role, hasPassword: !!password })
+    console.log("Dados recebidos:", { name, email, role: normalizedRole, hasPassword: !!password })
 
-    if (!name || !email || !role) {
+    if (!name || !email || !normalizedRole) {
       return NextResponse.json({ error: "Nome, email e função são obrigatórios" }, { status: 400 })
+    }
+
+    if (!allowedRoles.includes(normalizedRole)) {
+      return NextResponse.json({ error: "Função inválida" }, { status: 400 })
     }
 
     // Verificar se o email já existe (exceto para o próprio usuário)
@@ -54,7 +60,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Preparar dados para atualização
-    const updateData: any = { name, email, role }
+    const updateData: any = { name, email, role: normalizedRole }
 
     if (password && password.trim() !== "") {
       const saltRounds = 12

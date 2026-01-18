@@ -212,8 +212,10 @@ class PostgresQueryBuilder<T> implements QueryBuilder<T> {
         break;
 
       case 'insert':
-        const insertKeys = Object.keys(this.insertData);
-        const insertValues = Object.values(this.insertData);
+        // Handle both single objects and arrays of objects
+        const dataToInsert = Array.isArray(this.insertData) ? this.insertData[0] : this.insertData;
+        const insertKeys = Object.keys(dataToInsert);
+        const insertValues = Object.values(dataToInsert);
         const insertPlaceholders = insertKeys.map((_, i) => `$${i + 1}`).join(', ');
         query = `
           INSERT INTO ${this.tableName} (${insertKeys.join(', ')})

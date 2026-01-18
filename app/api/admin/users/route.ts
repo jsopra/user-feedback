@@ -82,9 +82,15 @@ export async function POST(request: NextRequest) {
     }
 
     const { name, email, password, role } = await request.json()
+    const normalizedRole = role === "member" ? "user" : role
+    const allowedRoles = ["admin", "moderator", "user"] as const
 
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password || !normalizedRole) {
       return NextResponse.json({ error: "Todos os campos são obrigatórios" }, { status: 400 })
+    }
+
+    if (!allowedRoles.includes(normalizedRole)) {
+      return NextResponse.json({ error: "Função inválida" }, { status: 400 })
     }
 
     // Verificar se o email já existe
@@ -103,7 +109,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         password_hash: passwordHash,
-        role,
+        role: normalizedRole,
       })
       .single()
 

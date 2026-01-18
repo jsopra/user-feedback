@@ -15,7 +15,7 @@ interface UserInterface {
   id: string
   email: string
   name: string
-  role: "admin" | "member"
+  role: "admin" | "user"
   created_at: string
 }
 
