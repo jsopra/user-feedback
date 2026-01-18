@@ -95,12 +95,6 @@ export default function LoginForm() {
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Entrando..." : "Entrar"}
       </Button>
-
-      <div className="text-center">
-        <Button variant="link" className="text-sm text-gray-600">
-          Esqueceu sua senha?
-        </Button>
-      </div>
     </form>
   )
 }
