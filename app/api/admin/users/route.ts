@@ -105,7 +105,6 @@ export async function POST(request: NextRequest) {
         password_hash: passwordHash,
         role,
       })
-      .select()
       .single()
 
     if (error) {

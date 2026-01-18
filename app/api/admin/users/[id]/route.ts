@@ -69,7 +69,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       .from("users")
       .update(updateData)
       .eq("id", userId)
-      .select()
       .single()
 
     if (error) {
