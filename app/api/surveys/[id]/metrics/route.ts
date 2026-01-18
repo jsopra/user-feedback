@@ -58,7 +58,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         exposuresQuery = exposuresQuery.eq("device", deviceFilter)
       }
 
-      const { count: exposuresCount, data: exposuresData } = await exposuresQuery
+      const { count: exposuresCount, data: exposuresData, error: exposuresError } = await exposuresQuery
+
+      if (exposuresError) {
+        console.error("Erro ao buscar exposures:", exposuresError)
+        throw exposuresError
+      }
 
       exposures = exposuresCount || 0
       ;(exposuresData || []).forEach((row: any) => {
@@ -69,7 +74,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         trendData[date].exposures += 1
       })
     } catch (exposuresError) {
-      console.log("Tabela survey_exposures não existe ainda, usando apenas responses")
+      console.error("Erro completo ao buscar exposures:", exposuresError)
       exposures = 0
       trendData = {}
     }
@@ -102,16 +107,21 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     // Get all devices from both exposures and responses for comparison table
     let allExposuresData: any[] = []
     try {
-      const result = await db
+      const { data, error: exposuresDeviceError } = await db
         .from("survey_exposures")
         .select("session_id, device, created_at")
         .eq("survey_id", surveyId)
         .gte("created_at", dateFrom)
         .lte("created_at", dateTo)
       
-      allExposuresData = result.data || []
+      if (exposuresDeviceError) {
+        console.error("Erro ao buscar devices de exposures:", exposuresDeviceError)
+        throw exposuresDeviceError
+      }
+      
+      allExposuresData = data || []
     } catch (err) {
-      console.log("Tabela survey_exposures não existe, usando apenas responses para métricas de device")
+      console.error("Erro completo ao buscar devices de exposures:", err)
       allExposuresData = []
     }
 
