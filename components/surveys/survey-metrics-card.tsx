@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Star, BarChart3, Type, AlignLeft } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyMetricsCardProps {
   element: any
@@ -18,6 +19,7 @@ interface SurveyMetricsCardProps {
 }
 
 export default function SurveyMetricsCard({ element, metric, businessMetrics }: SurveyMetricsCardProps) {
+  const { t } = useTranslation("surveys")
   const getElementIcon = (type: string) => {
     switch (type) {
       case "rating":
@@ -52,16 +54,16 @@ export default function SurveyMetricsCard({ element, metric, businessMetrics }: 
         <div className="grid grid-cols-2 gap-4 text-center">
           <div>
             <div className="text-2xl font-bold text-blue-600">{average || 0}</div>
-            <div className="text-xs text-gray-500">Média</div>
+            <div className="text-xs text-gray-500">{t("dashboard.average")}</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-red-600">{bottom2Percentage}%</div>
-            <div className="text-xs text-gray-500">Bottom2%</div>
+            <div className="text-xs text-gray-500">{t("dashboard.bottom2")}</div>
           </div>
         </div>
 
         <div className="text-center">
-          <div className="text-sm text-gray-500">{total > 0 ? `${total} respostas` : "Nenhuma resposta ainda"}</div>
+          <div className="text-sm text-gray-500">{total > 0 ? `${total} ${t("dashboard.responses")}` : t("dashboard.noResponsesYet")}</div>
         </div>
 
         <div className="space-y-2">
@@ -95,8 +97,8 @@ export default function SurveyMetricsCard({ element, metric, businessMetrics }: 
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-600">{total > 0 ? `${total} respostas` : "Nenhuma resposta ainda"}</div>
-          <Badge variant="outline">{allowMultiple ? "Múltipla escolha" : "Escolha única"}</Badge>
+          <div className="text-sm text-gray-600">{total > 0 ? `${total} ${t("dashboard.responses")}` : t("dashboard.noResponsesYet")}</div>
+          <Badge variant="outline">{allowMultiple ? t("dashboard.multipleChoice") : t("dashboard.singleChoice")}</Badge>
         </div>
 
         <div className="space-y-3">
@@ -107,7 +109,7 @@ export default function SurveyMetricsCard({ element, metric, businessMetrics }: 
                 <span className="text-gray-600">{item.percentage}%</span>
               </div>
               <Progress value={item.percentage} className="h-2" />
-              <div className="text-xs text-gray-500">{item.count} respostas</div>
+              <div className="text-xs text-gray-500">{item.count} {t("dashboard.responses")}</div>
             </div>
           ))}
         </div>
@@ -122,19 +124,19 @@ export default function SurveyMetricsCard({ element, metric, businessMetrics }: 
       <div className="space-y-4">
         <div className="text-center">
           <div className="text-3xl font-bold text-green-600">{total}</div>
-          <div className="text-sm text-gray-500">Respostas de texto</div>
+          <div className="text-sm text-gray-500">{t("dashboard.textResponses")}</div>
         </div>
 
         {responses.length > 0 && (
           <div className="space-y-2 max-h-40 overflow-y-auto">
-            <div className="text-sm font-medium text-gray-700">Últimas respostas:</div>
+            <div className="text-sm font-medium text-gray-700">{t("dashboard.latestResponses")}</div>
             {responses.slice(0, 3).map((response: string, index: number) => (
               <div key={index} className="p-2 bg-gray-50 rounded text-sm">
                 "{response.length > 100 ? response.substring(0, 100) + "..." : response}"
               </div>
             ))}
             {responses.length > 3 && (
-              <div className="text-xs text-gray-500">+{responses.length - 3} respostas adicionais</div>
+              <div className="text-xs text-gray-500">+{responses.length - 3} {t("dashboard.additionalResponses")}</div>
             )}
           </div>
         )}
@@ -152,7 +154,7 @@ export default function SurveyMetricsCard({ element, metric, businessMetrics }: 
       case "textarea":
         return renderTextMetric()
       default:
-        return <div className="text-gray-500">Tipo não suportado</div>
+        return <div className="text-gray-500">{t("dashboard.typeNotSupported")}</div>
     }
   }
 
@@ -164,10 +166,10 @@ export default function SurveyMetricsCard({ element, metric, businessMetrics }: 
           <div className="min-w-0">
             <div className="font-medium text-gray-900 line-clamp-2">{element.question}</div>
             <Badge variant="secondary" className="mt-1">
-              {element.type === "rating" && "Rating"}
-              {element.type === "multiple_choice" && "Múltipla Escolha"}
-              {element.type === "text" && "Texto"}
-              {element.type === "textarea" && "Texto Longo"}
+              {element.type === "rating" && t("dashboard.rating")}
+              {element.type === "multiple_choice" && t("dashboard.multipleChoice")}
+              {element.type === "text" && t("dashboard.text")}
+              {element.type === "textarea" && t("dashboard.longText")}
             </Badge>
           </div>
         </CardTitle>

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Search, ChevronLeft, ChevronRight, Flag, Loader2, Download } from "lucide-react"
 import { toast } from "sonner"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface SurveyResponsesTableProps {
   data: any[]
@@ -16,6 +17,7 @@ interface SurveyResponsesTableProps {
 }
 
 export default function SurveyResponsesTable({ data, elements, surveyId, onDataChange, onExport }: SurveyResponsesTableProps) {
+  const { t } = useTranslation("surveys")
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({})
@@ -96,21 +98,21 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
       })
 
       if (response.ok) {
-        toast.success(!currentStatus ? "Response marcada como teste" : "Response marcada como válida")
+        toast.success(!currentStatus ? t("dashboard.markedAsTest") : t("dashboard.markedAsValid"))
         onDataChange?.()
       } else {
-        toast.error("Erro ao atualizar status da response")
+        toast.error(t("dashboard.errorUpdatingStatus"))
       }
     } catch (error) {
       console.error("Error toggling test status:", error)
-      toast.error("Erro ao conectar com o servidor")
+      toast.error(t("dashboard.errorConnecting"))
     } finally {
       setLoadingStates((prev) => ({ ...prev, [responseId]: false }))
     }
   }
 
   const deleteResponse = async (responseId: string) => {
-    if (!confirm("Tem certeza que deseja deletar esta response permanentemente?")) return
+    if (!confirm(t("dashboard.confirmDelete"))) return
 
     try {
       const response = await fetch(`/api/surveys/${surveyId}/responses/${responseId}`, {
@@ -128,8 +130,8 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
   if (data.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        <div className="text-lg font-medium">Nenhuma resposta encontrada</div>
-        <div className="text-sm">As respostas aparecerão aqui quando os usuários responderem à survey</div>
+        <div className="text-lg font-medium">{t("dashboard.noResponsesFound")}</div>
+        <div className="text-sm">{t("dashboard.responsesWillAppear")}</div>
       </div>
     )
   }
@@ -141,7 +143,7 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Buscar nas respostas..."
+            placeholder={t("dashboard.searchResponses")}
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value)
@@ -151,12 +153,12 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
           />
         </div>
         <div className="text-sm text-gray-600">
-          {filteredData.length} de {data.length} respostas
+          {filteredData.length} {t("dashboard.of")} {data.length} {t("dashboard.responses")}
         </div>
         {onExport && (
           <Button onClick={onExport} variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
-            Exportar CSV
+            {t("dashboard.exportCSV")}
           </Button>
         )}
       </div>
@@ -167,11 +169,11 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Data/Hora
+                {t("dashboard.dateTime")}
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sessão</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Página</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboard.session")}</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboard.page")}</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboard.device")}</th>
               {elements.map((element) => (
                 <th
                   key={element.id}
@@ -182,7 +184,7 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
                   </div>
                 </th>
               ))}
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboard.actions")}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -193,7 +195,7 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
                     {new Date(row.created_at).toLocaleString("pt-BR")}
                     {row.is_test && (
                       <Badge variant="secondary" className="bg-yellow-200 text-yellow-800">
-                        TESTE
+                        {t("dashboard.test")}
                       </Badge>
                     )}
                   </div>
@@ -228,7 +230,7 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
                           ? "text-green-600 hover:text-green-700 hover:bg-green-50"
                           : "text-orange-600 hover:text-orange-700 hover:bg-orange-50"
                       }
-                      title={row.is_test ? "Marcar como válida" : "Marcar como teste"}
+                      title={row.is_test ? t("dashboard.markAsValid") : t("dashboard.markAsTest")}
                     >
                       {loadingStates[row.id] ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -248,7 +250,7 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-600">
-            Página {currentPage} de {totalPages}
+            {t("dashboard.pageSummary").replace("{current}", String(currentPage)).replace("{total}", String(totalPages))}
           </div>
           <div className="flex space-x-2">
             <Button

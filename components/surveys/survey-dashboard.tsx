@@ -168,11 +168,11 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
           deviceMetrics: processedDeviceMetrics,
         })
       } else {
-        throw new Error(dashboardData.error || metricsData.error || "Erro ao carregar dashboard")
+        throw new Error(dashboardData.error || metricsData.error || "Error loading dashboard")
       }
     } catch (error) {
-      console.error("Erro ao carregar dashboard:", error)
-      setError(error instanceof Error ? error.message : "Erro desconhecido")
+      console.error("Error loading dashboard:", error)
+      setError(error instanceof Error ? error.message : "Unknown error")
     } finally {
       setIsLoading(false)
       setIsFiltering(false)
@@ -190,7 +190,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
         setProjectData({ id: data.project.id, name: data.project.name })
       }
     } catch (error) {
-      console.error("Erro ao carregar projeto:", error)
+      console.error("Error loading project:", error)
     }
   }
 
@@ -252,15 +252,15 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
 
   const handleExportData = () => {
     if (!data || !data.tableData.length) {
-      alert("Não há dados para exportar")
+      alert(t("dashboard.noDataToExport"))
       return
     }
 
     const headers = [
-      "Data/Hora",
-      "Session ID",
-      "Página",
-      "Device",
+      t("dashboard.dateTime"),
+      t("dashboard.session"),
+      t("dashboard.page"),
+      t("dashboard.device"),
       "User Agent",
       "Parâmetros Customizados",
       ...data.elements.map((element) => element.question),
@@ -319,7 +319,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando dashboard...</p>
+          <p className="text-gray-600">{t("dashboard.loadingDashboard")}</p>
         </div>
       </div>
     )
@@ -331,7 +331,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
         <AppHeader onHomeClick={onBackToHome} showSurveysLink={true} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Alert variant="destructive">
-            <AlertDescription>{error || "Erro ao carregar dados"}</AlertDescription>
+            <AlertDescription>{error || t("dashboard.errorLoadingData")}</AlertDescription>
           </Alert>
           <Button onClick={onBack} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -372,8 +372,8 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
                 {t("back")}
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{survey?.title || "Carregando..."} - Dashboard</h1>
-                <p className="text-gray-600 mt-1">Métricas e análises desta survey</p>
+                <h1 className="text-2xl font-bold text-gray-900">{survey?.title || t("loading")} - {t("dashboard.title")}</h1>
+                <p className="text-gray-600 mt-1">{t("dashboard.metricsAndAnalysis")}</p>
               </div>
             </div>
           </div>
@@ -385,75 +385,75 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
           <CardHeader>
             <CardTitle className="flex items-center">
               <Filter className="h-5 w-5 mr-2" />
-              Filtros
+              {t("dashboard.filters")}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col sm:flex-row gap-4 items-end">
                 <div className="flex-1">
-                  <Label htmlFor="startDate">Data Inicial</Label>
+                  <Label htmlFor="startDate">{t("dashboard.startDate")}</Label>
                   <Input id="startDate" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 </div>
                 <div className="flex-1">
-                  <Label htmlFor="endDate">Data Final</Label>
+                  <Label htmlFor="endDate">{t("dashboard.endDate")}</Label>
                   <Input id="endDate" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </div>
                 <div className="flex space-x-2">
                   <Button onClick={handleApplyFilters} disabled={isFiltering}>
-                    {isFiltering ? "Aplicando..." : "Aplicar"}
+                    {isFiltering ? t("dashboard.applying") : t("dashboard.apply")}
                   </Button>
                   <Button variant="outline" onClick={handleClearFilters}>
-                    Limpar
+                    {t("dashboard.clear")}
                   </Button>
                 </div>
               </div>
 
               <div className="border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-3 block">Responses</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-3 block">{t("dashboard.responses")}</Label>
                   <Select value={responseFilter} onValueChange={handleResponseFilter}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecionar tipo de response" />
+                      <SelectValue placeholder={t("dashboard.selectResponseType")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="valid">Apenas Válidas</SelectItem>
-                      <SelectItem value="all">Todas</SelectItem>
-                      <SelectItem value="test">Apenas Teste</SelectItem>
+                      <SelectItem value="valid">{t("dashboard.validOnly")}</SelectItem>
+                      <SelectItem value="all">{t("dashboard.all")}</SelectItem>
+                      <SelectItem value="test">{t("dashboard.testOnly")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-3 block">Device</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-3 block">{t("dashboard.device")}</Label>
                   <div className="flex flex-wrap gap-2">
                     <Button
                       variant={selectedDevice === "all" ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleDeviceFilter("all")}
                     >
-                      Todos
+                      {t("dashboard.allDevices")}
                     </Button>
                     <Button
                       variant={selectedDevice === "desktop" ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleDeviceFilter("desktop")}
                     >
-                      Desktop
+                      {t("dashboard.desktop")}
                     </Button>
                     <Button
                       variant={selectedDevice === "mobile" ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleDeviceFilter("mobile")}
                     >
-                      Mobile
+                      {t("dashboard.mobile")}
                     </Button>
                     <Button
                       variant={selectedDevice === "tablet" ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleDeviceFilter("tablet")}
                     >
-                      Tablet
+                      {t("dashboard.tablet")}
                     </Button>
                   </div>
                 </div>
@@ -468,9 +468,9 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
               <div className="flex items-center">
                 <MousePointer className="h-8 w-8 text-orange-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Hits</p>
+                  <p className="text-sm font-medium text-gray-600">{t("dashboard.hits")}</p>
                   <p className="text-2xl font-bold text-gray-900">{(data.businessMetrics.hits || 0).toLocaleString('pt-BR')}</p>
-                  <p className="text-xs text-gray-500">soft gate aparições</p>
+                  <p className="text-xs text-gray-500">{t("dashboard.softGateAppearances")}</p>
                 </div>
               </div>
             </CardContent>
@@ -481,9 +481,9 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
               <div className="flex items-center">
                 <Eye className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Exposures</p>
+                  <p className="text-sm font-medium text-gray-600">{t("dashboard.exposures")}</p>
                   <p className="text-2xl font-bold text-gray-900">{(data.businessMetrics.exposures || 0).toLocaleString('pt-BR')}</p>
-                  <p className="text-xs text-gray-500">usuários únicos que viram</p>
+                  <p className="text-xs text-gray-500">{t("dashboard.uniqueUsersWhoSaw")}</p>
                 </div>
               </div>
             </CardContent>
@@ -494,9 +494,9 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
               <div className="flex items-center">
                 <Target className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Hit Rate</p>
+                  <p className="text-sm font-medium text-gray-600">{t("dashboard.hitRate")}</p>
                   <p className="text-2xl font-bold text-gray-900">{data.businessMetrics.hitSuccessRate || 0}%</p>
-                  <p className="text-xs text-gray-500">soft gate → survey</p>
+                  <p className="text-xs text-gray-500">{t("dashboard.softGateToSurvey")}</p>
                 </div>
               </div>
             </CardContent>
@@ -507,9 +507,9 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
               <div className="flex items-center">
                 <BarChart3 className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Responses</p>
+                  <p className="text-sm font-medium text-gray-600">{t("dashboard.responses")}</p>
                   <p className="text-2xl font-bold text-gray-900">{(data.businessMetrics.responses || 0).toLocaleString('pt-BR')}</p>
-                  <p className="text-xs text-gray-500">total de respostas</p>
+                  <p className="text-xs text-gray-500">{t("dashboard.totalResponses")}</p>
                 </div>
               </div>
             </CardContent>
@@ -520,9 +520,9 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
               <div className="flex items-center">
                 <TrendingUp className="h-8 w-8 text-indigo-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Response Rate</p>
+                  <p className="text-sm font-medium text-gray-600">{t("dashboard.responseRate")}</p>
                   <p className="text-2xl font-bold text-gray-900">{data.businessMetrics.responseRate || 0}%</p>
-                  <p className="text-xs text-gray-500">exposure → response</p>
+                  <p className="text-xs text-gray-500">{t("dashboard.exposureToResponse")}</p>
                 </div>
               </div>
             </CardContent>
@@ -533,7 +533,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
           <CardHeader>
             <CardTitle className="flex items-center">
               <TrendingUp className="h-5 w-5 mr-2" />
-              Trend Diário: Hits vs Exposures vs Respostas
+              {t("dashboard.dailyTrend")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -652,15 +652,15 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
             <div className="flex justify-center mt-4 space-x-6">
               <div className="flex items-center">
                 <div className="w-4 h-4 bg-orange-500 rounded-full mr-2"></div>
-                <span className="text-sm text-gray-600">Hits (linha)</span>
+                <span className="text-sm text-gray-600">{t("dashboard.hitsLine")}</span>
               </div>
               <div className="flex items-center">
                 <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
-                <span className="text-sm text-gray-600">Exposures (linha)</span>
+                <span className="text-sm text-gray-600">{t("dashboard.exposuresLine")}</span>
               </div>
               <div className="flex items-center">
                 <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
-                <span className="text-sm text-gray-600">Respostas (barras)</span>
+                <span className="text-sm text-gray-600">{t("dashboard.responsesBars")}</span>
               </div>
             </div>
           </CardContent>
@@ -671,7 +671,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
             <CardHeader>
               <CardTitle className="flex items-center">
                 <BarChart3 className="h-5 w-5 mr-2" />
-                Drivers: Média de XS por Opção
+                {t("dashboard.drivers")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -716,7 +716,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
             <CardHeader>
               <CardTitle className="flex items-center">
                 <BarChart3 className="h-5 w-5 mr-2" />
-                Comparativo por Device
+                {t("dashboard.deviceComparison")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -724,12 +724,12 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-2 font-medium text-gray-700">Device</th>
-                      <th className="text-right py-2 font-medium text-gray-700">Hits</th>
-                      <th className="text-right py-2 font-medium text-gray-700">Exposures</th>
-                      <th className="text-right py-2 font-medium text-gray-700">Responses</th>
-                      <th className="text-right py-2 font-medium text-gray-700">Hit Success</th>
-                      <th className="text-right py-2 font-medium text-gray-700">Response Rate</th>
+                      <th className="text-left py-2 font-medium text-gray-700">{t("dashboard.device")}</th>
+                      <th className="text-right py-2 font-medium text-gray-700">{t("dashboard.hits")}</th>
+                      <th className="text-right py-2 font-medium text-gray-700">{t("dashboard.exposures")}</th>
+                      <th className="text-right py-2 font-medium text-gray-700">{t("dashboard.responses")}</th>
+                      <th className="text-right py-2 font-medium text-gray-700">{t("dashboard.hitSuccess")}</th>
+                      <th className="text-right py-2 font-medium text-gray-700">{t("dashboard.responseRate")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -754,7 +754,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
           <CardHeader>
             <CardTitle className="flex items-center">
               <BarChart3 className="h-5 w-5 mr-2" />
-              Todas as Respostas ({(data.totalResponses || 0).toLocaleString('pt-BR')})
+              {t("dashboard.allResponses")} ({(data.totalResponses || 0).toLocaleString('pt-BR')})
             </CardTitle>
           </CardHeader>
           <CardContent>

@@ -5,10 +5,12 @@ import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 import SurveyDashboard from "@/components/surveys/survey-dashboard"
 import type { Survey } from "@/types/survey"
 
 export default function SurveyDashboardPage() {
+  const { t } = useTranslation("surveys")
   const params = useParams()
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
@@ -37,13 +39,13 @@ export default function SurveyDashboardPage() {
       if (response.ok) {
         setSurvey(data.survey)
       } else if (response.status === 404) {
-        setError("Survey não encontrada")
+        setError(t("dashboard.surveyNotFound"))
       } else {
-        throw new Error(data.error || "Erro ao carregar survey")
+        throw new Error(data.error || t("dashboard.errorLoading"))
       }
     } catch (error) {
       console.error("Erro ao carregar survey:", error)
-      setError(error instanceof Error ? error.message : "Erro desconhecido")
+      setError(error instanceof Error ? error.message : t("dashboard.unknownError"))
     } finally {
       setIsLoading(false)
     }
@@ -75,7 +77,7 @@ export default function SurveyDashboardPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         </div>
       </div>
     )
@@ -86,10 +88,10 @@ export default function SurveyDashboardPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Acesso Negado</h2>
-          <p className="text-gray-600 mb-6">Você precisa estar logado para acessar esta página.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("dashboard.accessDenied")}</h2>
+          <p className="text-gray-600 mb-6">{t("dashboard.mustBeLoggedIn")}</p>
           <Button onClick={() => router.push("/")} className="bg-blue-600 hover:bg-blue-700">
-            Fazer Login
+            {t("dashboard.login")}
           </Button>
         </div>
       </div>
@@ -114,7 +116,7 @@ export default function SurveyDashboardPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Carregando dashboard...</p>
+              <p className="text-gray-600">{t("dashboard.loadingDashboard")}</p>
             </div>
           </div>
         ) : survey ? (
