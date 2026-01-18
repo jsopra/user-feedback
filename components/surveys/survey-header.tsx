@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Save, Eye, BarChart3, Edit3, Check, X } from "lucide-react"
+import { ArrowLeft, Save, Eye, Edit3, Check, X } from "lucide-react"
 import { useState } from "react"
 
 interface SurveyHeaderProps {
@@ -11,7 +11,6 @@ interface SurveyHeaderProps {
   onBack: () => void
   onSave?: () => void
   onPreview: () => void
-  onOverview: () => void
   isSaving?: boolean
   showSave?: boolean
   subtitle?: string
@@ -23,7 +22,6 @@ export default function SurveyHeader({
   onBack,
   onSave,
   onPreview,
-  onOverview,
   isSaving = false,
   showSave = true,
   subtitle = "Criando nova survey",
@@ -85,10 +83,6 @@ export default function SurveyHeader({
             <Button variant="outline" size="sm" onClick={onOverview}>
               <BarChart3 className="h-4 w-4 mr-2" />
               Overview
-            </Button>
-            <Button variant="outline" size="sm" onClick={onPreview}>
-              <Eye className="h-4 w-4 mr-2" />
-              Preview
             </Button>
             {showSave && onSave && (
               <Button size="sm" onClick={onSave} disabled={isSaving}>

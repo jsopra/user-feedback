@@ -8,13 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input" // Adicionando Input para editar nome da survey
-import { ArrowLeft, Save, Eye, BarChart3, Edit2, Check, X } from "lucide-react" // Adicionando ícones para edição
+import { ArrowLeft, Save, Eye, Edit2, Check, X } from "lucide-react" // Adicionando ícones para edição
 import type { Survey } from "@/types/survey"
 import AppHeader from "@/components/layout/app-header"
 import SurveyElements from "./survey-elements"
 import SurveyDesign from "./survey-design"
 import SurveyTarget from "./survey-target"
-import SurveyOverview from "./survey-overview"
 import SurveyPreview from "./survey-preview"
 import SurveyWidgetPreview from "./survey-widget-preview"
 import { useAuth } from "@/hooks/use-auth"
@@ -72,7 +71,6 @@ export default function SurveyBuilder({
 
   const [activeTab, setActiveTab] = useState("elements")
   const [showPreview, setShowPreview] = useState(false)
-  const [showOverview, setShowOverview] = useState(false)
   const [showWidgetPreview, setShowWidgetPreview] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -376,39 +374,6 @@ export default function SurveyBuilder({
     return <SurveyPreview survey={survey} onClose={() => setShowPreview(false)} />
   }
 
-  if (showOverview) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <AppHeader onHomeClick={handleBackToHome} showHomeLink={true} currentProject={project?.name} />
-        <div className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <Button variant="ghost" size="sm" onClick={() => setShowOverview(false)}>
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Voltar
-                </Button>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">{survey.title}</h1>
-                  <p className="text-sm text-gray-500">Overview da survey</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" onClick={() => setShowWidgetPreview(true)}>
-                  <Eye className="h-4 w-4 mr-2" />
-                  Preview
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <SurveyOverview survey={survey} onPreview={() => setShowPreview(true)} />
-        </main>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {showWidgetPreview && <SurveyWidgetPreview survey={survey} onClose={() => setShowWidgetPreview(false)} />}
@@ -463,10 +428,6 @@ export default function SurveyBuilder({
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" onClick={() => setShowOverview(true)}>
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Overview
-              </Button>
               <Button variant="outline" size="sm" onClick={() => setShowWidgetPreview(true)}>
                 <Eye className="h-4 w-4 mr-2" />
                 Preview
