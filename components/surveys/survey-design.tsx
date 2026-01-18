@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Eye, Palette, Shield } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 import type { Survey } from "@/types/survey"
 
 interface SurveyDesignProps {
@@ -17,6 +18,7 @@ interface SurveyDesignProps {
 }
 
 export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
+  const { t } = useTranslation("surveys")
   const updateDesign = (key: keyof Survey["design"], value: any) => {
     setSurvey({
       ...survey,
@@ -132,7 +134,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
 
             {/* Posicionamento */}
             <div>
-              <Label className="text-base font-medium">Posição do Widget</Label>
+              <Label className="text-base font-medium">{t("design.widgetPosition")}</Label>
               <div className="grid grid-cols-3 gap-2 p-4 border rounded-lg bg-gray-50 mt-2">
                 {positions.map((position) => (
                   <Button
@@ -149,7 +151,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
                 ))}
               </div>
               <p className="text-sm text-gray-500 mt-1">
-                Posição atual: {positions.find((p) => p.value === survey.design.widgetPosition)?.label}
+                {t("design.currentPosition")} {positions.find((p) => p.value === survey.design.widgetPosition)?.label}
               </p>
             </div>
           </CardContent>
@@ -160,7 +162,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Shield className="h-5 w-5 mr-2" />
-              Comportamento da Pesquisa
+              {t("targeting.surveyBehavior")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">

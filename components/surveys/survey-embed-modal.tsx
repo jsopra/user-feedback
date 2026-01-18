@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Copy, ExternalLink, Check } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 import type { Survey } from "@/types/survey"
 
 interface SurveyEmbedModalProps {
@@ -16,6 +17,7 @@ interface SurveyEmbedModalProps {
 
 export default function SurveyEmbedModal({ survey, surveyId, isOpen, onClose }: SurveyEmbedModalProps) {
   const [copiedTab, setCopiedTab] = useState<string | null>(null)
+  const { t } = useTranslation("surveys")
 
   // Use survey.id se survey estiver disponível, senão use surveyId
   const id = survey?.id || surveyId
@@ -131,7 +133,7 @@ function finalizarPedido(pedido) {
           <TabsContent value="gtm" className="space-y-4">
             <div>
               <h3 className="text-lg font-semibold mb-2">Google Tag Manager</h3>
-              <p className="text-sm text-gray-600 mb-4">Cole este código em uma tag HTML personalizada no GTM</p>
+              <p className="text-sm text-gray-600 mb-4">{t("embed.pasteInGTM")}</p>
             </div>
 
             <div className="relative">
@@ -149,7 +151,7 @@ function finalizarPedido(pedido) {
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-medium text-blue-900 mb-2">Instruções GTM:</h4>
+              <h4 className="font-medium text-blue-900 mb-2">{t("embed.gtmInstructions")}</h4>
               <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
                 <li>Acesse seu Google Tag Manager</li>
                 <li>Crie uma nova tag do tipo "HTML Personalizado"</li>

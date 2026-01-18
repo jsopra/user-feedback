@@ -44,7 +44,9 @@
     "textColor": "Cor do Texto",
     "borderRadius": "Raio da Borda",
     "fontFamily": "Família da Fonte",
-    "customize": "Personalizar Design"
+    "customize": "Personalizar Design",
+    "widgetPosition": "Posição do Widget",
+    "currentPosition": "Posição atual:"
   },
   "targeting": {
     "title": "Segmentação",
@@ -52,12 +54,20 @@
     "time": "Baseado em tempo",
     "event": "Baseado em evento",
     "delay": "Atraso (segundos)",
+    "delayDescription": "Tempo de espera após carregar a página (0 = imediato)",
     "position": "Posição",
     "softGate": "Soft Gate Ativado",
     "pageRules": "Regras de Páginas",
     "defaultBehavior": "Comportamento Padrão",
     "defaultBehaviorDescription": "Por padrão, a survey não aparece em nenhuma URL. Você precisa adicionar as URLs específicas onde deseja que a ferramenta seja acionada.",
-    "addNewRule": "Adicionar Nova Regra"
+    "addNewRule": "Adicionar Nova Regra",
+    "allPages": "Todas as páginas",
+    "surveyBehavior": "Comportamento da Pesquisa",
+    "alwaysRecurrence": "A survey será exibida toda vez que for acionada, ignorando histórico de respostas anteriores.",
+    "allPagesDisplay": "Survey será exibida em todas as páginas",
+    "regexExamples": "Exemplos de Padrões Regex",
+    "howItWorks": "Como funcionará:",
+    "surveyWillDisplay": "Survey será exibida"
   },
   "preview": "Visualizar",
   "previewSurvey": "Visualizar Pesquisa",
@@ -87,6 +97,18 @@
   "selectRating": "Por favor, selecione uma avaliação antes de continuar",
   "canMakeQuestions": "Podemos te fazer algumas perguntas rápidas?",
   "confirming": "Por favor, confirme que deseja excluir este elemento",
+  "embed": {
+    "title": "Incorporação",
+    "position": "Posição",
+    "autoDisplay": "A survey será exibida automaticamente conforme as configurações definidas",
+    "embedCode": "Código de Incorporação",
+    "gtmInstructions": "Instruções GTM:",
+    "pasteInGTM": "Cole este código em uma tag HTML personalizada no GTM",
+    "htmlInstructions": "Instruções HTML:",
+    "pasteInHTML": "Adicione este código diretamente no HTML do seu site",
+    "advancedFeatures": "Recursos Avançados:",
+    "usageInstructions": "Instruções de Uso:"
+  },
   "errors": {
     "createFailed": "Erro ao criar pesquisa",
     "updateFailed": "Erro ao atualizar pesquisa",

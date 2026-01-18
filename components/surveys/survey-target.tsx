@@ -146,7 +146,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   onChange={(e) => updateTarget("delay", Number.parseInt(e.target.value) || 0)}
                   placeholder="0"
                 />
-                <p className="text-xs text-gray-500 mt-1">Tempo de espera após carregar a página (0 = imediato)</p>
+                <p className="text-xs text-gray-500 mt-1">{t("targeting.delayDescription")}</p>
               </div>
             </CardContent>
           </Card>
@@ -224,7 +224,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   <div>
                     <p className="text-sm font-medium text-yellow-800">Recorrência "Sempre"</p>
                     <p className="text-xs text-yellow-700 mt-1">
-                      A survey será exibida toda vez que for acionada, ignorando histórico de respostas anteriores.
+                      {t("targeting.alwaysRecurrence")}
                     </p>
                   </div>
                 </div>
@@ -278,7 +278,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                 <div className="text-center py-4 text-gray-500 text-sm">
                   <Globe className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                   <p>Nenhuma regra definida</p>
-                  <p className="text-xs">Survey será exibida em todas as páginas</p>
+                  <p className="text-xs">{t("targeting.allPagesDisplay")}</p>
                 </div>
               ) : (
                 survey.pageRules.map((rule, index) => (
@@ -311,7 +311,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               <div className="flex items-start space-x-2">
                 <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-blue-800">Exemplos de Padrões Regex</p>
+                  <p className="text-sm font-medium text-blue-800">{t("targeting.regexExamples")}</p>
                   <ul className="text-xs text-blue-700 mt-1 space-y-1">
                     <li>
                       <code>^/$</code> - Apenas página inicial
@@ -407,11 +407,11 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
 
           {/* Preview da Configuração */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium text-gray-800 mb-2">Como funcionará:</p>
+            <p className="text-sm font-medium text-gray-800 mb-2">{t("targeting.howItWorks")}</p>
             <div className="text-xs text-gray-600 space-y-1">
               {triggerMode === "time" && (
                 <p>
-                  • Survey será exibida{" "}
+                  • {t("targeting.surveyWillDisplay")}{" "}
                   {survey.target.delay === 0 ? "imediatamente" : `após ${survey.target.delay} segundos`}
                 </p>
               )}

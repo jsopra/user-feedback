@@ -44,7 +44,9 @@
     "textColor": "Text Color",
     "borderRadius": "Border Radius",
     "fontFamily": "Font Family",
-    "customize": "Customize Design"
+    "customize": "Customize Design",
+    "widgetPosition": "Widget Position",
+    "currentPosition": "Current position:"
   },
   "targeting": {
     "title": "Targeting",
@@ -52,12 +54,20 @@
     "time": "Time-based",
     "event": "Event-based",
     "delay": "Delay (seconds)",
+    "delayDescription": "Wait time after page load (0 = immediate)",
     "position": "Position",
     "softGate": "Soft Gate Enabled",
     "pageRules": "Page Rules",
     "defaultBehavior": "Default Behavior",
     "defaultBehaviorDescription": "By default, the survey does not appear in any URL. You need to add the specific URLs where you want the survey to be triggered.",
-    "addNewRule": "Add New Rule"
+    "addNewRule": "Add New Rule",
+    "allPages": "All pages",
+    "surveyBehavior": "Survey Behavior",
+    "alwaysRecurrence": "The survey will be displayed every time it is triggered, ignoring previous response history.",
+    "allPagesDisplay": "Survey will be displayed on all pages",
+    "regexExamples": "Regex Pattern Examples",
+    "howItWorks": "How it will work:",
+    "surveyWillDisplay": "Survey will display"
   },
   "preview": "Preview",
   "previewSurvey": "Preview Survey",
@@ -91,6 +101,18 @@
   "save": "Save",
   "cancel": "Cancel",
   "confirming": "Please confirm you want to delete this element",
+  "embed": {
+    "title": "Embed",
+    "position": "Position",
+    "autoDisplay": "The survey will be displayed automatically according to the defined settings",
+    "embedCode": "Embed Code",
+    "gtmInstructions": "GTM Instructions:",
+    "pasteInGTM": "Paste this code in a custom HTML tag in GTM",
+    "htmlInstructions": "HTML Instructions:",
+    "pasteInHTML": "Add this code directly to your site's HTML",
+    "advancedFeatures": "Advanced Features:",
+    "usageInstructions": "Usage Instructions:"
+  },
   "errors": {
     "createFailed": "Failed to create survey",
     "updateFailed": "Failed to update survey",

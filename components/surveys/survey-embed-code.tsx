@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Code, Copy, ExternalLink, Info } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 import type { Survey } from "@/types/survey"
 
 interface SurveyEmbedCodeProps {
@@ -14,6 +15,7 @@ interface SurveyEmbedCodeProps {
 
 export default function SurveyEmbedCode({ survey }: SurveyEmbedCodeProps) {
   const [copied, setCopied] = useState(false)
+  const { t } = useTranslation("surveys")
 
   const embedUrl = `${window.location.origin}/api/embed/${survey.id}`
   const embedCode = `<script src="${embedUrl}" async></script>`
@@ -68,7 +70,7 @@ export default function SurveyEmbedCode({ survey }: SurveyEmbedCodeProps) {
               <ol className="list-decimal list-inside mt-2 space-y-1">
                 <li>Copie o código acima</li>
                 <li>Cole no HTML do seu site, preferencialmente antes do fechamento da tag &lt;/body&gt;</li>
-                <li>A survey será exibida automaticamente conforme as configurações definidas</li>
+                <li>{t("embed.autoDisplay")}</li>
               </ol>
             </AlertDescription>
           </Alert>
@@ -107,17 +109,17 @@ export default function SurveyEmbedCode({ survey }: SurveyEmbedCodeProps) {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-600">Posição</label>
+              <label className="text-sm font-medium text-gray-600">{t("embed.position")}</label>
               <div className="mt-1">
                 <Badge variant="outline">{survey.design?.widgetPosition?.replace("-", " ") || "bottom-right"}</Badge>
               </div>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-600">Regras de Páginas</label>
+              <label className="text-sm font-medium text-gray-600">{t("targeting.pageRules")}</label>
               <div className="mt-1">
                 <Badge variant="outline">
-                  {survey.pageRules?.length === 0 ? "Todas as páginas" : `${survey.pageRules?.length} regra(s)`}
+                  {survey.pageRules?.length === 0 ? t("targeting.allPages") : `${survey.pageRules?.length} regra(s)`}
                 </Badge>
               </div>
             </div>

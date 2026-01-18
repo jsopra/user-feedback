@@ -44,7 +44,9 @@
     "textColor": "Color del Texto",
     "borderRadius": "Radio del Borde",
     "fontFamily": "Familia de Fuente",
-    "customize": "Personalizar Diseño"
+    "customize": "Personalizar Diseño",
+    "widgetPosition": "Posición del Widget",
+    "currentPosition": "Posición actual:"
   },
   "targeting": {
     "title": "Segmentación",
@@ -52,12 +54,20 @@
     "time": "Basado en tiempo",
     "event": "Basado en evento",
     "delay": "Retraso (segundos)",
+    "delayDescription": "Tiempo de espera después de cargar la página (0 = inmediato)",
     "position": "Posición",
     "softGate": "Soft Gate Activado",
     "pageRules": "Reglas de Página",
     "defaultBehavior": "Comportamiento Predeterminado",
     "defaultBehaviorDescription": "Por defecto, la encuesta no aparece en ninguna URL. Debes agregar las URLs específicas donde deseas que se active la encuesta.",
-    "addNewRule": "Agregar Nueva Regla"
+    "addNewRule": "Agregar Nueva Regla",
+    "allPages": "Todas las páginas",
+    "surveyBehavior": "Comportamiento de la Encuesta",
+    "alwaysRecurrence": "La encuesta se mostrará cada vez que se active, ignorando el historial de respuestas anteriores.",
+    "allPagesDisplay": "La encuesta se mostrará en todas las páginas",
+    "regexExamples": "Ejemplos de Patrones Regex",
+    "howItWorks": "Cómo funcionará:",
+    "surveyWillDisplay": "La encuesta se mostrará"
   },
   "preview": "Vista Previa",
   "previewSurvey": "Vista Previa de la Encuesta",
@@ -87,6 +97,18 @@
   "selectRating": "Por favor, selecciona una calificación antes de continuar",
   "canMakeQuestions": "¿Podemos hacerte algunas preguntas rápidas?",
   "confirming": "Por favor, confirma que deseas eliminar este elemento",
+  "embed": {
+    "title": "Incrustar",
+    "position": "Posición",
+    "autoDisplay": "La encuesta se mostrará automáticamente de acuerdo con la configuración definida",
+    "embedCode": "Código de Incrustación",
+    "gtmInstructions": "Instrucciones de GTM:",
+    "pasteInGTM": "Pegue este código en una etiqueta HTML personalizada en GTM",
+    "htmlInstructions": "Instrucciones de HTML:",
+    "pasteInHTML": "Agregue este código directamente al HTML de su sitio",
+    "advancedFeatures": "Características Avanzadas:",
+    "usageInstructions": "Instrucciones de Uso:"
+  },
   "errors": {
     "createFailed": "Error al crear encuesta",
     "updateFailed": "Error al actualizar encuesta",
