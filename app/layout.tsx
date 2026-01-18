@@ -10,6 +10,9 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "UserFeedback",
   description: "Complete system for collecting and analyzing user feedback",
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({
