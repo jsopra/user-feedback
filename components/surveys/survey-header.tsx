@@ -80,10 +80,6 @@ export default function SurveyHeader({
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" onClick={onOverview}>
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Overview
-            </Button>
             {showSave && onSave && (
               <Button size="sm" onClick={onSave} disabled={isSaving}>
                 <Save className="h-4 w-4 mr-2" />
