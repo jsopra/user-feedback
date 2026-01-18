@@ -96,7 +96,6 @@ export async function registerUser(userData: {
         role: userData.role || "user",
         is_active: true,
       })
-      .select()
       .single()
 
     if (error) {
