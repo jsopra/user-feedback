@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET() {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     console.log("=== DEBUG: VERIFICANDO SURVEYS NO BANCO ===")
 
     // Verificar se a tabela surveys existe e buscar dados
-    const { data: surveys, error: surveysError } = await supabase
+    const { data: surveys, error: surveysError } = await db
       .from("surveys")
       .select("*")
       .order("created_at", { ascending: false })
@@ -25,7 +25,7 @@ export async function GET() {
     console.log("Dados das surveys:", surveys)
 
     // Verificar elementos
-    const { data: elements, error: elementsError } = await supabase.from("survey_elements").select("*")
+    const { data: elements, error: elementsError } = await db.from("survey_elements").select("*")
 
     if (elementsError) {
       console.error("Erro ao buscar elementos:", elementsError)
@@ -34,7 +34,7 @@ export async function GET() {
     console.log("Elementos encontrados:", elements?.length || 0)
 
     // Verificar regras
-    const { data: rules, error: rulesError } = await supabase.from("survey_page_rules").select("*")
+    const { data: rules, error: rulesError } = await db.from("survey_page_rules").select("*")
 
     if (rulesError) {
       console.error("Erro ao buscar regras:", rulesError)
@@ -43,7 +43,7 @@ export async function GET() {
     console.log("Regras encontradas:", rules?.length || 0)
 
     // Verificar se as tabelas existem consultando o schema
-    const { data: tablesInfo, error: tablesError } = await supabase
+    const { data: tablesInfo, error: tablesError } = await db
       .from("information_schema.tables")
       .select("table_name")
       .eq("table_schema", "public")

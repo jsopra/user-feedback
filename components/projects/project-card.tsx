@@ -60,7 +60,7 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
 
   const handleDelete = () => {
     if (showDeleteConfirm) {
-      onDelete(project.id)
+      onDelete(project.id!)
       setShowDeleteConfirm(false)
       setDropdownOpen(false)
     } else {

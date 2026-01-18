@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
+import { getDbServiceRoleClient } from "@/lib/dbClient"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseServiceRoleClient()
+    const db = getDbServiceRoleClient()
     const surveyId = params.id
     const { searchParams } = new URL(request.url)
 
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     let deviceMetrics: any[] = []
 
     try {
-      let exposuresQuery = supabase
+      let exposuresQuery = db
         .from("survey_exposures")
         .select("session_id, device, created_at", { count: "exact" })
         .eq("survey_id", surveyId)
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       trendData = {}
     }
 
-    let responsesQuery = supabase
+    let responsesQuery = db
       .from("survey_responses")
       .select("*", { count: "exact" })
       .eq("survey_id", surveyId)
@@ -83,14 +83,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     })
 
     // Get all devices from both exposures and responses for comparison table
-    const { data: allExposuresData } = await supabase
+    const { data: allExposuresData } = await db
       .from("survey_exposures")
       .select("session_id, device, created_at")
       .eq("survey_id", surveyId)
       .gte("created_at", dateFrom)
       .lte("created_at", dateTo)
 
-    let allResponsesQuery = supabase
+    let allResponsesQuery = db
       .from("survey_responses")
       .select("device, created_at")
       .eq("survey_id", surveyId)
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     // Create device metrics for all devices found
     deviceMetrics = Array.from(allDevices)
-      .map((device) => {
+      .map((device: any) => {
         const deviceExposures = exposuresByDevice[device] || 0
         const deviceResponses = responsesByDevice[device] || 0
         return {
@@ -142,11 +142,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
           responseRate: deviceExposures > 0 ? Math.round((deviceResponses / deviceExposures) * 100 * 10) / 10 : 0,
         }
       })
-      .filter((d) => d.exposures > 0 || d.responses > 0) // Only show devices with data
+      .filter((d: any) => d.exposures > 0 || d.responses > 0) // Only show devices with data
 
     const responseRate = exposures > 0 ? ((responses || 0) / exposures) * 100 : 0
 
-    let xsQuery = supabase
+    let xsQuery = db
       .from("survey_response_answers")
       .select(`
         answer,
@@ -169,10 +169,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     const { data: xsResult } = await xsQuery
 
-    const ratings = (xsResult || []).map((r) => Number(r.answer)).filter((r) => !isNaN(r))
-    const xsScore = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0
+    const ratings = (xsResult || []).map((r: any) => Number(r.answer)).filter((r: number) => !isNaN(r))
+    const xsScore = ratings.length > 0 ? ratings.reduce((a: number, b: number) => a + b, 0) / ratings.length : 0
 
-    const bottom2Count = ratings.filter((r) => r <= 2).length
+    const bottom2Count = ratings.filter((r: number) => r <= 2).length
     const totalRatings = ratings.length
     const bottom2Percentage = totalRatings > 0 ? (bottom2Count / totalRatings) * 100 : 0
 

@@ -120,7 +120,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
         const formattedResponses: Record<string, any> = {}
 
         survey.elements.forEach((element, index) => {
-          const response = responses[element.id]
+          const response = responses[element.id || '']
           if (response !== null && response !== undefined && response !== "") {
             formattedResponses[index.toString()] = response
           }
@@ -177,14 +177,14 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
   }
 
   const renderElement = (element: SurveyElement) => {
-    const value = responses[element.id]
+    const value = responses[element.id || '']
 
     switch (element.type) {
       case "text":
         return (
           <Input
             value={value || ""}
-            onChange={(e) => handleResponse(element.id, e.target.value)}
+            onChange={(e) => handleResponse(element.id || '', e.target.value)}
             placeholder={element.config?.placeholder || "Digite sua resposta..."}
             className="border-gray-300"
           />
@@ -194,7 +194,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
         return (
           <Textarea
             value={value || ""}
-            onChange={(e) => handleResponse(element.id, e.target.value)}
+            onChange={(e) => handleResponse(element.id || '', e.target.value)}
             placeholder={element.config?.placeholder || "Digite sua resposta..."}
             maxLength={element.config?.maxLength}
             className="border-gray-300"
@@ -209,22 +209,22 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
               <label key={idx} className="flex items-center space-x-2 cursor-pointer">
                 <input
                   type={element.config?.allowMultiple ? "checkbox" : "radio"}
-                  name={element.id}
+                  name={element.id || `element_${idx}`}
                   value={option}
                   checked={element.config?.allowMultiple ? (value || []).includes(option) : value === option}
                   onChange={(e) => {
                     if (element.config?.allowMultiple) {
                       const currentValues = value || []
                       if (e.target.checked) {
-                        handleResponse(element.id, [...currentValues, option])
+                        handleResponse(element.id || '', [...currentValues, option])
                       } else {
                         handleResponse(
-                          element.id,
+                          element.id || '',
                           currentValues.filter((v: string) => v !== option),
                         )
                       }
                     } else {
-                      handleResponse(element.id, option)
+                      handleResponse(element.id || '', option)
                     }
                   }}
                   className="rounded"
@@ -244,22 +244,22 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           <div className="space-y-3">
             <div className="flex justify-between text-sm text-gray-600">
               <span>{min}</span>
-              <span className="font-medium text-lg" style={{ color: survey.design.primaryColor }}>
+              <span className="font-medium text-lg" style={{ color: (survey.design as any).primaryColor }}>
                 {currentValue}
               </span>
               <span>{max}</span>
             </div>
             <Slider
               value={[currentValue]}
-              onValueChange={([newValue]) => handleResponse(element.id, newValue)}
+              onValueChange={([newValue]) => handleResponse(element.id || '', newValue)}
               min={min}
               max={max}
               step={1}
               className="w-full"
               style={
                 {
-                  "--slider-track": survey.design.primaryColor,
-                  "--slider-range": survey.design.primaryColor,
+                  "--slider-track": (survey.design as any).primaryColor,
+                  "--slider-range": (survey.design as any).primaryColor,
                 } as React.CSSProperties
               }
             />
@@ -299,7 +299,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
         }}
       >
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs flex-1" style={{ color: survey.design.textColor }}>
+          <p className="text-xs flex-1" style={{ color: (survey.design as any).textColor }}>
             Podemos te fazer algumas perguntas rápidas?
           </p>
 
@@ -337,7 +337,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
         }}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold" style={{ color: survey.design.textColor }}>
+          <h3 className="font-semibold" style={{ color: (survey.design as any).textColor }}>
             {survey.title}
           </h3>
           <Button variant="ghost" size="sm" onClick={onClose} className="h-9 w-9 p-0">
@@ -365,10 +365,10 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           <div className="mb-4">
             <CheckCircle
               className="h-16 w-16 mx-auto text-green-500 animate-pulse"
-              style={{ color: survey.design.primaryColor }}
+              style={{ color: (survey.design as any).primaryColor }}
             />
           </div>
-          <h3 className="text-lg font-semibold mb-2" style={{ color: survey.design.textColor }}>
+          <h3 className="text-lg font-semibold mb-2" style={{ color: (survey.design as any).textColor }}>
             Pesquisa Concluída!
           </h3>
           <p className="text-sm text-gray-600 mb-4">
@@ -393,7 +393,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold" style={{ color: survey.design.textColor }}>
+        <h3 className="font-semibold" style={{ color: (survey.design as any).textColor }}>
           {survey.title}
         </h3>
         <Button variant="ghost" size="sm" onClick={onClose} className="h-9 w-9 p-0">
@@ -407,7 +407,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           <div
             className="h-1 rounded-full transition-all duration-300"
             style={{
-              backgroundColor: survey.design.primaryColor,
+              backgroundColor: (survey.design as any).primaryColor,
               width: `${progress}%`,
             }}
           />

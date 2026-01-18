@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
+import { getDbServiceRoleClient } from "@/lib/dbClient"
 
 // GET - Buscar elementos ativos da survey
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseServiceRoleClient()
-    const { data: elements, error } = await supabase
+    const db = getDbServiceRoleClient()
+    const { data: elements, error } = await db
       .from("survey_elements")
       .select("*")
       .eq("survey_id", params.id)
@@ -27,10 +27,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 // DELETE - Soft delete de elemento (NUNCA hard delete)
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseServiceRoleClient()
+    const db = getDbServiceRoleClient()
     const { elementId } = await request.json()
 
-    const { error } = await supabase
+    const { error } = await db
       .from("survey_elements")
       .update({ is_active: false })
       .eq("id", elementId)

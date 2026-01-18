@@ -39,13 +39,8 @@ Antes de fazer deploy para produção, certifique-se de:
 # Ambiente
 NODE_ENV=production
 
-# Database
+# Database PostgreSQL
 DATABASE_URL=postgresql://user:password@host:5432/database?sslmode=require
-
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGc...  # Manter SECRETO!
 
 # Next.js (se necessário)
 NEXTAUTH_URL=https://seu-dominio.com
@@ -244,12 +239,12 @@ Configure monitoramento com:
 find /backups -name "db_*.sql.gz" -mtime +30 -delete
 ```
 
-#### Backup Supabase
+#### PostgreSQL Remoto
 
-Supabase faz backup automático, mas você pode:
-1. Acessar Dashboard → Database → Backups
-2. Configurar Point-in-Time Recovery (PITR)
-3. Fazer backups manuais antes de mudanças críticas
+Se estiver usando PostgreSQL na nuvem:
+1. Configure backups automáticos no provider (Railway, Render, etc.)
+2. Habilite Point-in-Time Recovery (PITR) se disponível
+3. Faça backups manuais antes de mudanças críticas
 
 ### 8. Scaling
 
@@ -284,9 +279,9 @@ services:
 
 #### Database Scaling
 
-- Use Supabase Pro ou Enterprise para read replicas
+- Use read replicas se o provider suportar
 - Configure connection pooling (pgBouncer)
-- Implemente caching (Redis)
+- Implemente caching (Redis) para queries frequentes
 
 ### 9. Atualizações
 

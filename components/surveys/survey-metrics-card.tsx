@@ -88,7 +88,7 @@ export default function SurveyMetricsCard({ element, metric, businessMetrics }: 
   const renderMultipleChoiceMetric = () => {
     const { total, percentages, allowMultiple } = metric.data || {
       total: 0,
-      percentages: element.config?.options?.map((option) => ({ option, count: 0, percentage: 0 })) || [],
+      percentages: element.config?.options?.map((option: any) => ({ option, count: 0, percentage: 0 })) || [],
       allowMultiple: element.config?.allowMultiple || false,
     }
 

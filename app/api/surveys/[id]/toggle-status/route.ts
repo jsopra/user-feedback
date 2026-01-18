@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
+import { getDbServiceRoleClient } from "@/lib/dbClient"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseServiceRoleClient()
+    const db = getDbServiceRoleClient()
     const { is_active } = await request.json()
     const surveyId = params.id
 
@@ -12,14 +12,14 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     }
 
     // Verificar se a survey existe
-    const { data: survey, error: fetchError } = await supabase.from("surveys").select("*").eq("id", surveyId).single()
+    const { data: survey, error: fetchError } = await db.from("surveys").select("*").eq("id", surveyId).single()
 
     if (fetchError || !survey) {
       return NextResponse.json({ error: "Survey não encontrada" }, { status: 404 })
     }
 
     // Atualizar o status da survey
-    const { data: updatedSurvey, error: updateError } = await supabase
+    const { data: updatedSurvey, error: updateError } = await db
       .from("surveys")
       .update({
         is_active,

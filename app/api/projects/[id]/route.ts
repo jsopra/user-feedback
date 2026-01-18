@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
-    const { data: project, error } = await supabase
+    const db = getDbClient()
+    const { data: project, error } = await db
       .from("projects")
       .select(`
         id,
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Buscar contagem de surveys
-    const { count } = await supabase
+    const { count } = await db
       .from("surveys")
       .select("*", { count: "exact", head: true })
       .eq("project_id", project.id)
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const body = await request.json()
     const { name, description, base_domain } = body
 
@@ -76,7 +76,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Formato de domínio inválido" }, { status: 400 })
     }
 
-    const { data: project, error } = await supabase
+    const { data: project, error } = await db
       .from("projects")
       .update({
         name: name.trim(),
@@ -98,7 +98,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Buscar contagem de surveys
-    const { count } = await supabase
+    const { count } = await db
       .from("surveys")
       .select("*", { count: "exact", head: true })
       .eq("project_id", project.id)
@@ -117,8 +117,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
-    const { data: existingProject, error: checkError } = await supabase
+    const db = getDbClient()
+    const { data: existingProject, error: checkError } = await db
       .from("projects")
       .select("id")
       .eq("id", params.id)
@@ -129,7 +129,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 
     // Excluir o projeto (surveys serão excluídas automaticamente por CASCADE)
-    const { error } = await supabase.from("projects").delete().eq("id", params.id)
+    const { error } = await db.from("projects").delete().eq("id", params.id)
 
     if (error) {
       console.error("Erro ao excluir projeto:", error)

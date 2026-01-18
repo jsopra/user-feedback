@@ -1,16 +1,16 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const surveyId = params.id
     const url = new URL(request.url)
     const isPreview = url.searchParams.get("preview") === "true"
     const isApp = url.searchParams.get("app") === "true"
     const apiKey = url.searchParams.get("key")
 
-    const { data: survey, error: surveyError } = await supabase
+    const { data: survey, error: surveyError } = await db
       .from("surveys")
       .select("*, design_settings, target_settings")
       .eq("id", surveyId)
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     let projectData = null
     if (survey?.project_id) {
-      const { data: project } = await supabase
+      const { data: project } = await db
         .from("projects")
         .select("base_domain")
         .eq("id", survey.project_id)
@@ -41,12 +41,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       projectData = project
     }
 
-    const { data: pageRules } = await supabase
+    const { data: pageRules } = await db
       .from("survey_page_rules")
       .select("pattern, rule_type, is_regex")
       .eq("survey_id", surveyId)
 
-    const { data: elements } = await supabase
+    const { data: elements } = await db
       .from("survey_elements")
       .select("id, survey_id, question, type, config, required, order_index")
       .eq("survey_id", surveyId)

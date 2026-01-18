@@ -1,15 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
+import { getDbServiceRoleClient } from "@/lib/dbClient"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseServiceRoleClient()
+    const db = getDbServiceRoleClient()
     console.log("=== API STATS ===")
     console.log("Project ID:", params.id)
 
     const projectId = params.id
 
-    const { data: allProjects, error: allProjectsError } = await supabase
+    const { data: allProjects, error: allProjectsError } = await db
       .from("projects")
       .select("id, name, created_by")
       .limit(10)
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     console.log("Erro ao buscar todos os projetos:", allProjectsError)
 
     // Verificar se o projeto existe
-    const { data: project, error: projectError } = await supabase
+    const { data: project, error: projectError } = await db
       .from("projects")
       .select("id")
       .eq("id", projectId)
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Buscar estatísticas das surveys
-    const { data: surveys, error: surveysError } = await supabase
+    const { data: surveys, error: surveysError } = await db
       .from("surveys")
       .select("is_active")
       .eq("project_id", projectId)
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     const total = surveys?.length || 0
-    const active = surveys?.filter((s) => s.is_active).length || 0
+    const active = surveys?.filter((s: any) => s.is_active).length || 0
     const inactive = total - active
 
     console.log("Estatísticas:", { total, active, inactive })

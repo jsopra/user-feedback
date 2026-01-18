@@ -18,7 +18,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
             type="text"
             placeholder={element.config?.placeholder || "Digite sua resposta..."}
             className="w-full p-2 border rounded"
-            style={{ borderRadius: survey.design.borderRadius }}
+            style={{ borderRadius: (survey.design as any).borderRadius }}
           />
         )
 
@@ -28,7 +28,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
             placeholder={element.config?.placeholder || "Digite sua resposta..."}
             maxLength={element.config?.maxLength}
             className="w-full p-2 border rounded"
-            style={{ borderRadius: survey.design.borderRadius }}
+            style={{ borderRadius: (survey.design as any).borderRadius }}
             rows={4}
           />
         )
@@ -48,11 +48,11 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
       case "rating":
         return (
           <div className="flex space-x-1">
-            {Array.from({ length: element.config?.maxRating || 5 }).map((_, idx) => (
+            {Array.from({ length: element.config?.ratingRange?.max || 5 }).map((_, idx) => (
               <Star
                 key={idx}
                 className="h-6 w-6 cursor-pointer hover:fill-current"
-                style={{ color: survey.design.primaryColor }}
+                style={{ color: (survey.design as any).primaryColor }}
               />
             ))}
           </div>
@@ -77,11 +77,11 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
           className="p-6"
           style={{
             backgroundColor: survey.design.backgroundColor,
-            fontFamily: survey.design.fontFamily,
+            fontFamily: (survey.design as any).fontFamily,
           }}
         >
           <div className="mb-6">
-            <h1 className="text-2xl font-bold mb-2" style={{ color: survey.design.primaryColor }}>
+            <h1 className="text-2xl font-bold mb-2" style={{ color: (survey.design as any).primaryColor }}>
               {survey.title}
             </h1>
             <p className="text-gray-600">{survey.description}</p>
@@ -102,8 +102,8 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
           <div className="mt-8 flex justify-end">
             <Button
               style={{
-                backgroundColor: survey.design.primaryColor,
-                borderRadius: survey.design.borderRadius,
+                backgroundColor: (survey.design as any).primaryColor,
+                borderRadius: (survey.design as any).borderRadius,
               }}
             >
               Enviar Respostas

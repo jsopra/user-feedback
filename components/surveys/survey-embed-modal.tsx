@@ -20,7 +20,6 @@ export default function SurveyEmbedModal({ survey, surveyId, isOpen, onClose }: 
   // Use survey.id se survey estiver disponível, senão use surveyId
   const id = survey?.id || surveyId
   const title = survey?.title || `Survey ${id}`
-  const apiKey = survey?.api_key
 
   if (!id) {
     return null
@@ -285,11 +284,6 @@ function finalizarPedido(pedido) {
             <ExternalLink className="h-4 w-4 mr-2" />
             Testar Widget
           </Button>
-          {apiKey && (
-            <div className="text-xs text-gray-500 flex items-center">
-              API Key: <code className="ml-1 bg-gray-100 px-2 py-1 rounded">{apiKey}</code>
-            </div>
-          )}
           <Button onClick={onClose}>Fechar</Button>
         </div>
       </DialogContent>

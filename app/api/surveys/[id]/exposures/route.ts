@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getDeviceType } from "@/lib/device-parser"
-import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
+import { getDbServiceRoleClient } from "@/lib/dbClient"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   const headers = {
@@ -10,7 +10,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 
   try {
-    const supabase = getSupabaseServiceRoleClient()
+    const db = getDbServiceRoleClient()
     const surveyId = params.id
     const body = await request.json()
 
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     const deviceType = userAgent ? getDeviceType(userAgent) : device || "unknown"
 
-    const { error } = await supabase.from("survey_exposures").insert({
+    const { error } = await db.from("survey_exposures").insert({
       survey_id: surveyId,
       session_id: sessionId,
       route: route || "unknown",

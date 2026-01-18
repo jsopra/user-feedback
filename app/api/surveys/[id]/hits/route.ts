@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   const headers = {
@@ -9,13 +9,13 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const surveyId = params.id
     const body = await request.json()
 
     console.log("[v0] Tracking survey hit for:", surveyId)
 
-    const { data, error } = await supabase.from("survey_hits").insert({
+    const { data, error } = await db.from("survey_hits").insert({
       survey_id: surveyId,
       session_id: body.sessionId,
       route: body.route,

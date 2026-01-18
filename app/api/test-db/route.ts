@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET() {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     console.log("=== TESTE DE CONFIGURAÇÃO DO BANCO ===")
-
-    // Verificar variáveis de ambiente
-    console.log("SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL ? "✓ Definida" : "✗ Não definida")
-    console.log("SUPABASE_ANON_KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "✓ Definida" : "✗ Não definida")
+    console.log("DATABASE_URL:", process.env.DATABASE_URL ? "✓ Definida" : "✗ Não definida")
 
     // Testar conexão básica
     console.log("Testando conexão básica...")
-    const { data: users, error: usersError } = await supabase.from("users").select("id, email").limit(1)
+    const { data: users, error: usersError } = await db.from("users").select("id, email").limit(1)
 
     if (usersError) {
       console.error("Erro ao acessar tabela users:", usersError)
@@ -22,8 +19,7 @@ export async function GET() {
           details: usersError,
           suggestion: "Verifique se o banco foi configurado corretamente",
           env: {
-            supabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-            supabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            databaseUrl: !!process.env.DATABASE_URL,
           },
         },
         { status: 500 },
@@ -38,7 +34,7 @@ export async function GET() {
 
     for (const tableName of tablesToCheck) {
       console.log(`Verificando tabela ${tableName}...`)
-      const { data, error } = await supabase.from(tableName).select("id").limit(1)
+      const { data, error } = await db.from(tableName).select("id").limit(1)
 
       if (error) {
         console.error(`Erro ao acessar tabela ${tableName}:`, error)

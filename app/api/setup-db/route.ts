@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function POST() {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     console.log("=== CONFIGURANDO BANCO DE DADOS ===")
 
     // Verificar se a função update_updated_at_column existe
-    const { data: functions, error: functionsError } = await supabase.rpc("version")
+    const { data: functions, error: functionsError } = await db.rpc("version")
 
     if (functionsError) {
       console.log("Aviso: Não foi possível verificar funções do banco")
@@ -15,7 +15,7 @@ export async function POST() {
 
     // Criar tabela surveys
     console.log("Criando tabela surveys...")
-    const { error: surveysError } = await supabase.rpc("exec_sql", {
+    const { error: surveysError } = await db.rpc("exec_sql", {
       sql: `
         CREATE TABLE IF NOT EXISTS surveys (
           id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -39,7 +39,7 @@ export async function POST() {
 
     // Criar tabela survey_elements
     console.log("Criando tabela survey_elements...")
-    const { error: elementsError } = await supabase.rpc("exec_sql", {
+    const { error: elementsError } = await db.rpc("exec_sql", {
       sql: `
         CREATE TABLE IF NOT EXISTS survey_elements (
           id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -62,7 +62,7 @@ export async function POST() {
 
     // Criar tabela survey_page_rules
     console.log("Criando tabela survey_page_rules...")
-    const { error: rulesError } = await supabase.rpc("exec_sql", {
+    const { error: rulesError } = await db.rpc("exec_sql", {
       sql: `
         CREATE TABLE IF NOT EXISTS survey_page_rules (
           id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -82,7 +82,7 @@ export async function POST() {
     }
 
     // Verificar se as tabelas foram criadas
-    const { data: tablesCheck, error: checkError } = await supabase
+    const { data: tablesCheck, error: checkError } = await db
       .from("information_schema.tables")
       .select("table_name")
       .eq("table_schema", "public")

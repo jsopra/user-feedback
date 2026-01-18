@@ -63,7 +63,7 @@ export default function SurveyElements({ survey, setSurvey }: SurveyElementsProp
       ...survey,
       elements: [...survey.elements, newElement],
     })
-    setEditingElement(newElement.id)
+    setEditingElement(newElement.id ?? null)
   }
 
   const updateElement = (elementId: string, updates: Partial<SurveyElement>) => {
@@ -148,7 +148,7 @@ export default function SurveyElements({ survey, setSurvey }: SurveyElementsProp
                     element={element}
                     index={index}
                     isEditing={editingElement === element.id}
-                    onEdit={() => setEditingElement(element.id)}
+                    onEdit={() => setEditingElement(element.id || null)}
                     onSave={() => setEditingElement(null)}
                     onUpdate={(updates) => updateElement(element.id!, updates)}
                     onRemove={() => removeElement(element.id!)}

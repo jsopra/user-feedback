@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET() {
   try {
-    const supabase = getSupabaseClient()
-    const { data: feedbacks, error } = await supabase
+    const db = getDbClient()
+    const { data: feedbacks, error } = await db
       .from("feedbacks")
       .select("*")
       .order("created_at", { ascending: false })
@@ -21,10 +21,10 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const feedbackData = await request.json()
 
-    const { data: feedback, error } = await supabase.from("feedbacks").insert(feedbackData).select().single()
+    const { data: feedback, error } = await db.from("feedbacks").insert(feedbackData).select().single()
 
     if (error) {
       throw error

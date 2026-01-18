@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import type { User } from "@/lib/supabase"
+import type { User } from "@/types/database"
 
 interface AuthContextType {
   user: User | null

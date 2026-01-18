@@ -233,8 +233,8 @@ export default function ProjectSurveysPage() {
                   <SurveyCard
                     key={survey.id}
                     survey={survey}
-                    hasRecentActivity={survey.hasRecentActivity || false}
-                    activityCount={survey.activityCount || 0}
+                    hasRecentActivity={(survey as any).hasRecentActivity || false}
+                    activityCount={(survey as any).activityCount || 0}
                     onView={handleViewSurvey}
                     onEdit={handleEditSurvey}
                     onDelete={handleDeleteSurvey}

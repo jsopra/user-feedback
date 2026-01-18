@@ -326,7 +326,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
   if (error || !data) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <AppHeader onSurveysClick={onBackToHome} />
+        <AppHeader onHomeClick={onBackToHome} showSurveysLink={true} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Alert variant="destructive">
             <AlertDescription>{error || "Erro ao carregar dados"}</AlertDescription>

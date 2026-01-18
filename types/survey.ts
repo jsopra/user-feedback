@@ -46,6 +46,8 @@ export interface SurveyDesignSettings {
   primaryColor: string
   backgroundColor: string
   textColor: string
+  borderRadius?: string
+  fontFamily?: string
   widgetPosition:
     | "top-left"
     | "top-center"

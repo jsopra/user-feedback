@@ -1,10 +1,12 @@
-import { supabase } from "./supabase"
+import { getDbClient } from "./dbClient"
 import bcrypt from "bcryptjs"
 
 /**
- * Sistema de autenticação customizado usando Supabase e bcrypt
+ * Sistema de autenticação customizado usando PostgreSQL (via driver pg) e bcrypt
  * Gerencia login, registro e validação de sessões
  */
+
+const db = getDbClient()
 
 /**
  * Autentica um usuário com email e senha
@@ -15,7 +17,7 @@ import bcrypt from "bcryptjs"
 export async function loginUser(email: string, password: string) {
   try {
     // Buscar usuário no banco de dados
-    const { data: user, error } = await supabase
+    const { data: user, error } = await db
       .from("users")
       .select("*")
       .eq("email", email)
@@ -43,7 +45,7 @@ export async function loginUser(email: string, password: string) {
     const sessionToken = generateSessionToken()
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 horas
 
-    const { error: sessionError } = await supabase.from("user_sessions").insert({
+    const { error: sessionError } = await db.from("user_sessions").insert({
       user_id: user.id,
       session_token: sessionToken,
       expires_at: expiresAt.toISOString(),
@@ -75,7 +77,7 @@ export async function registerUser(userData: {
 }) {
   try {
     // Verificar se email já existe
-    const { data: existingUser } = await supabase.from("users").select("id").eq("email", userData.email).single()
+    const { data: existingUser } = await db.from("users").select("id").eq("email", userData.email).single()
 
     if (existingUser) {
       throw new Error("Email já cadastrado")
@@ -85,7 +87,7 @@ export async function registerUser(userData: {
     const passwordHash = await bcrypt.hash(userData.password, saltRounds)
 
     // Inserir usuário
-    const { data: user, error } = await supabase
+    const { data: user, error } = await db
       .from("users")
       .insert({
         name: userData.name,
@@ -114,7 +116,7 @@ export async function registerUser(userData: {
  */
 export async function validateSession(sessionToken: string) {
   try {
-    const { data: session, error } = await supabase
+    const { data: session, error } = await db
       .from("user_sessions")
       .select(`
         *,

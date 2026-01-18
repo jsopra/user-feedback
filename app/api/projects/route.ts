@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const { searchParams } = new URL(request.url)
     const search = searchParams.get("search") || ""
     const sortBy = searchParams.get("sortBy") || "newest"
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     //   return NextResponse.json({ error: "ID do usuário é obrigatório" }, { status: 400 })
     // }
 
-    let query = supabase.from("projects").select(`
+    let query = db.from("projects").select(`
         id,
         name,
         description,
@@ -54,8 +54,8 @@ export async function GET(request: NextRequest) {
     }
 
     const projectsWithCounts = await Promise.all(
-      (projects || []).map(async (project) => {
-        const { count } = await supabase
+      (projects || []).map(async (project: any) => {
+        const { count } = await db
           .from("surveys")
           .select("*", { count: "exact", head: true })
           .eq("project_id", project.id)
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const body = await request.json()
     const { name, description, base_domain, created_by } = body
 
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Formato de domínio inválido" }, { status: 400 })
     }
 
-    const { data: project, error } = await supabase
+    const { data: project, error } = await db
       .from("projects")
       .insert([
         {

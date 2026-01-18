@@ -197,7 +197,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       </div>
 
       <div className="flex items-center space-x-2">
-        <Checkbox id="terms" checked={acceptTerms} onCheckedChange={setAcceptTerms} />
+        <Checkbox id="terms" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} />
         <Label htmlFor="terms" className="text-sm text-gray-600">
           Confirmo que tenho autorização para cadastrar este usuário no sistema
         </Label>

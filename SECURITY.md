@@ -45,9 +45,6 @@ Ensure all sensitive credentials are stored securely:
 ```bash
 # Required variables
 DATABASE_URL=postgresql://user:password@host:port/database
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # Keep this secret!
 
 # Never commit .env files to version control
 ```
@@ -55,9 +52,10 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # Keep this secret!
 ### 3. **Database Security**
 
 - Use SSL/TLS connections to your database
-- Implement Row Level Security (RLS) in Supabase
+- Enable row-level security policies if using Supabase/similar
 - Regularly rotate database credentials
 - Keep database backups encrypted
+- Use prepared statements (already implemented via pg driver)
 
 ### 4. **API Security**
 

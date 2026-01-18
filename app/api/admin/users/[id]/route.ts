@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 import bcrypt from "bcryptjs"
 
 // PUT - Atualizar usuário (apenas para admins)
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 
@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Verificar se o usuário é admin
-    const { data: session } = await supabase
+    const { data: session } = await db
       .from("user_sessions")
       .select("user_id")
       .eq("session_token", sessionToken)
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Sessão inválida" }, { status: 401 })
     }
 
-    const { data: currentUser } = await supabase.from("users").select("role").eq("id", session.user_id).single()
+    const { data: currentUser } = await db.from("users").select("role").eq("id", session.user_id).single()
 
     if (!currentUser || currentUser.role !== "admin") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Verificar se o email já existe (exceto para o próprio usuário)
-    const { data: existingUser } = await supabase
+    const { data: existingUser } = await db
       .from("users")
       .select("id")
       .eq("email", email)
@@ -65,7 +65,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     console.log("Dados para atualização:", updateData)
 
     // Atualizar usuário
-    const { data: updatedUser, error } = await supabase
+    const { data: updatedUser, error } = await db
       .from("users")
       .update(updateData)
       .eq("id", userId)
@@ -88,7 +88,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 // DELETE - Excluir usuário (apenas para admins)
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 
@@ -97,7 +97,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 
     // Verificar se o usuário é admin
-    const { data: session } = await supabase
+    const { data: session } = await db
       .from("user_sessions")
       .select("user_id")
       .eq("session_token", sessionToken)
@@ -107,7 +107,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: "Sessão inválida" }, { status: 401 })
     }
 
-    const { data: currentUser } = await supabase.from("users").select("role").eq("id", session.user_id).single()
+    const { data: currentUser } = await db.from("users").select("role").eq("id", session.user_id).single()
 
     if (!currentUser || currentUser.role !== "admin") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
@@ -121,7 +121,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 
     // Excluir usuário
-    const { error } = await supabase.from("users").delete().eq("id", userId)
+    const { error } = await db.from("users").delete().eq("id", userId)
 
     if (error) {
       console.error("Erro do Supabase:", error)

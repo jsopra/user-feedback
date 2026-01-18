@@ -1,8 +1,9 @@
-import { getSupabaseServiceRoleClient } from "@/lib/supabaseClient"
+import { getDbServiceRoleClient } from "@/lib/dbClient"
+import { NextResponse } from "next/server"
 
 export async function PATCH(request: Request, { params }: { params: { id: string; responseId: string } }) {
   try {
-    const supabase = getSupabaseServiceRoleClient()
+    const db = getDbServiceRoleClient()
     const { is_test } = await request.json()
 
     console.log("[v0] PATCH request received:", {
@@ -11,7 +12,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       is_test,
     })
 
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("survey_responses")
       .update({ is_test })
       .eq("id", params.responseId)
@@ -21,13 +22,13 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
     if (error) {
       console.log("[v0] Supabase error:", error)
-      return Response.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
     console.log("[v0] Update successful:", data)
-    return Response.json({ success: true, data })
+    return NextResponse.json({ success: true, data })
   } catch (error) {
     console.log("[v0] Server error:", error)
-    return Response.json({ error: "Erro interno do servidor" }, { status: 500 })
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 })
   }
 }

@@ -34,8 +34,8 @@ Plataforma completa para criação, gestão e análise de pesquisas e feedbacks 
 
 - Node.js 22.x LTS (recomendado) ou 20.x
 - pnpm (recomendado) ou npm
-- Cliente PostgreSQL (`psql`)
-- Conta no Supabase (para banco de dados)
+- PostgreSQL 12+ (local ou remoto)
+- Cliente PostgreSQL (`psql`) para migrations
 
 ### Instalação
 
@@ -59,14 +59,33 @@ Edite o arquivo \`.env.local\` com as credenciais do Supabase **e** com a URL de
 
 ### Variáveis de Ambiente Necessárias
 
-| Variável | Descrição | Onde Obter |
-|----------|-----------|------------|
-| \`DATABASE_URL\` | String de conexão do banco PostgreSQL usada pelo Supabase ou instância local | Supabase → Project Settings → Database, Railway ou banco local |
-| \`NEXT_PUBLIC_SUPABASE_URL\` | URL pública do projeto Supabase | Dashboard do Supabase → Settings → API |
-| \`NEXT_PUBLIC_SUPABASE_ANON_KEY\` | Chave pública (anon) para operações client-side | Dashboard do Supabase → Settings → API |
-| \`SUPABASE_SERVICE_ROLE_KEY\` | Chave de serviço para operações admin/server-side | Dashboard do Supabase → Settings → API |
+| Variável | Descrição | Exemplo |
+|----------|-----------|----------|
+| `DATABASE_URL` | String de conexão completa ao PostgreSQL | `postgresql://user:password@localhost:5432/user_feedback` |
+| `NODE_ENV` | Ambiente de execução | `development` ou `production` |
 
-**⚠️ Importante**: A chave \`SUPABASE_SERVICE_ROLE_KEY\` deve ser mantida segura e nunca exposta no frontend.
+**⚠️ Importante**: Mantenha o `DATABASE_URL` seguro e nunca o exponha publicamente.
+
+#### Configuração do Banco PostgreSQL
+
+Você pode usar:
+1. **PostgreSQL Local**: Instale via `apt`, `brew` ou Docker
+2. **PostgreSQL na Nuvem**: Supabase (apenas o banco), Railway, Render, DigitalOcean, etc.
+
+**Docker PostgreSQL (desenvolvimento local):**
+\`\`\`bash
+docker run -d \\
+  --name user-feedback-db \\
+  -e POSTGRES_PASSWORD=sua_senha \\
+  -e POSTGRES_DB=user_feedback \\
+  -p 5432:5432 \\
+  postgres:16-alpine
+\`\`\`
+
+Então use:
+\`\`\`bash
+DATABASE_URL=postgresql://postgres:sua_senha@localhost:5432/user_feedback
+\`\`\`
 
 4. Execute as migrations (é necessário ter o `psql` instalado e a variável `DATABASE_URL` configurada):
 \`\`\`bash
@@ -162,7 +181,7 @@ Este projeto leva segurança a sério. Consulte [SECURITY.md](SECURITY.md) para:
 
 - **Frontend/Backend**: Next.js 14 (App Router) + TypeScript
 - **Estilização**: Tailwind CSS + Radix UI
-- **Banco de Dados**: Supabase (PostgreSQL)
+- **Banco de Dados**: PostgreSQL 12+ (via driver `pg`)
 - **Autenticação**: Sistema customizado com bcrypt
 - **Deploy**: Docker + Node.js
 

@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const { searchParams } = new URL(request.url)
     const startDate = searchParams.get("startDate")
     const endDate = searchParams.get("endDate")
@@ -15,14 +15,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     console.log("Filtros:", { startDate, endDate, deviceFilter, responseFilter })
 
     // Buscar informações da survey
-    const { data: survey, error: surveyError } = await supabase.from("surveys").select("*").eq("id", params.id).single()
+    const { data: survey, error: surveyError } = await db.from("surveys").select("*").eq("id", params.id).single()
 
     if (surveyError || !survey) {
       return NextResponse.json({ error: "Survey não encontrada" }, { status: 404 })
     }
 
     // Buscar elementos da survey
-    const { data: elements, error: elementsError } = await supabase
+    const { data: elements, error: elementsError } = await db
       .from("survey_elements")
       .select("*")
       .eq("survey_id", params.id)
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Construir query de respostas com filtro de data
-    let responsesQuery = supabase
+    let responsesQuery = db
       .from("survey_responses")
       .select(`
         *,
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       console.log("Primeira response:", JSON.stringify(responses[0], null, 2))
       console.log("Survey element responses da primeira:", responses[0]?.survey_element_responses?.length || 0)
 
-      responses.forEach((response, index) => {
+      responses.forEach((response: any, index: number) => {
         console.log(`Response ${index + 1}:`, {
           id: response.id,
           element_responses: response.survey_element_responses?.length || 0,
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     console.log("Respostas encontradas:", responses?.length || 0)
 
     // Buscar hits da survey
-    let hitsQuery = supabase.from("survey_hits").select("*").eq("survey_id", params.id)
+    let hitsQuery = db.from("survey_hits").select("*").eq("survey_id", params.id)
 
     if (startDate) {
       hitsQuery = hitsQuery.gte("created_at", startDate + "T00:00:00.000Z")
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const { data: hits, error: hitsError } = await hitsQuery.order("created_at", { ascending: false })
 
     // Buscar exposures da survey
-    let exposuresQuery = supabase.from("survey_exposures").select("*").eq("survey_id", params.id)
+    let exposuresQuery = db.from("survey_exposures").select("*").eq("survey_id", params.id)
 
     if (startDate) {
       exposuresQuery = exposuresQuery.gte("created_at", startDate + "T00:00:00.000Z")
@@ -171,19 +171,19 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
     conversionRate,
   }
 
-  const hitsByDevice = hits.reduce((acc, hit) => {
+  const hitsByDevice = hits.reduce((acc: any, hit) => {
     const device = hit.device || "unknown"
     acc[device] = (acc[device] || 0) + 1
     return acc
   }, {})
 
-  const exposuresByDevice = exposures.reduce((acc, exposure) => {
+  const exposuresByDevice = exposures.reduce((acc: any, exposure) => {
     const device = exposure.device || "unknown"
     acc[device] = (acc[device] || 0) + 1
     return acc
   }, {})
 
-  const responsesByDevice = responses.reduce((acc, response) => {
+  const responsesByDevice = responses.reduce((acc: any, response) => {
     const device = response.device || "unknown"
     acc[device] = (acc[device] || 0) + 1
     return acc
@@ -195,15 +195,15 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
     responses: responsesByDevice,
   }
 
-  elements.forEach((element) => {
+  elements.forEach((element: any) => {
     const elementResponses = responses.flatMap(
       (response) => response.survey_element_responses?.filter((er: any) => er.element_id === element.id) || [],
     )
 
     switch (element.type) {
       case "rating":
-        const ratings = elementResponses.map((er) => Number(er.answer) || 0).filter((r) => r > 0)
-        const average = ratings.length > 0 ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length : 0
+        const ratings = elementResponses.map((er: any) => Number(er.answer) || 0).filter((r: any) => r > 0)
+        const average = ratings.length > 0 ? ratings.reduce((sum: any, rating) => sum + rating, 0) / ratings.length : 0
         const distribution = ratings.reduce(
           (acc, rating) => {
             acc[rating] = (acc[rating] || 0) + 1
@@ -226,13 +226,13 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
         break
 
       case "multiple_choice":
-        const choices = elementResponses.map((er) => er.answer).filter(Boolean)
+        const choices = elementResponses.map((er: any) => er.answer).filter(Boolean)
         const choiceCount: Record<string, number> = {}
         const total = choices.length
 
-        choices.forEach((choice) => {
+        choices.forEach((choice: any) => {
           if (Array.isArray(choice)) {
-            choice.forEach((c) => {
+            choice.forEach((c: any) => {
               choiceCount[c] = (choiceCount[c] || 0) + 1
             })
           } else {
@@ -242,7 +242,7 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
 
         // Sempre incluir todas as opções, mesmo com 0 respostas
         const allOptions = element.config?.options || []
-        const percentages = allOptions.map((option) => {
+        const percentages = allOptions.map((option: any) => {
           const count = choiceCount[option] || 0
           return {
             option,
@@ -269,7 +269,7 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
           question: element.question,
           data: {
             total: elementResponses.length,
-            responses: elementResponses.map((er) => er.answer).filter(Boolean),
+            responses: elementResponses.map((er: any) => er.answer).filter(Boolean),
           },
         }
         break
@@ -284,7 +284,7 @@ function processTimelineData(responses: any[], hits: any[], exposures: any[]) {
   const dataByDate: Record<string, { responses: number; hits: number; exposures: number }> = {}
 
   // Processar responses
-  responses.forEach((response) => {
+  responses.forEach((response: any) => {
     const date = new Date(response.created_at).toISOString().split("T")[0]
     if (!dataByDate[date]) {
       dataByDate[date] = { responses: 0, hits: 0, exposures: 0 }
@@ -293,7 +293,7 @@ function processTimelineData(responses: any[], hits: any[], exposures: any[]) {
   })
 
   // Processar hits
-  hits.forEach((hit) => {
+  hits.forEach((hit: any) => {
     const date = new Date(hit.created_at).toISOString().split("T")[0]
     if (!dataByDate[date]) {
       dataByDate[date] = { responses: 0, hits: 0, exposures: 0 }
@@ -302,7 +302,7 @@ function processTimelineData(responses: any[], hits: any[], exposures: any[]) {
   })
 
   // Processar exposures
-  exposures.forEach((exposure) => {
+  exposures.forEach((exposure: any) => {
     const date = new Date(exposure.created_at).toISOString().split("T")[0]
     if (!dataByDate[date]) {
       dataByDate[date] = { responses: 0, hits: 0, exposures: 0 }
@@ -322,7 +322,7 @@ function processTimelineData(responses: any[], hits: any[], exposures: any[]) {
 }
 
 function processTableData(responses: any[], elements: any[]) {
-  return responses.map((response) => {
+  return responses.map((response: any) => {
     const row: any = {
       id: response.id,
       created_at: response.created_at,
@@ -334,7 +334,7 @@ function processTableData(responses: any[], elements: any[]) {
     }
 
     // Adicionar respostas de cada elemento
-    elements.forEach((element) => {
+    elements.forEach((element: any) => {
       const elementResponse = response.survey_element_responses?.find((er: any) => er.element_id === element.id)
       row[`element_${element.id}`] = elementResponse?.answer || null
     })

@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 import type { Survey } from "@/types/survey"
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     console.log("=== API GET SURVEYS ===")
 
     const { searchParams } = new URL(request.url)
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     console.log("Parâmetros recebidos:", { projectId })
 
     // Buscar surveys primeiro (sem JOIN)
-    let surveysQuery = supabase.from("surveys").select("*").order("created_at", { ascending: false })
+    let surveysQuery = db.from("surveys").select("*").order("created_at", { ascending: false })
 
     if (projectId) {
       surveysQuery = surveysQuery.eq("project_id", projectId)
@@ -47,8 +47,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Buscar elementos para todas as surveys
-    const surveyIds = surveys.map((s) => s.id)
-    const { data: elements, error: elementsError } = await supabase
+    const surveyIds = surveys.map((s: any) => s.id)
+    const { data: elements, error: elementsError } = await db
       .from("survey_elements")
       .select("*")
       .in("survey_id", surveyIds)
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Buscar regras para todas as surveys
-    const { data: rules, error: rulesError } = await supabase
+    const { data: rules, error: rulesError } = await db
       .from("survey_page_rules")
       .select("*")
       .in("survey_id", surveyIds)
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     const twentyFourHoursAgo = new Date()
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24)
 
-    const { data: recentActivity, error: activityError } = await supabase
+    const { data: recentActivity, error: activityError } = await db
       .from("survey_responses")
       .select("survey_id")
       .in("survey_id", surveyIds)
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     }
 
     const activityBySurvey = (recentActivity || []).reduce(
-      (acc, response) => {
+      (acc: any, response: any) => {
         acc[response.survey_id] = (acc[response.survey_id] || 0) + 1
         return acc
       },
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
 
     // Agrupar elementos e regras por survey_id
     const elementsBySurvey = (elements || []).reduce(
-      (acc, element) => {
+      (acc: any, element: any) => {
         if (!acc[element.survey_id]) acc[element.survey_id] = []
         acc[element.survey_id].push(element)
         return acc
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
     )
 
     const rulesBySurvey = (rules || []).reduce(
-      (acc, rule) => {
+      (acc: any, rule: any) => {
         if (!acc[rule.survey_id]) acc[rule.survey_id] = []
         acc[rule.survey_id].push(rule)
         return acc
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
     )
 
     // Transformar dados para o formato esperado pelo frontend
-    const transformedSurveys: Survey[] = surveys.map((survey) => ({
+    const transformedSurveys: Survey[] = surveys.map((survey: any) => ({
       id: survey.id,
       title: survey.title,
       description: survey.description,
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
       project_id: survey.project_id,
       hasRecentActivity: (activityBySurvey[survey.id] || 0) > 0,
       activityCount: activityBySurvey[survey.id] || 0,
-    }))
+    } as any))
 
     console.log("Surveys transformadas:", transformedSurveys.length)
     if (transformedSurveys.length > 0) {
@@ -159,8 +159,8 @@ export async function GET(request: NextRequest) {
         rules: transformedSurveys[0].pageRules?.length || 0,
         project_id: transformedSurveys[0].project_id,
         created_by: transformedSurveys[0].created_by,
-        hasRecentActivity: transformedSurveys[0].hasRecentActivity,
-        activityCount: transformedSurveys[0].activityCount,
+        hasRecentActivity: (transformedSurveys[0] as any).hasRecentActivity,
+        activityCount: (transformedSurveys[0] as any).activityCount,
       })
     }
 
@@ -179,7 +179,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const surveyData: Survey = await request.json()
 
     console.log("=== API POST SURVEY ===")
@@ -239,7 +239,7 @@ export async function POST(request: NextRequest) {
     console.log("Dados preparados para inserção:", surveyInsertData)
 
     // Inserir survey principal
-    const { data: survey, error: surveyError } = await supabase
+    const { data: survey, error: surveyError } = await db
       .from("surveys")
       .insert(surveyInsertData)
       .select()
@@ -269,7 +269,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Verificar se a survey foi realmente salva
-    const { data: verifyData, error: verifyError } = await supabase
+    const { data: verifyData, error: verifyError } = await db
       .from("surveys")
       .select("*")
       .eq("id", survey.id)
@@ -302,7 +302,7 @@ export async function POST(request: NextRequest) {
 
       console.log("Elementos a inserir:", elementsToInsert)
 
-      const { data: insertedElements, error: elementsError } = await supabase
+      const { data: insertedElements, error: elementsError } = await db
         .from("survey_elements")
         .insert(elementsToInsert)
         .select()
@@ -310,7 +310,7 @@ export async function POST(request: NextRequest) {
       if (elementsError) {
         console.error("Erro ao inserir elementos:", elementsError)
         // Rollback - deletar survey criada
-        await supabase.from("surveys").delete().eq("id", survey.id)
+        await db.from("surveys").delete().eq("id", survey.id)
         return NextResponse.json({ error: "Erro ao criar elementos da survey" }, { status: 500 })
       }
 
@@ -321,7 +321,7 @@ export async function POST(request: NextRequest) {
     if (surveyData.pageRules && surveyData.pageRules.length > 0) {
       console.log(`Inserindo ${surveyData.pageRules.length} regras...`)
 
-      const rulesToInsert = surveyData.pageRules.map((rule) => ({
+      const rulesToInsert = surveyData.pageRules.map((rule: any) => ({
         survey_id: survey.id,
         rule_type: rule.rule_type,
         pattern: rule.pattern,
@@ -330,7 +330,7 @@ export async function POST(request: NextRequest) {
 
       console.log("Regras a inserir:", rulesToInsert)
 
-      const { data: insertedRules, error: rulesError } = await supabase
+      const { data: insertedRules, error: rulesError } = await db
         .from("survey_page_rules")
         .insert(rulesToInsert)
         .select()
@@ -338,7 +338,7 @@ export async function POST(request: NextRequest) {
       if (rulesError) {
         console.error("Erro ao inserir regras:", rulesError)
         // Rollback - deletar survey criada
-        await supabase.from("surveys").delete().eq("id", survey.id)
+        await db.from("surveys").delete().eq("id", survey.id)
         return NextResponse.json({ error: "Erro ao criar regras da survey" }, { status: 500 })
       }
 
@@ -346,7 +346,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificação final - buscar a survey completa
-    const { data: finalVerify, error: finalError } = await supabase
+    const { data: finalVerify, error: finalError } = await db
       .from("surveys")
       .select("*")
       .eq("id", survey.id)

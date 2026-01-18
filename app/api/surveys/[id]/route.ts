@@ -1,12 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 import type { Survey } from "@/types/survey"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     // Buscar survey principal
-    const { data: survey, error: surveyError } = await supabase.from("surveys").select("*").eq("id", params.id).single()
+    const { data: survey, error: surveyError } = await db.from("surveys").select("*").eq("id", params.id).single()
 
     if (surveyError || !survey) {
       console.error("Erro ao buscar survey:", surveyError)
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Buscar elementos da survey
-    const { data: elements, error: elementsError } = await supabase
+    const { data: elements, error: elementsError } = await db
       .from("survey_elements")
       .select("*")
       .eq("survey_id", params.id)
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Buscar regras da survey
-    const { data: rules, error: rulesError } = await supabase
+    const { data: rules, error: rulesError } = await db
       .from("survey_page_rules")
       .select("*")
       .eq("survey_id", params.id)
@@ -83,10 +83,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const surveyData: Survey = await request.json()
 
-    const { data: existingSurvey, error: checkError } = await supabase
+    const { data: existingSurvey, error: checkError } = await db
       .from("surveys")
       .select("id, created_by")
       .eq("id", params.id)
@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Atualizar survey principal
-    const { error: surveyError } = await supabase
+    const { error: surveyError } = await db
       .from("surveys")
       .update({
         title: surveyData.title,
@@ -118,7 +118,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Remover elementos existentes
-    await supabase.from("survey_elements").delete().eq("survey_id", params.id)
+    await db.from("survey_elements").delete().eq("survey_id", params.id)
 
     // Inserir novos elementos
     if (surveyData.elements && surveyData.elements.length > 0) {
@@ -131,7 +131,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         config: element.config || {},
       }))
 
-      const { error: elementsError } = await supabase.from("survey_elements").insert(elementsToInsert)
+      const { error: elementsError } = await db.from("survey_elements").insert(elementsToInsert)
 
       if (elementsError) {
         throw elementsError
@@ -139,18 +139,18 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Remover regras existentes
-    await supabase.from("survey_page_rules").delete().eq("survey_id", params.id)
+    await db.from("survey_page_rules").delete().eq("survey_id", params.id)
 
     // Inserir novas regras
     if (surveyData.pageRules && surveyData.pageRules.length > 0) {
-      const rulesToInsert = surveyData.pageRules.map((rule) => ({
+      const rulesToInsert = surveyData.pageRules.map((rule: any) => ({
         survey_id: params.id,
         rule_type: rule.rule_type,
         pattern: rule.pattern,
         is_regex: rule.is_regex,
       }))
 
-      const { error: rulesError } = await supabase.from("survey_page_rules").insert(rulesToInsert)
+      const { error: rulesError } = await db.from("survey_page_rules").insert(rulesToInsert)
 
       if (rulesError) {
         throw rulesError
@@ -166,8 +166,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
-    const { error } = await supabase.from("surveys").delete().eq("id", params.id)
+    const db = getDbClient()
+    const { error } = await db.from("surveys").delete().eq("id", params.id)
 
     if (error) {
       throw error

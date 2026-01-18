@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 
 export async function GET() {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     // Buscar respostas das últimas 24 horas
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
-    const { data: recentResponses, error } = await supabase
+    const { data: recentResponses, error } = await db
       .from("survey_responses")
       .select("survey_id, created_at")
       .gte("created_at", twentyFourHoursAgo)
@@ -19,7 +19,7 @@ export async function GET() {
 
     // Agrupar por survey_id
     const activityBySurvey = (recentResponses || []).reduce(
-      (acc, response) => {
+      (acc: any, response: any) => {
         if (!acc[response.survey_id]) {
           acc[response.survey_id] = 0
         }

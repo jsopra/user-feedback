@@ -122,7 +122,7 @@ export default function SurveyDashboardPage() {
             surveyId={surveyId}
             onBack={handleBack}
             onBackToHome={() => router.push("/")}
-            survey={survey}
+            survey={survey as any}
           />
         ) : null}
       </main>

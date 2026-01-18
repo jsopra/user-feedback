@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 import bcrypt from "bcryptjs"
 
 // GET - Listar usuários (apenas para admins)
 export async function GET(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Verificar se o usuário é admin
-    const { data: session } = await supabase
+    const { data: session } = await db
       .from("user_sessions")
       .select("user_id")
       .eq("session_token", sessionToken)
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Sessão inválida" }, { status: 401 })
     }
 
-    const { data: currentUser } = await supabase.from("users").select("role").eq("id", session.user_id).single()
+    const { data: currentUser } = await db.from("users").select("role").eq("id", session.user_id).single()
 
     if (!currentUser || currentUser.role !== "admin") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     console.log("Buscando usuários...")
 
     // Buscar todos os usuários
-    const { data: users, error } = await supabase
+    const { data: users, error } = await db
       .from("users")
       .select("id, email, name, role, created_at")
       .order("created_at", { ascending: false })
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
 // POST - Criar usuário (apenas para admins)
 export async function POST(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const sessionToken =
       request.headers.get("authorization")?.replace("Bearer ", "") || request.cookies.get("sessionToken")?.value
 
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se o usuário é admin
-    const { data: session } = await supabase
+    const { data: session } = await db
       .from("user_sessions")
       .select("user_id")
       .eq("session_token", sessionToken)
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Sessão inválida" }, { status: 401 })
     }
 
-    const { data: currentUser } = await supabase.from("users").select("role").eq("id", session.user_id).single()
+    const { data: currentUser } = await db.from("users").select("role").eq("id", session.user_id).single()
 
     if (!currentUser || currentUser.role !== "admin") {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se o email já existe
-    const { data: existingUser } = await supabase.from("users").select("id").eq("email", email).single()
+    const { data: existingUser } = await db.from("users").select("id").eq("email", email).single()
 
     if (existingUser) {
       return NextResponse.json({ error: "Email já está em uso" }, { status: 400 })
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     // Criar usuário
     const saltRounds = 12
     const passwordHash = await bcrypt.hash(password, saltRounds)
-    const { data: newUser, error } = await supabase
+    const { data: newUser, error } = await db
       .from("users")
       .insert({
         name,

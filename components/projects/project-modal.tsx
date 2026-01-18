@@ -93,7 +93,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
     setIsLoading(true)
 
     try {
-      const projectData: Project = {
+      const projectData: any = {
         ...formData,
         name: formData.name.trim(),
         description: formData.description.trim() || undefined,

@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 import { parseDeviceFromUserAgent } from "@/lib/device-parser"
 
 function corsHeaders() {
@@ -19,7 +19,7 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     console.log("[v0] === SURVEY RESPONSES API DEBUG ===")
     console.log("[v0] Survey ID:", params.id)
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Verificar se a survey existe e está ativa
     console.log("[v0] Checking if survey exists and is active...")
-    const { data: survey, error: surveyError } = await supabase
+    const { data: survey, error: surveyError } = await db
       .from("surveys")
       .select("id, is_active")
       .eq("id", params.id)
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Primeiro, criar o registro principal na tabela survey_responses
     console.log("[v0] Creating main response record...")
-    const { data: mainResponse, error: mainResponseError } = await supabase
+    const { data: mainResponse, error: mainResponseError } = await db
       .from("survey_responses")
       .insert({
         survey_id: params.id,
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Buscar os elementos da survey para mapear os IDs
     console.log("[v0] Fetching survey elements...")
-    const { data: surveyElements, error: elementsError } = await supabase
+    const { data: surveyElements, error: elementsError } = await db
       .from("survey_elements")
       .select("id, order_index")
       .eq("survey_id", params.id)
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
       if (responseValue !== null && responseValue !== undefined && responseValue !== "") {
         // Encontrar o element_id baseado no order_index
-        const element = surveyElements.find((el) => el.order_index === Number.parseInt(elementIndex))
+        const element = surveyElements.find((el: any) => el.order_index === Number.parseInt(elementIndex))
         console.log("[v0] Found element for index", elementIndex, ":", element)
 
         if (element) {
@@ -157,7 +157,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Inserir respostas individuais dos elementos
     console.log("[v0] Inserting element responses...")
-    const { data: insertedElementResponses, error: insertElementError } = await supabase
+    const { data: insertedElementResponses, error: insertElementError } = await db
       .from("survey_element_responses")
       .insert(elementResponsesToInsert)
       .select()
@@ -201,7 +201,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { data: responses, error } = await supabase
+    const db = getDbClient()
+    const { data: responses, error } = await db
       .from("survey_responses")
       .select(`
         *,

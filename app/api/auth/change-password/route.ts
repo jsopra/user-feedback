@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSupabaseClient } from "@/lib/supabaseClient"
+import { getDbClient } from "@/lib/dbClient"
 import bcrypt from "bcryptjs"
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient()
+    const db = getDbClient()
     const { currentPassword, newPassword } = await request.json()
 
     if (!currentPassword || !newPassword) {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
     }
 
-    const { data: session, error: sessionError } = await supabase
+    const { data: session, error: sessionError } = await db
       .from("user_sessions")
       .select("*")
       .eq("session_token", sessionToken)
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Sessão inválida" }, { status: 401 })
     }
 
-    const { data: user, error: userError } = await supabase.from("users").select("*").eq("id", session.user_id).single()
+    const { data: user, error: userError } = await db.from("users").select("*").eq("id", session.user_id).single()
 
     console.log("[v0] User query result:", { user: user ? "found" : "not found", userError })
 
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const saltRounds = 12
     const newPasswordHash = await bcrypt.hash(newPassword, saltRounds)
 
-    const { error: updateError } = await supabase
+    const { error: updateError } = await db
       .from("users")
       .update({ password_hash: newPasswordHash })
       .eq("id", user.id)

@@ -161,7 +161,7 @@ function ProjectSurveysDashboard({
               <div key={survey.id} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
                 <h3 className="font-medium text-gray-900 mb-2">{survey.title}</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Status: <span className="capitalize">{survey.status}</span>
+                  Status: <span className="capitalize">{(survey as any).status}</span>
                 </p>
                 <div className="flex space-x-2">
                   <button
