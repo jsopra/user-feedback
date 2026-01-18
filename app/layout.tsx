@@ -9,7 +9,6 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "UserFeedback",
   description: "Sistema completo para coleta e análise de feedback de usuários",
-    generator: 'v0.app'
 }
 
 export default function RootLayout({
