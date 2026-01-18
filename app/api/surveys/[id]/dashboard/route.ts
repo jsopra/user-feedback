@@ -139,13 +139,13 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Processar dados para métricas
-    const metrics = processMetrics(responses || [], elements || [], hits || [], exposures || [])
+    const metrics = processMetrics(responsesWithElements || [], elements || [], hits || [], exposures || [])
 
     // Processar dados para gráfico temporal
-    const timelineData = processTimelineData(responses || [], hits || [], exposures || [])
+    const timelineData = processTimelineData(responsesWithElements || [], hits || [], exposures || [])
 
     // Processar dados para tabela
-    const tableData = processTableData(responses || [], elements || [])
+    const tableData = processTableData(responsesWithElements || [], elements || [])
 
     return NextResponse.json({
       survey: {
@@ -212,7 +212,7 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
   }
 
   elements.forEach((element: any) => {
-    const elementResponses = responsesWithElements.flatMap(
+    const elementResponses = responses.flatMap(
       (response) => response.survey_element_responses?.filter((er: any) => er.element_id === element.id) || [],
     )
 
