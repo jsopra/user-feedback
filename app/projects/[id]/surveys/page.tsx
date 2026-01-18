@@ -19,6 +19,7 @@ export default function ProjectSurveysPage() {
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
   const { t } = useTranslation("surveys")
+  const { t: t_common } = useTranslation("common")
   const [project, setProject] = useState<Project | null>(null)
   const [surveys, setSurveys] = useState<Survey[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -159,7 +160,7 @@ export default function ProjectSurveysPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">{t("messages.loading")}</p>
+          <p className="text-gray-600">{t_common("messages.loading")}</p>
         </div>
       </div>
     )
@@ -169,10 +170,10 @@ export default function ProjectSurveysPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("messages.accessDenied")}</h2>
-          <p className="text-gray-600 mb-6">{t("messages.mustBeLoggedIn")}</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t_common("messages.accessDenied")}</h2>
+          <p className="text-gray-600 mb-6">{t_common("messages.mustBeLoggedIn")}</p>
           <Button onClick={() => router.push("/")} className="bg-blue-600 hover:bg-blue-700">
-            {t("messages.login")}
+            {t_common("messages.login")}
           </Button>
         </div>
       </div>
