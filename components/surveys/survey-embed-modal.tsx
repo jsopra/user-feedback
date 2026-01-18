@@ -119,20 +119,20 @@ function finalizarPedido(pedido) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Código de Incorporação - {title}</DialogTitle>
+          <DialogTitle>{t("embed.title")} - {title}</DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="gtm" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="gtm">Google Tag Manager</TabsTrigger>
-            <TabsTrigger value="html">HTML Direto</TabsTrigger>
-            <TabsTrigger value="js">JavaScript</TabsTrigger>
-            <TabsTrigger value="event">Acionamento Manual</TabsTrigger>
+            <TabsTrigger value="gtm">{t("embed.gtmTab")}</TabsTrigger>
+            <TabsTrigger value="html">{t("embed.htmlTab")}</TabsTrigger>
+            <TabsTrigger value="js">{t("embed.jsTab")}</TabsTrigger>
+            <TabsTrigger value="event">{t("embed.eventTab")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="gtm" className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Google Tag Manager</h3>
+              <h3 className="text-lg font-semibold mb-2">{t("embed.gtmTitle")}</h3>
               <p className="text-sm text-gray-600 mb-4">{t("embed.pasteInGTM")}</p>
             </div>
 
@@ -153,19 +153,19 @@ function finalizarPedido(pedido) {
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="font-medium text-blue-900 mb-2">{t("embed.gtmInstructions")}</h4>
               <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                <li>Acesse seu Google Tag Manager</li>
-                <li>Crie uma nova tag do tipo "HTML Personalizado"</li>
-                <li>Cole o código acima no campo HTML</li>
-                <li>Configure o acionador conforme necessário</li>
-                <li>Publique a versão</li>
+                <li>{t("embed.gtmStep1")}</li>
+                <li>{t("embed.gtmStep2")}</li>
+                <li>{t("embed.gtmStep3")}</li>
+                <li>{t("embed.gtmStep4")}</li>
+                <li>{t("embed.gtmStep5")}</li>
               </ol>
             </div>
           </TabsContent>
 
           <TabsContent value="html" className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">HTML Direto</h3>
-              <p className="text-sm text-gray-600 mb-4">Adicione este código diretamente no HTML do seu site</p>
+              <h3 className="text-lg font-semibold mb-2">{t("embed.htmlTitle")}</h3>
+              <p className="text-sm text-gray-600 mb-4">{t("embed.htmlDescription")}</p>
             </div>
 
             <div className="relative">
@@ -183,20 +183,20 @@ function finalizarPedido(pedido) {
             </div>
 
             <div className="bg-green-50 p-4 rounded-lg">
-              <h4 className="font-medium text-green-900 mb-2">Instruções HTML:</h4>
+              <h4 className="font-medium text-green-900 mb-2">{t("embed.htmlInstructions")}</h4>
               <ol className="text-sm text-green-800 space-y-1 list-decimal list-inside">
-                <li>Cole o código antes do fechamento da tag {"</body>"}</li>
-                <li>O widget será carregado automaticamente</li>
-                <li>Funciona em qualquer página HTML</li>
+                <li>{t("embed.htmlStep1")}</li>
+                <li>{t("embed.htmlStep2")}</li>
+                <li>{t("embed.htmlStep3")}</li>
               </ol>
             </div>
           </TabsContent>
 
           <TabsContent value="js" className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">JavaScript Personalizado</h3>
+              <h3 className="text-lg font-semibold mb-2">{t("embed.jsTitle")}</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Código JavaScript com controle avançado e tratamento de erros
+                {t("embed.jsDescription")}
               </p>
             </div>
 
@@ -215,21 +215,21 @@ function finalizarPedido(pedido) {
             </div>
 
             <div className="bg-purple-50 p-4 rounded-lg">
-              <h4 className="font-medium text-purple-900 mb-2">Recursos Avançados:</h4>
+              <h4 className="font-medium text-purple-900 mb-2">{t("embed.advancedFeatures")}</h4>
               <ul className="text-sm text-purple-800 space-y-1 list-disc list-inside">
-                <li>Previne carregamento duplicado</li>
-                <li>Callbacks de sucesso e erro</li>
-                <li>Carregamento assíncrono otimizado</li>
-                <li>Compatível com SPA (Single Page Apps)</li>
+                <li>{t("embed.jsFeature1")}</li>
+                <li>{t("embed.jsFeature2")}</li>
+                <li>{t("embed.jsFeature3")}</li>
+                <li>{t("embed.jsFeature4")}</li>
               </ul>
             </div>
           </TabsContent>
 
           <TabsContent value="event" className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Acionamento Manual (Modo Evento)</h3>
+              <h3 className="text-lg font-semibold mb-2">{t("embed.eventTitle")}</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Para surveys configuradas com acionamento por evento, use esta função JavaScript
+                {t("embed.eventDescription")}
               </p>
             </div>
 
@@ -248,34 +248,23 @@ function finalizarPedido(pedido) {
             </div>
 
             <div className="bg-orange-50 p-4 rounded-lg">
-              <h4 className="font-medium text-orange-900 mb-2">Instruções de Uso:</h4>
+              <h4 className="font-medium text-orange-900 mb-2">{t("embed.eventInstructions")}</h4>
               <ol className="text-sm text-orange-800 space-y-1 list-decimal list-inside">
-                <li>Configure a survey com "Acionamento: Evento" e "Recorrência: Sempre"</li>
-                <li>Carregue o script da survey na página (usando uma das outras abas)</li>
-                <li>
-                  Chame <code className="bg-orange-100 px-1 rounded">window.UserFeedback.trigger()</code> quando
-                  necessário
-                </li>
-                <li>Passe parâmetros customizados para análise posterior</li>
-                <li>Ideal para: finalização de pedidos, ações específicas, experimentos A/B</li>
+                <li>{t("embed.eventStep1")}</li>
+                <li>{t("embed.eventStep2")}</li>
+                <li>{t("embed.eventStep3")}</li>
+                <li>{t("embed.eventStep4")}</li>
+                <li>{t("embed.eventStep5")}</li>
               </ol>
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-medium text-blue-900 mb-2">Casos de Uso Comuns:</h4>
+              <h4 className="font-medium text-blue-900 mb-2">{t("embed.useCases")}</h4>
               <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
-                <li>
-                  <strong>E-commerce:</strong> Após finalizar compra, avaliar experiência
-                </li>
-                <li>
-                  <strong>SaaS:</strong> Após completar onboarding, medir satisfação
-                </li>
-                <li>
-                  <strong>Fake Door:</strong> Testar interesse em nova funcionalidade
-                </li>
-                <li>
-                  <strong>Experimentos:</strong> Coletar feedback em pontos específicos
-                </li>
+                <li><strong>E-commerce:</strong> {t("embed.useCase1")}</li>
+                <li><strong>SaaS:</strong> {t("embed.useCase2")}</li>
+                <li><strong>Fake Door:</strong> {t("embed.useCase3")}</li>
+                <li><strong>Experimentos:</strong> {t("embed.useCase4")}</li>
               </ul>
             </div>
           </TabsContent>
@@ -284,9 +273,9 @@ function finalizarPedido(pedido) {
         <div className="flex justify-between pt-4 border-t">
           <Button variant="outline" onClick={testEmbed}>
             <ExternalLink className="h-4 w-4 mr-2" />
-            Testar Widget
+            {t("embed.testWidget")}
           </Button>
-          <Button onClick={onClose}>Fechar</Button>
+          <Button onClick={onClose}>{t("embed.close")}</Button>
         </div>
       </DialogContent>
     </Dialog>

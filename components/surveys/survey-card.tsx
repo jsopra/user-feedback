@@ -170,7 +170,15 @@ export default function SurveyCard({
         {showDeleteConfirm && (
           <Alert variant="destructive" className="mt-2">
             <AlertDescription className="text-sm">
-              {t("deleteConfirm")}
+              {t("confirmDeleteSurvey")}
+              <div className="flex space-x-2 mt-2">
+                <Button size="sm" variant="destructive" onClick={handleDelete} className="h-7 text-xs">
+                  {t("confirm")}
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => setShowDeleteConfirm(false)} className="h-7 text-xs">
+                  {t("cancel")}
+                </Button>
+              </div>
             </AlertDescription>
           </Alert>
         )}
