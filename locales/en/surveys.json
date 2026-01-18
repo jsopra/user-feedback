@@ -4,6 +4,9 @@
   "editSurvey": "Edit Survey",
   "surveyName": "Survey Name",
   "surveyDescription": "Description",
+  "surveyLanguage": "Survey Language",
+  "selectLanguage": "Select the language for this survey",
+  "languageWillAffect": "The selected language will affect how the survey is displayed",
   "language": "Language",
   "languages": {
     "en": "English",
@@ -27,7 +30,8 @@
     "ratingRange": "Rating range",
     "minValue": "Minimum value",
     "maxValue": "Maximum value",
-    "defaultValue": "Default value"
+    "defaultValue": "Default value",
+    "deleteElement": "Delete Element"
   },
   "design": {
     "title": "Design",
@@ -35,7 +39,8 @@
     "backgroundColor": "Background Color",
     "textColor": "Text Color",
     "borderRadius": "Border Radius",
-    "fontFamily": "Font Family"
+    "fontFamily": "Font Family",
+    "customize": "Customize Design"
   },
   "targeting": {
     "title": "Targeting",
@@ -44,10 +49,19 @@
     "event": "Event-based",
     "delay": "Delay (seconds)",
     "position": "Position",
-    "softGate": "Soft Gate Enabled"
+    "softGate": "Soft Gate Enabled",
+    "pageRules": "Page Rules"
   },
   "preview": "Preview",
+  "previewSurvey": "Preview Survey",
   "publish": "Publish",
+  "unpublish": "Unpublish",
+  "save": "Save",
+  "saving": "Saving...",
+  "loading": "Loading survey...",
+  "editing": "Editing survey",
+  "creating": "Creating new survey",
+  "unsavedChanges": "You have unsaved changes. Remember to save before leaving.",
   "toggleStatus": "Toggle Status",
   "deleteConfirm": "Are you sure you want to delete this survey?",
   "errors": {

@@ -4,6 +4,9 @@
   "editSurvey": "Editar Encuesta",
   "surveyName": "Nombre de la Encuesta",
   "surveyDescription": "Descripción",
+  "surveyLanguage": "Idioma de la Encuesta",
+  "selectLanguage": "Selecciona el idioma para esta encuesta",
+  "languageWillAffect": "El idioma seleccionado afectará cómo se muestra la encuesta",
   "language": "Idioma",
   "languages": {
     "en": "Inglés",
@@ -27,7 +30,8 @@
     "ratingRange": "Rango de calificación",
     "minValue": "Valor mínimo",
     "maxValue": "Valor máximo",
-    "defaultValue": "Valor predeterminado"
+    "defaultValue": "Valor predeterminado",
+    "deleteElement": "Eliminar Elemento"
   },
   "design": {
     "title": "Diseño",
@@ -35,7 +39,8 @@
     "backgroundColor": "Color de Fondo",
     "textColor": "Color del Texto",
     "borderRadius": "Radio del Borde",
-    "fontFamily": "Familia de Fuente"
+    "fontFamily": "Familia de Fuente",
+    "customize": "Personalizar Diseño"
   },
   "targeting": {
     "title": "Segmentación",
@@ -44,10 +49,19 @@
     "event": "Basado en evento",
     "delay": "Retraso (segundos)",
     "position": "Posición",
-    "softGate": "Soft Gate Activado"
+    "softGate": "Soft Gate Activado",
+    "pageRules": "Reglas de Página"
   },
   "preview": "Vista Previa",
+  "previewSurvey": "Vista Previa de la Encuesta",
   "publish": "Publicar",
+  "unpublish": "Despublicar",
+  "save": "Guardar",
+  "saving": "Guardando...",
+  "loading": "Cargando encuesta...",
+  "editing": "Editando encuesta",
+  "creating": "Creando nueva encuesta",
+  "unsavedChanges": "Tienes cambios sin guardar. Recuerda guardar antes de salir.",
   "toggleStatus": "Cambiar Estado",
   "deleteConfirm": "¿Está seguro de que desea eliminar esta encuesta?",
   "errors": {

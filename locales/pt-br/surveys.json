@@ -4,6 +4,9 @@
   "editSurvey": "Editar Pesquisa",
   "surveyName": "Nome da Pesquisa",
   "surveyDescription": "Descrição",
+  "surveyLanguage": "Idioma da Pesquisa",
+  "selectLanguage": "Selecione o idioma para esta pesquisa",
+  "languageWillAffect": "O idioma selecionado afetará como a pesquisa é exibida",
   "language": "Idioma",
   "languages": {
     "en": "Inglês",
@@ -27,7 +30,8 @@
     "ratingRange": "Intervalo de avaliação",
     "minValue": "Valor mínimo",
     "maxValue": "Valor máximo",
-    "defaultValue": "Valor padrão"
+    "defaultValue": "Valor padrão",
+    "deleteElement": "Excluir Elemento"
   },
   "design": {
     "title": "Design",
@@ -35,7 +39,8 @@
     "backgroundColor": "Cor de Fundo",
     "textColor": "Cor do Texto",
     "borderRadius": "Raio da Borda",
-    "fontFamily": "Família da Fonte"
+    "fontFamily": "Família da Fonte",
+    "customize": "Personalizar Design"
   },
   "targeting": {
     "title": "Segmentação",
@@ -44,10 +49,19 @@
     "event": "Baseado em evento",
     "delay": "Atraso (segundos)",
     "position": "Posição",
-    "softGate": "Soft Gate Ativado"
+    "softGate": "Soft Gate Ativado",
+    "pageRules": "Regras de Página"
   },
   "preview": "Visualizar",
+  "previewSurvey": "Visualizar Pesquisa",
   "publish": "Publicar",
+  "unpublish": "Despublicar",
+  "save": "Salvar",
+  "saving": "Salvando...",
+  "loading": "Carregando pesquisa...",
+  "editing": "Editando pesquisa",
+  "creating": "Criando nova pesquisa",
+  "unsavedChanges": "Você tem alterações não salvas. Lembre-se de salvar antes de sair.",
   "toggleStatus": "Alternar Status",
   "deleteConfirm": "Tem certeza que deseja excluir esta pesquisa?",
   "errors": {
