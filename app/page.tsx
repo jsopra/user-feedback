@@ -1,15 +1,39 @@
 "use client"
 
 import { useAuth } from "@/hooks/use-auth"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import LoginForm from "@/components/auth/login-form"
 import Dashboard from "@/components/dashboard/dashboard"
 import { MessageSquare } from "lucide-react"
 
 export default function HomePage() {
+  const router = useRouter()
   const { user, isLoading } = useAuth()
+  const [isCheckingSetup, setIsCheckingSetup] = useState(true)
 
-  if (isLoading) {
+  useEffect(() => {
+    const checkSetup = async () => {
+      try {
+        const response = await fetch("/api/setup/status")
+        const data = await response.json()
+
+        if (data?.needsSetup) {
+          router.replace("/setup")
+          return
+        }
+      } catch (error) {
+        // Falha em checar setup não bloqueia o carregamento
+      } finally {
+        setIsCheckingSetup(false)
+      }
+    }
+
+    checkSetup()
+  }, [router])
+
+  if (isLoading || isCheckingSetup) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
