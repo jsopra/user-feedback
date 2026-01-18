@@ -49,6 +49,16 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const db = getDbClient()
+    const projectId = params?.id
+
+    if (!projectId || projectId === "undefined") {
+      return NextResponse.json({ error: "Project ID é obrigatório" }, { status: 400 })
+    }
+
+    const uuidRegex = /^[0-9a-fA-F-]{36}$/
+    if (!uuidRegex.test(projectId)) {
+      return NextResponse.json({ error: "Project ID inválido" }, { status: 400 })
+    }
     const body = await request.json()
     const { name, description, base_domain } = body
 
@@ -83,7 +93,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         description: description?.trim() || null,
         base_domain: cleanDomain,
       })
-      .eq("id", params.id)
+      .eq("id", projectId)
       .select()
       .single()
 
@@ -118,10 +128,21 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const db = getDbClient()
+    const projectId = params?.id
+
+    if (!projectId || projectId === "undefined") {
+      return NextResponse.json({ error: "Project ID é obrigatório" }, { status: 400 })
+    }
+
+    const uuidRegex = /^[0-9a-fA-F-]{36}$/
+    if (!uuidRegex.test(projectId)) {
+      return NextResponse.json({ error: "Project ID inválido" }, { status: 400 })
+    }
+
     const { data: existingProject, error: checkError } = await db
       .from("projects")
       .select("id")
-      .eq("id", params.id)
+      .eq("id", projectId)
       .single()
 
     if (checkError || !existingProject) {
@@ -129,7 +150,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 
     // Excluir o projeto (surveys serão excluídas automaticamente por CASCADE)
-    const { error } = await db.from("projects").delete().eq("id", params.id)
+    const { error } = await db.from("projects").delete().eq("id", projectId)
 
     if (error) {
       console.error("Erro ao excluir projeto:", error)

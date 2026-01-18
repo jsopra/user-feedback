@@ -5,9 +5,19 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   try {
     const db = getDbServiceRoleClient()
     console.log("=== API STATS ===")
-    console.log("Project ID:", params.id)
+    console.log("Project ID:", params?.id)
 
-    const projectId = params.id
+    const projectId = params?.id
+
+    if (!projectId || projectId === "undefined") {
+      return NextResponse.json({ error: "Project ID é obrigatório" }, { status: 400 })
+    }
+
+    // evitar erro de sintaxe de UUID
+    const uuidRegex = /^[0-9a-fA-F-]{36}$/
+    if (!uuidRegex.test(projectId)) {
+      return NextResponse.json({ error: "Project ID inválido" }, { status: 400 })
+    }
 
     const { data: allProjects, error: allProjectsError } = await db
       .from("projects")
