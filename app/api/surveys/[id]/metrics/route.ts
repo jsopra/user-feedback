@@ -100,12 +100,20 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     })
 
     // Get all devices from both exposures and responses for comparison table
-    const { data: allExposuresData } = await db
-      .from("survey_exposures")
-      .select("session_id, device, created_at")
-      .eq("survey_id", surveyId)
-      .gte("created_at", dateFrom)
-      .lte("created_at", dateTo)
+    let allExposuresData: any[] = []
+    try {
+      const result = await db
+        .from("survey_exposures")
+        .select("session_id, device, created_at")
+        .eq("survey_id", surveyId)
+        .gte("created_at", dateFrom)
+        .lte("created_at", dateTo)
+      
+      allExposuresData = result.data || []
+    } catch (err) {
+      console.log("Tabela survey_exposures não existe, usando apenas responses para métricas de device")
+      allExposuresData = []
+    }
 
     let allResponsesQuery = db
       .from("survey_responses")
