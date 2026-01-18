@@ -250,6 +250,79 @@ function ElementEditor({
                 />
               </div>
 
+              {element.type === "multiple_choice" && (
+                <div>
+                  <Label>Opções de Escolha</Label>
+                  <div className="space-y-2 mt-2">
+                    {(element.config?.options || []).map((option: string, index: number) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <Input
+                          value={option}
+                          onChange={(e) => {
+                            const newOptions = [...(element.config?.options || [])]
+                            newOptions[index] = e.target.value
+                            onUpdate({
+                              config: {
+                                ...element.config,
+                                options: newOptions,
+                              },
+                            })
+                          }}
+                          placeholder={`Opção ${index + 1}`}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const newOptions = (element.config?.options || []).filter((_: string, i: number) => i !== index)
+                            onUpdate({
+                              config: {
+                                ...element.config,
+                                options: newOptions,
+                              },
+                            })
+                          }}
+                          disabled={(element.config?.options || []).length <= 2}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const newOptions = [...(element.config?.options || []), `Opção ${(element.config?.options || []).length + 1}`]
+                        onUpdate({
+                          config: {
+                            ...element.config,
+                            options: newOptions,
+                          },
+                        })
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Adicionar Opção
+                    </Button>
+                  </div>
+                  <div className="flex items-center space-x-2 mt-3">
+                    <Switch
+                      id={`allow-multiple-${element.id}`}
+                      checked={element.config?.allowMultiple || false}
+                      onCheckedChange={(checked) =>
+                        onUpdate({
+                          config: {
+                            ...element.config,
+                            allowMultiple: checked,
+                          },
+                        })
+                      }
+                    />
+                    <Label htmlFor={`allow-multiple-${element.id}`}>Permitir seleção múltipla</Label>
+                  </div>
+                </div>
+              )}
+
               {element.type === "rating" && (
                 <div>
                   <Label>Escala de Rating</Label>

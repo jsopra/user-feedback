@@ -68,14 +68,24 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     console.log("Elements:", elements?.length || 0)
 
     // Buscar respostas de elementos para associar com as respostas principais
-    console.log("Buscando respostas de elementos...")
-    const { data: elementResponses, error: elementResponsesError } = await db
-      .from("survey_element_responses")
-      .select("*")
-      .in(
-        "response_id",
-        (responses || []).map((r: any) => r.id),
-      )
+    let elementResponses: any[] = []
+    let elementResponsesError: any = null
+
+    if (responses.length > 0) {
+      console.log("Buscando respostas de elementos...")
+      const result = await db
+        .from("survey_element_responses")
+        .select("*")
+        .in(
+          "response_id",
+          responses.map((r: any) => r.id),
+        )
+
+      elementResponses = result.data || []
+      elementResponsesError = result.error
+    } else {
+      console.log("Sem respostas para buscar elementos")
+    }
 
     if (elementResponsesError && !elementResponsesError.message.includes("does not exist")) {
       console.error("Erro ao buscar respostas de elementos:", elementResponsesError)
