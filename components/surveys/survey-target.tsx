@@ -17,7 +17,6 @@ interface SurveyTargetProps {
 
 export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
   const [newPattern, setNewPattern] = useState("")
-  const [newRuleType, setNewRuleType] = useState<"include" | "exclude">("include")
 
   const updateTarget = (key: keyof Survey["target"], value: any) => {
     setSurvey({
@@ -46,7 +45,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
     if (newPattern.trim()) {
       const newRule: SurveyPageRule = {
         id: `rule_${Date.now()}`,
-        rule_type: newRuleType,
+        rule_type: "include",
         pattern: newPattern.trim(),
         is_regex: true,
       }
@@ -114,7 +113,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                       <p className="text-xs text-blue-700 mt-1">
                         Use:{" "}
                         <code className="bg-blue-100 px-1 rounded">
-                          window.UserFeedback.trigger('{survey.id}', {`{userId: 123, pedidoId: 456}`})
+                          window.UserFeedback.trigger(&apos;{survey.id}&apos;, {`{userId: 123, pedidoId: 456}`})
                         </code>
                       </p>
                     </div>
@@ -241,18 +240,23 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="p-3 bg-amber-50 rounded-lg">
+              <div className="flex items-start space-x-2">
+                <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-amber-800">Comportamento Padrão</p>
+                  <p className="text-xs text-amber-700 mt-1">
+                    Por padrão, a survey não aparece em nenhuma URL. Você precisa adicionar as URLs específicas onde deseja que a ferramenta seja acionada.
+                  </p>
+                </div>
+              </div>
+            </div>
             <div>
               <Label>Adicionar Nova Regra</Label>
               <div className="flex space-x-2 mt-2">
-                <Select value={newRuleType} onValueChange={(value: "include" | "exclude") => setNewRuleType(value)}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="include">Mostrar em</SelectItem>
-                    <SelectItem value="exclude">Excluir de</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="w-32 flex items-center justify-center bg-gray-100 border rounded-md px-3 py-2 text-sm">
+                  Mostrar em
+                </div>
                 <Input
                   value={newPattern}
                   onChange={(e) => setNewPattern(e.target.value)}
@@ -267,7 +271,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             </div>
 
             {/* Lista de Regras */}
-            <div className="space-y-2">
+            <div className="space-y-2">não será exibida em nenhuma página
               {survey.pageRules.length === 0 ? (
                 <div className="text-center py-4 text-gray-500 text-sm">
                   <Globe className="h-8 w-8 mx-auto mb-2 text-gray-300" />
@@ -314,7 +318,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                       <code>^/produto/.*$</code> - Páginas que começam com /produto/
                     </li>
                     <li>
-                      <code>.*checkout.*</code> - Páginas que contêm "checkout"
+                      <code>.*checkout.*</code> - Páginas que contêm &quot;checkout&quot;
                     </li>
                     <li>
                       <code>/categoria/(roupas|sapatos)/</code> - Categorias específicas
@@ -382,7 +386,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               </Label>
               <div className="mt-1">
                 {survey.pageRules.length === 0 ? (
-                  <Badge variant="outline">Todas as páginas</Badge>
+                  <Badge variant="destructive">Nenhuma página</Badge>
                 ) : (
                   <div className="space-y-1">
                     {survey.pageRules.map((rule, index) => (
@@ -411,7 +415,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               )}
               {triggerMode === "event" && <p>• Será exibida toda vez que for chamada pelo site externo</p>}
               <p>
-                • {survey.pageRules.length === 0 ? "Em todas as páginas" : `Com ${survey.pageRules.length} regra(s)`}
+                • {survey.pageRules.length === 0 ? "Em nenhuma página (precisa adicionar regras)" : `Com ${survey.pageRules.length} regra(s) de exibição`}
               </p>
               <p>
                 • {recurrence === "one_response" && "Apenas uma vez por usuário"}
