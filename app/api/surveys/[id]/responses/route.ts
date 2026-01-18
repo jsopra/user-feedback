@@ -75,7 +75,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Primeiro, criar o registro principal na tabela survey_responses
     console.log("[v0] Creating main response record...")
-    const { data: mainResponse, error: mainResponseError } = await db
+    const { error: mainResponseError } = await db
       .from("survey_responses")
       .insert({
         survey_id: params.id,
@@ -88,10 +88,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         completed: true,
         completed_at: timestamp || new Date().toISOString(),
       })
-      .select()
-      .single()
 
-    if (mainResponseError || !mainResponse) {
+    if (mainResponseError) {
       console.error("[v0] Main response creation error:", mainResponseError)
       return NextResponse.json(
         { error: "Erro ao salvar resposta principal" },
@@ -102,6 +100,26 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       )
     }
 
+    // Buscar a resposta criada mais recentemente
+    const { data: mainResponseArray, error: mainResponseFetchError } = await db
+      .from("survey_responses")
+      .select("*")
+      .eq("survey_id", params.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+
+    if (mainResponseFetchError || !mainResponseArray || mainResponseArray.length === 0) {
+      console.error("[v0] Failed to fetch created response:", mainResponseFetchError)
+      return NextResponse.json(
+        { error: "Erro ao recuperar resposta criada" },
+        {
+          status: 500,
+          headers: corsHeaders(),
+        },
+      )
+    }
+
+    const mainResponse = mainResponseArray[0]
     console.log("[v0] Main response created successfully:", mainResponse)
 
     // Buscar os elementos da survey para mapear os IDs
@@ -165,25 +183,28 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       )
     }
 
-    // Inserir respostas individuais dos elementos
+    // Inserir respostas individuais dos elementos um a um
     console.log("[v0] Inserting element responses...")
-    const { data: insertedElementResponses, error: insertElementError } = await db
-      .from("survey_element_responses")
-      .insert(elementResponsesToInsert)
-      .select()
+    let insertedCount = 0
+    for (const elementResponse of elementResponsesToInsert) {
+      const { error: insertElementError } = await db
+        .from("survey_element_responses")
+        .insert(elementResponse)
 
-    if (insertElementError) {
-      console.error("[v0] Element responses insertion error:", insertElementError)
-      return NextResponse.json(
-        { error: "Erro ao salvar respostas dos elementos" },
-        {
-          status: 500,
-          headers: corsHeaders(),
-        },
-      )
+      if (insertElementError) {
+        console.error("[v0] Element response insertion error:", insertElementError)
+        return NextResponse.json(
+          { error: "Erro ao salvar respostas dos elementos" },
+          {
+            status: 500,
+            headers: corsHeaders(),
+          },
+        )
+      }
+      insertedCount++
     }
 
-    console.log("[v0] Element responses saved successfully:", insertedElementResponses)
+    console.log("[v0] Element responses saved successfully, count:", insertedCount)
     console.log("[v0] === SURVEY RESPONSES API SUCCESS ===")
 
     return NextResponse.json(
@@ -191,7 +212,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         success: true,
         message: "Respostas salvas com sucesso",
         response_id: mainResponse.id,
-        element_responses: insertedElementResponses,
+        element_responses_count: insertedCount,
       },
       {
         headers: corsHeaders(),

@@ -351,19 +351,23 @@ export async function POST(request: NextRequest) {
 
       console.log("Elementos a inserir:", elementsToInsert)
 
-      const { data: insertedElements, error: elementsError } = await db
-        .from("survey_elements")
-        .insert(elementsToInsert)
-        .select()
+      // Inserir elementos um por um para garantir que funcionam
+      let insertedCount = 0
+      for (const elementData of elementsToInsert) {
+        const { error: elemError } = await db
+          .from("survey_elements")
+          .insert(elementData)
 
-      if (elementsError) {
-        console.error("Erro ao inserir elementos:", elementsError)
-        // Rollback - deletar survey criada
-        await db.from("surveys").delete().eq("id", survey.id)
-        return NextResponse.json({ error: "Erro ao criar elementos da survey" }, { status: 500 })
+        if (elemError) {
+          console.error("Erro ao inserir elemento:", elemError, "Dados:", elementData)
+          // Rollback - deletar survey criada
+          await db.from("surveys").delete().eq("id", survey.id)
+          return NextResponse.json({ error: "Erro ao criar elementos da survey" }, { status: 500 })
+        }
+        insertedCount++
       }
 
-      console.log("Elementos inseridos:", insertedElements?.length || 0)
+      console.log("Elementos inseridos:", insertedCount)
     }
 
     // Inserir regras de páginas se existirem
@@ -379,19 +383,23 @@ export async function POST(request: NextRequest) {
 
       console.log("Regras a inserir:", rulesToInsert)
 
-      const { data: insertedRules, error: rulesError } = await db
-        .from("survey_page_rules")
-        .insert(rulesToInsert)
-        .select()
+      // Inserir regras uma por uma para garantir que funcionam
+      let insertedRulesCount = 0
+      for (const ruleData of rulesToInsert) {
+        const { error: ruleError } = await db
+          .from("survey_page_rules")
+          .insert(ruleData)
 
-      if (rulesError) {
-        console.error("Erro ao inserir regras:", rulesError)
-        // Rollback - deletar survey criada
-        await db.from("surveys").delete().eq("id", survey.id)
-        return NextResponse.json({ error: "Erro ao criar regras da survey" }, { status: 500 })
+        if (ruleError) {
+          console.error("Erro ao inserir regra:", ruleError, "Dados:", ruleData)
+          // Rollback - deletar survey criada
+          await db.from("surveys").delete().eq("id", survey.id)
+          return NextResponse.json({ error: "Erro ao criar regras da survey" }, { status: 500 })
+        }
+        insertedRulesCount++
       }
 
-      console.log("Regras inseridas:", insertedRules?.length || 0)
+      console.log("Regras inseridas:", insertedRulesCount)
     }
 
     // Verificação final - buscar a survey completa

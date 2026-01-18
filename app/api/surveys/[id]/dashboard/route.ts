@@ -35,13 +35,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     // Construir query de respostas com filtro de data
     let responsesQuery = db
       .from("survey_responses")
-      .select(`
-        *,
-        survey_element_responses (
-          *,
-          survey_elements (*)
-        )
-      `)
+      .select("*")
       .eq("survey_id", params.id)
       .eq("completed", true)
 
@@ -73,11 +67,33 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     console.log("Total responses:", responses?.length || 0)
     console.log("Elements:", elements?.length || 0)
 
-    if (responses.length > 0) {
-      console.log("Primeira response:", JSON.stringify(responses[0], null, 2))
-      console.log("Survey element responses da primeira:", responses[0]?.survey_element_responses?.length || 0)
+    // Buscar respostas de elementos para associar com as respostas principais
+    console.log("Buscando respostas de elementos...")
+    const { data: elementResponses, error: elementResponsesError } = await db
+      .from("survey_element_responses")
+      .select("*")
+      .in(
+        "response_id",
+        (responses || []).map((r: any) => r.id),
+      )
 
-      responses.forEach((response: any, index: number) => {
+    if (elementResponsesError && !elementResponsesError.message.includes("does not exist")) {
+      console.error("Erro ao buscar respostas de elementos:", elementResponsesError)
+    }
+
+    // Associar respostas de elementos com as respostas principais
+    const responsesWithElements = (responses || []).map((response: any) => ({
+      ...response,
+      survey_element_responses: (elementResponses || []).filter(
+        (er: any) => er.response_id === response.id,
+      ),
+    }))
+
+    if (responsesWithElements.length > 0) {
+      console.log("Primeira response:", JSON.stringify(responsesWithElements[0], null, 2))
+      console.log("Survey element responses da primeira:", responsesWithElements[0]?.survey_element_responses?.length || 0)
+
+      responsesWithElements.forEach((response: any, index: number) => {
         console.log(`Response ${index + 1}:`, {
           id: response.id,
           element_responses: response.survey_element_responses?.length || 0,
@@ -86,7 +102,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       })
     }
 
-    console.log("Respostas encontradas:", responses?.length || 0)
+    console.log("Respostas encontradas:", responsesWithElements?.length || 0)
 
     // Buscar hits da survey
     let hitsQuery = db.from("survey_hits").select("*").eq("survey_id", params.id)
@@ -196,7 +212,7 @@ function processMetrics(responses: any[], elements: any[], hits: any[], exposure
   }
 
   elements.forEach((element: any) => {
-    const elementResponses = responses.flatMap(
+    const elementResponses = responsesWithElements.flatMap(
       (response) => response.survey_element_responses?.filter((er: any) => er.element_id === element.id) || [],
     )
 
