@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     // Buscar todos os usuários
     const { data: users, error } = await db
       .from("users")
-      .select("id, email, name, role, created_at")
+      .select("id, email, name, role, preferred_language, created_at")
       .order("created_at", { ascending: false })
 
     console.log("Usuários encontrados:", users?.length || 0)
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
     }
 
-    const { name, email, password, role } = await request.json()
+    const { name, email, password, role, preferred_language } = await request.json()
     const normalizedRole = role === "member" ? "user" : role
     const allowedRoles = ["admin", "moderator", "user"] as const
 
@@ -110,6 +110,7 @@ export async function POST(request: NextRequest) {
         email,
         password_hash: passwordHash,
         role: normalizedRole,
+        preferred_language: preferred_language || "en",
       })
       .single()
 

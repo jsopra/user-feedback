@@ -158,12 +158,12 @@ export default function ProjectsDashboard() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{t("myProjects")}</h1>
-            <p className="text-gray-600 mt-2">Gerencie seus projetos e surveys de feedback</p>
+            <p className="text-gray-600 mt-2">{t("description")}</p>
           </div>
           <div className="flex space-x-3">
             <Button onClick={loadProjects} variant="outline" size="sm" disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-              Atualizar
+              {t("refresh")}
             </Button>
             <Button onClick={() => setShowCreateModal(true)} className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />

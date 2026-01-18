@@ -17,6 +17,8 @@
   "admin": "Administrador",
   "member": "Miembro",
   "user": "Usuario",
+  "preferredLanguage": "Idioma Preferido",
+  "selectLanguage": "Seleccione el idioma",
   "status": "Estado",
   "active": "Activo",
   "inactive": "Inactivo",

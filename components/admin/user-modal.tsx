@@ -16,6 +16,7 @@ interface User {
   email: string
   name: string
   role: "admin" | "user"
+  preferred_language?: string
   created_at: string
 }
 
@@ -34,6 +35,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
     email: "",
     password: "",
     role: "user" as "admin" | "user",
+    preferred_language: "en",
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -45,6 +47,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
         email: user.email,
         password: "",
         role: user.role,
+        preferred_language: user.preferred_language || "en",
       })
     } else {
       setFormData({
@@ -52,6 +55,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
         email: "",
         password: "",
         role: "user",
+        preferred_language: "en",
       })
     }
     setError("")
@@ -76,6 +80,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
         name: formData.name,
         email: formData.email,
         role: formData.role,
+        preferred_language: formData.preferred_language,
       }
 
       // Incluir senha apenas se for novo usuário ou se foi preenchida
@@ -160,7 +165,24 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
               </SelectContent>
             </Select>
           </div>
+<div>
+            <Label htmlFor="preferred_language">{t("preferredLanguage")}</Label>
+            <Select
+              value={formData.preferred_language}
+              onValueChange={(value: string) => setFormData({ ...formData, preferred_language: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={t("selectLanguage")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">🇺🇸 English</SelectItem>
+                <SelectItem value="pt-br">🇧🇷 Português (Brasil)</SelectItem>
+                <SelectItem value="es">🇪🇸 Español</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
+          
           {error && <div className="text-red-600 text-sm">{error}</div>}
 
           <div className="flex justify-end space-x-2 pt-4">

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Lock } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface ChangePasswordModalProps {
   isOpen: boolean
@@ -18,6 +19,7 @@ interface ChangePasswordModalProps {
 
 export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProps) {
   const { user } = useAuth()
+  const { t } = useTranslation("auth")
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -40,13 +42,13 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
 
     // Validações
     if (formData.newPassword !== formData.confirmPassword) {
-      setError("As senhas não coincidem")
+      setError(t("passwordsDoNotMatch"))
       setIsLoading(false)
       return
     }
 
     if (formData.newPassword.length < 6) {
-      setError("A nova senha deve ter pelo menos 6 caracteres")
+      setError(t("passwordTooShortNew"))
       setIsLoading(false)
       return
     }
@@ -67,7 +69,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Erro ao alterar senha")
+        throw new Error(data.error || t("errors.loginFailed"))
       }
 
       setSuccess(true)
@@ -79,7 +81,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
         setSuccess(false)
       }, 2000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao alterar senha")
+      setError(err instanceof Error ? err.message : t("errors.loginFailed"))
     } finally {
       setIsLoading(false)
     }
@@ -103,7 +105,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Alterar Senha</DialogTitle>
+          <DialogTitle>{t("changePassword")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -115,19 +117,19 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
 
           {success && (
             <Alert>
-              <AlertDescription>Senha alterada com sucesso!</AlertDescription>
+              <AlertDescription>{t("passwordChanged")}</AlertDescription>
             </Alert>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="currentPassword">Senha Atual</Label>
+            <Label htmlFor="currentPassword">{t("currentPassword")}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 id="currentPassword"
                 name="currentPassword"
                 type={showPasswords.current ? "text" : "password"}
-                placeholder="Senha atual"
+                placeholder={t("passwordPlaceholder")}
                 value={formData.currentPassword}
                 onChange={handleChange}
                 className="pl-10 pr-10"
@@ -150,14 +152,14 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="newPassword">Nova Senha</Label>
+            <Label htmlFor="newPassword">{t("newPassword")}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 id="newPassword"
                 name="newPassword"
                 type={showPasswords.new ? "text" : "password"}
-                placeholder="Nova senha (mín. 6 caracteres)"
+                placeholder={t("newPasswordPlaceholder")}
                 value={formData.newPassword}
                 onChange={handleChange}
                 className="pl-10 pr-10"
@@ -181,14 +183,14 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
+            <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
                 type={showPasswords.confirm ? "text" : "password"}
-                placeholder="Confirme a nova senha"
+                placeholder={t("confirmPasswordPlaceholder")}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="pl-10 pr-10"
@@ -212,10 +214,10 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancelar
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Alterando..." : "Alterar Senha"}
+              {isLoading ? t("passwordChanging") : t("changePassword")}
             </Button>
           </div>
         </form>

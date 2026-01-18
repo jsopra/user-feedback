@@ -105,7 +105,7 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem onClick={handleView} className="cursor-pointer">
                 <Eye className="h-4 w-4 mr-2" />
-                Ver Surveys
+                {t("viewSurveys")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleEdit} className="cursor-pointer">
                 <Edit className="h-4 w-4 mr-2" />
@@ -140,21 +140,21 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
             <div className="grid grid-cols-3 gap-2 text-xs">
               <div className="text-center">
                 <div className="font-semibold text-gray-900">{stats.total}</div>
-                <div className="text-gray-500">Total</div>
+                <div className="text-gray-500">{t("total")}</div>
               </div>
               <div className="text-center">
                 <div className="font-semibold text-green-600 flex items-center justify-center">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   {stats.active}
                 </div>
-                <div className="text-gray-500">Ativas</div>
+                <div className="text-gray-500">{t("active")}</div>
               </div>
               <div className="text-center">
                 <div className="font-semibold text-gray-500 flex items-center justify-center">
                   <XCircle className="h-3 w-3 mr-1" />
                   {stats.inactive}
                 </div>
-                <div className="text-gray-500">Inativas</div>
+                <div className="text-gray-500">{t("inactive")}</div>
               </div>
             </div>
           )}
@@ -164,7 +164,7 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
         <div className="pt-2 border-t">
           <Button onClick={handleView} className="w-full bg-blue-600 hover:bg-blue-700">
             <Eye className="h-4 w-4 mr-2" />
-            Ver Surveys ({stats.total})
+            {t("viewSurveys")} ({stats.total})
           </Button>
         </div>
 
@@ -175,7 +175,7 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
               {t("confirmDelete")}
               <div className="flex space-x-2 mt-2">
                 <Button size="sm" variant="destructive" onClick={handleDelete} className="h-7 text-xs">
-                  Confirmar
+                  {t("confirm")}
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setShowDeleteConfirm(false)} className="h-7 text-xs">
                   {t("cancel")}

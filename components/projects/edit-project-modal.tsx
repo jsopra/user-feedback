@@ -116,11 +116,11 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
               id="edit-domain"
               value={formData.base_domain}
               onChange={(e) => setFormData({ ...formData, base_domain: e.target.value })}
-              placeholder="Ex: meusite.com"
+              placeholder={t("domainPlaceholder")}
               required
               disabled={isLoading}
             />
-            <p className="text-xs text-gray-500">Domínio onde as surveys serão exibidas</p>
+            <p className="text-xs text-gray-500">{t("domainHelp")}</p>
           </div>
 
           <div className="space-y-2">
@@ -129,7 +129,7 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
               id="edit-description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Descrição opcional do projeto..."
+              placeholder={t("descriptionPlaceholder")}
               rows={3}
               disabled={isLoading}
             />

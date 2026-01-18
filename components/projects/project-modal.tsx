@@ -157,7 +157,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
                 <AlertDescription className="text-sm">{errors.name}</AlertDescription>
               </Alert>
             )}
-            <p className="text-xs text-gray-500">{formData.name.length}/100 caracteres</p>
+            <p className="text-xs text-gray-500">{formData.name.length}/100 {t("characters")}</p>
           </div>
 
           {/* Domínio Base */}
@@ -170,7 +170,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
               id="base_domain"
               value={formData.base_domain}
               onChange={(e) => handleInputChange("base_domain", e.target.value)}
-              placeholder="exemplo.com ou https://app.exemplo.com"
+              placeholder={t("domainPlaceholder")}
               className={errors.base_domain ? "border-red-500" : ""}
             />
             {errors.base_domain && (
@@ -180,11 +180,11 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
             )}
             {formData.base_domain && !errors.base_domain && (
               <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
-                <strong>Preview:</strong> {formatDomainPreview(formData.base_domain)}
+                <strong>{t("preview")}:</strong> {formatDomainPreview(formData.base_domain)}
               </div>
             )}
             <p className="text-xs text-gray-500">
-              Aceita domínios como "exemplo.com" ou URLs completas como "https://app.exemplo.com"
+              {t("domainAccepts")}
             </p>
           </div>
 
@@ -198,7 +198,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
               id="description"
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Descreva o objetivo deste projeto..."
+              placeholder={t("descriptionPlaceholder")}
               className={errors.description ? "border-red-500" : ""}
               rows={3}
               maxLength={500}
@@ -208,7 +208,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project }: Proje
                 <AlertDescription className="text-sm">{errors.description}</AlertDescription>
               </Alert>
             )}
-            <p className="text-xs text-gray-500">{formData.description.length}/500 caracteres</p>
+            <p className="text-xs text-gray-500">{formData.description.length}/500 {t("characters")}</p>
           </div>
 
           {/* Botões */}

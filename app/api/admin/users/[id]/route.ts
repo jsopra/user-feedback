@@ -30,14 +30,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
     }
 
-    const { name, email, password, role } = await request.json()
+    const { name, email, password, role, preferred_language } = await request.json()
     const normalizedRole = role === "member" ? "user" : role
     const allowedRoles = ["admin", "moderator", "user"] as const
     const userId = params.id
 
     console.log("=== ATUALIZANDO USUÁRIO ===")
     console.log("User ID:", userId)
-    console.log("Dados recebidos:", { name, email, role: normalizedRole, hasPassword: !!password })
+    console.log("Dados recebidos:", { name, email, role: normalizedRole, preferred_language, hasPassword: !!password })
 
     if (!name || !email || !normalizedRole) {
       return NextResponse.json({ error: "Nome, email e função são obrigatórios" }, { status: 400 })
@@ -61,6 +61,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     // Preparar dados para atualização
     const updateData: any = { name, email, role: normalizedRole }
+
+    if (preferred_language) {
+      updateData.preferred_language = preferred_language
+    }
 
     if (password && password.trim() !== "") {
       const saltRounds = 12
