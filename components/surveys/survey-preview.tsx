@@ -18,7 +18,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
     const newErrors: Record<string, boolean> = {}
     
     survey.elements.forEach((element) => {
-      if (element.required) {
+      if (element.required && element.id) {
         const value = formData[element.id]
         if (!value || (Array.isArray(value) && value.length === 0) || value === "") {
           newErrors[element.id] = true
@@ -47,6 +47,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
   }
 
   const renderElement = (element: SurveyElement) => {
+    if (!element.id) return null
     const hasError = errors[element.id]
     switch (element.type) {
       case "text":
