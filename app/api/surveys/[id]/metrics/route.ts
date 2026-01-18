@@ -1,6 +1,23 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getDbServiceRoleClient } from "@/lib/dbClient"
 
+// Helper para normalizar created_at (pode ser string ou Date object)
+function getDateString(createdAt: any): string {
+  if (!createdAt) return new Date().toISOString().split("T")[0]
+  if (typeof createdAt === "string") {
+    return createdAt.split("T")[0]
+  }
+  if (createdAt instanceof Date) {
+    return createdAt.toISOString().split("T")[0]
+  }
+  // Tentar converter para Date se for timestamp ou outro formato
+  try {
+    return new Date(createdAt).toISOString().split("T")[0]
+  } catch (e) {
+    return new Date().toISOString().split("T")[0]
+  }
+}
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const db = getDbServiceRoleClient()
@@ -45,7 +62,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
       exposures = exposuresCount || 0
       ;(exposuresData || []).forEach((row: any) => {
-        const date = row.created_at.split("T")[0]
+        const date = getDateString(row.created_at)
         if (!trendData[date]) {
           trendData[date] = { date, exposures: 0, responses: 0 }
         }
@@ -75,7 +92,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     const { count: responses, data: responsesData } = await responsesQuery
     ;(responsesData || []).forEach((row: any) => {
-      const date = row.created_at.split("T")[0]
+      const date = getDateString(row.created_at)
       if (!trendData[date]) {
         trendData[date] = { date, exposures: 0, responses: 0 }
       }

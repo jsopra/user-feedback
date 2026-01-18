@@ -524,12 +524,15 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         
         if (Array.isArray(value)) {
           isEmpty = value.length === 0;
+        } else if (value === null || value === undefined) {
+          isEmpty = true;
         } else {
-          isEmpty = !value || value.toString().trim() === '';
+          isEmpty = value.toString().trim() === '';
         }
         
         if (isEmpty) {
-          var fieldType = currentElement.type === 'multiple_choice' ? 'uma opção' : 'este campo';
+          var fieldType = currentElement.type === 'multiple_choice' ? 'uma opção' : 
+                          currentElement.type === 'rating' ? 'uma avaliação' : 'este campo';
           return {
             isValid: false,
             message: 'Por favor, selecione ' + fieldType + ' antes de continuar.'
