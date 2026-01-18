@@ -21,7 +21,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
   const [isCompleted, setIsCompleted] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [exposureTracked, setExposureTracked] = useState(false)
-  const [showSoftGate, setShowSoftGate] = useState(true)
+  const [showSoftGate, setShowSoftGate] = useState(survey.designSettings?.softGate !== false)
   const [hitTracked, setHitTracked] = useState(false)
 
   const trackHit = async () => {
@@ -90,6 +90,11 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
 
   useEffect(() => {
     trackHit()
+    
+    // If soft gate is disabled, automatically track exposure and go directly to survey
+    if (survey.designSettings?.softGate === false) {
+      trackExposure()
+    }
   }, [])
 
   const handleSoftGateAccept = () => {
