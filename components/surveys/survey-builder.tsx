@@ -351,6 +351,7 @@ export default function SurveyBuilder({
 
   const handleTitleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      e.preventDefault()
       saveTitle()
     } else if (e.key === "Escape") {
       cancelEditTitle()
@@ -469,7 +470,7 @@ export default function SurveyBuilder({
                 <Eye className="h-4 w-4 mr-2" />
                 Preview
               </Button>
-              <Button size="sm" onClick={handleSave} disabled={finalIsLoading}>
+              <Button size="sm" onClick={(e) => { e.preventDefault(); handleSave(); }} disabled={finalIsLoading}>
                 <Save className="h-4 w-4 mr-2" />
                 {finalIsLoading ? "Salvando..." : "Salvar"}
               </Button>

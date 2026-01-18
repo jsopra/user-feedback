@@ -88,7 +88,6 @@ export default function EditSurveyPage() {
         if (data.survey) {
           setSurvey(data.survey)
         }
-        setSuccess("Survey atualizada com sucesso!")
         
         return data.survey || survey
       } else {
