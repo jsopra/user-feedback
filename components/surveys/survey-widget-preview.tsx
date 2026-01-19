@@ -27,6 +27,20 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
   const [showSoftGate, setShowSoftGate] = useState(survey.design?.softGate !== false)
   const [hitTracked, setHitTracked] = useState(false)
 
+  // Inicializar valores padrão dos elementos
+  useEffect(() => {
+    const initialData: Record<string, any> = {}
+    survey.elements.forEach((element) => {
+      if (element.id) {
+        // Rating tem defaultValue dentro de ratingRange
+        if (element.type === 'rating' && element.config?.ratingRange?.defaultValue !== undefined) {
+          initialData[element.id] = element.config.ratingRange.defaultValue
+        }
+      }
+    })
+    setResponses(initialData)
+  }, [survey.elements])
+
   const trackHit = async () => {
     if (hitTracked) return
 
@@ -114,6 +128,30 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
   }
 
   const nextStep = async () => {
+    // Validar campo atual se for obrigatório
+    const currentElement = survey.elements[currentStep]
+    if (currentElement.required && currentElement.id) {
+      const value = responses[currentElement.id]
+      
+      // Verificar se está vazio
+      let isEmpty = false
+      
+      if (value === undefined || value === null) {
+        isEmpty = true
+      } else if (Array.isArray(value) && value.length === 0) {
+        isEmpty = true
+      } else if (typeof value === 'string' && value.trim() === '') {
+        isEmpty = true
+      } else if (currentElement.type === 'rating' && (typeof value !== 'number' || value <= 0)) {
+        isEmpty = true
+      }
+      
+      if (isEmpty) {
+        alert(t("builder.preview.requiredField"))
+        return // Bloqueia avanço
+      }
+    }
+    
     if (currentStep < survey.elements.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {

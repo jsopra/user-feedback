@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { X, Star } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
@@ -17,6 +17,20 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
   const [formData, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, boolean>>({})
   const [attemptedSubmit, setAttemptedSubmit] = useState(false)
+
+  // Inicializar valores padrão dos elementos
+  useEffect(() => {
+    const initialData: Record<string, any> = {}
+    survey.elements.forEach((element) => {
+      if (element.id) {
+        // Rating tem defaultValue dentro de ratingRange
+        if (element.type === 'rating' && element.config?.ratingRange?.defaultValue !== undefined) {
+          initialData[element.id] = element.config.ratingRange.defaultValue
+        }
+      }
+    })
+    setFormData(initialData)
+  }, [survey.elements])
 
   const handleSubmit = () => {
     setAttemptedSubmit(true)
@@ -45,7 +59,8 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
         return
       }
       
-      if (typeof value === 'number' && value <= 0) {
+      // CORRIGIDO: Rating 0 é inválido, mas >= 1 é válido
+      if (element.type === 'rating' && (typeof value !== 'number' || value <= 0)) {
         newErrors[element.id] = true
         return
       }
