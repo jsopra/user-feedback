@@ -6,216 +6,124 @@ Sistema completo de coleta e gestão de feedbacks para produtos digitais.
 [![Next.js](https://img.shields.io/badge/Next.js-14.x-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-## ⚠️ Aviso de Segurança
-
-**Antes de usar este sistema em produção:**
-
-1. 🔒 **Leia o arquivo [SECURITY.md](SECURITY.md)** para conhecer as melhores práticas de segurança
-2. 🔑 **Crie credenciais de administrador seguras** - não há usuário padrão pré-configurado
-3. 🔐 **Configure todas as variáveis de ambiente** conforme documentado
-4. 🛡️ **Implemente rate limiting e CORS** apropriados para seu ambiente
-5. 🔍 **Execute auditorias de segurança** regularmente com `pnpm audit`
-
-## Visão Geral
-
-Plataforma completa para criação, gestão e análise de pesquisas e feedbacks em produtos digitais. Permite criar surveys customizáveis, coletar respostas, analisar métricas e exportar dados.
-
-### Funcionalidades
-
-- 🎯 **Criação de Surveys**: Interface intuitiva para criar pesquisas personalizadas
-- 📊 **Dashboard de Métricas**: Análise detalhada de respostas e engajamento
-- 🔗 **Embed System**: Integração fácil em qualquer website
-- 👥 **Gestão de Usuários**: Sistema completo de autenticação e autorização
-- 📈 **Analytics**: Métricas em tempo real e relatórios detalhados
-
-## Setup Local
+## Quick Start
 
 ### Pré-requisitos
 
-- Node.js 22.x LTS (recomendado) ou 20.x
-- pnpm (recomendado) ou npm
-- PostgreSQL 12+ (local ou remoto)
-- Cliente PostgreSQL (`psql`) para migrations
+- Node.js 20.x+ (recomendado 22.x LTS)
+- PostgreSQL 12+ ou Docker
+- pnpm ou npm
 
-### Instalação
+### Setup em 3 passos
 
-1. Clone o repositório:
-\`\`\`bash
+1. **Clone e instale:**
+```bash
 git clone https://github.com/your-username/user-feedback-system.git
 cd user-feedback-system
-\`\`\`
-
-2. Instale as dependências:
-\`\`\`bash
 pnpm install
-\`\`\`
+```
 
-3. Configure as variáveis de ambiente:
-\`\`\`bash
+2. **Configure o banco de dados:**
+```bash
 cp .env.example .env.local
-\`\`\`
-
-Edite o arquivo \`.env.local\` com as credenciais do Supabase **e** com a URL de conexão do PostgreSQL.
-
-### Variáveis de Ambiente Necessárias
-
-| Variável | Descrição | Exemplo |
-|----------|-----------|----------|
-| `DATABASE_URL` | String de conexão completa ao PostgreSQL | `postgresql://user:password@localhost:5432/user_feedback` |
-| `NODE_ENV` | Ambiente de execução | `development` ou `production` |
-
-**⚠️ Importante**: Mantenha o `DATABASE_URL` seguro e nunca o exponha publicamente.
-
-#### Configuração do Banco PostgreSQL
-
-Você pode usar:
-1. **PostgreSQL Local**: Instale via `apt`, `brew` ou Docker
-2. **PostgreSQL na Nuvem**: Supabase (apenas o banco), Railway, Render, DigitalOcean, etc.
-
-**Docker PostgreSQL (desenvolvimento local):**
-\`\`\`bash
-docker run -d \\
-  --name user-feedback-db \\
-  -e POSTGRES_PASSWORD=sua_senha \\
-  -e POSTGRES_DB=user_feedback \\
-  -p 5432:5432 \\
-  postgres:16-alpine
-\`\`\`
-
-Então use:
-\`\`\`bash
-DATABASE_URL=postgresql://postgres:sua_senha@localhost:5432/user_feedback
-\`\`\`
-
-4. Execute as migrations (é necessário ter o `psql` instalado e a variável `DATABASE_URL` configurada):
-\`\`\`bash
+# Edite .env.local com sua DATABASE_URL
 pnpm migrate
-\`\`\`
+```
 
-5. Inicie a aplicação de desenvolvimento:
-\`\`\`bash
+3. **Inicie a aplicação:**
+```bash
 pnpm dev
-\`\`\`
+```
 
-A aplicação estará disponível em [http://localhost:3000](http://localhost:3000).
+Abra [http://localhost:3000](http://localhost:3000). Se não houver usuários no banco, você será automaticamente redirecionado para `/setup` para criar o primeiro admin.
 
-As migrations ficam em `scripts/migrations/*.sql` com nomes ordenados por timestamp e são executadas sequencialmente pelo script. O diretório `scripts/migrations/legacy/` mantém consultas de troubleshooting usadas anteriormente.
+---
 
-### Primeiro Usuário Administrador
+## Configuração do Banco de Dados
 
-⚠️ **IMPORTANTE:** Por questões de segurança, não há usuário administrador pré-configurado.
+### Variável Necessária
 
-Você tem duas opções para criar o primeiro admin:
+```bash
+DATABASE_URL=postgresql://user:password@host:5432/database
+```
 
-**Opção 1 - Manual via Banco (Recomendado para produção):**
+### Opções Rápidas
 
-1. Gere um hash bcrypt para sua senha:
-\`\`\`bash
-node -e "console.log(require('bcryptjs').hashSync('SUA_SENHA_SEGURA', 12))"
-\`\`\`
+**Local com Docker:**
+```bash
+docker run -d --name user-feedback-db \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=user_feedback \
+  -p 5432:5432 \
+  postgres:16-alpine
 
-2. Edite o arquivo `scripts/migrations/20241001_005_seed_default_admin.sql` e descomente as linhas INSERT, substituindo o hash
+# Então use:
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/user_feedback
+```
 
-3. Execute as migrations:
-\`\`\`bash
-pnpm migrate
-\`\`\`
+**PostgreSQL Cloud:** Supabase, Railway, Render, DigitalOcean, etc.
 
-**Opção 2 - Via Interface (Apenas Desenvolvimento):**
+---
 
-1. Inicie a aplicação
-2. Acesse a página de registro
-3. Crie o primeiro usuário (será automaticamente admin se for o primeiro)
+## Fluxo de Admin
 
-> 🔒 **Produção:** Sempre use senhas fortes (mínimo 12 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos)
+Quando você inicia a aplicação sem usuários:
 
-## Como Rodar com Docker
+1. ✅ Sistema detecta banco vazio
+2. 🔄 Redireciona automaticamente para `/setup`
+3. 📝 Você cria o primeiro usuário admin (segura com bcrypt)
+4. ✅ Acesso concedido ao dashboard
 
-O container precisa da variável `DATABASE_URL` apontando para o Postgres. Garanta que o arquivo `.env.local` (ou variáveis de ambiente no provider) contenha essa configuração. O comando `pnpm migrate` é executado automaticamente no start da imagem.
+Não há credenciais padrão hardcoded por questões de segurançaFuncionalidades
 
-### Usando Docker Compose (Recomendado)
+- 🎯 **Surveys**: Criação intuitiva de pesquisas personalizadas
+- 📊 **Dashboard**: Análise de respostas em tempo real
+- 🔗 **Embed**: Integre em qualquer website via JavaScript
+- 📈 **Métricas**: Análise de engajamento e conversão
+- 👥 **Gestão**: Gerenciamento de projetos e usuários
 
-\`\`\`bash
+---
+
+## Docker
+
+Use Docker Compose para subir localmente com postgres incluído:
+
+```bash
 docker-compose up -d
-\`\`\`
+```
 
-### Usando Docker diretamente
+Ou build manualmente:
+```bash
+docker build -t user-feedback .
+docker run -p 3000:3000 --env-file .env.local user-feedback
+```
 
-\`\`\`bash
-docker build -t user-feedback-system .
-docker run -p 3000:3000 --env-file .env.local user-feedback-system
-\`\`\`
+---
 
 ## Scripts Disponíveis
 
-- \`pnpm migrate\` - Executa todas as migrations SQL usando o `DATABASE_URL`
-- \`pnpm dev\` - Inicia o servidor de desenvolvimento
-- \`pnpm build\` - Gera build de produção
-- \`pnpm start\` - Executa a versão de produção
-- \`pnpm lint\` - Executa verificação de código- \`pnpm audit\` - Verifica vulnerabilidades de segurança
+```bash
+pnpm dev          # Desenvolvimento
+pnpm build        # Build de produção
+pnpm start        # Executar build
+pnpm migrate      # Rodar migrations do PostgreSQL
+pnpm lint         # Checar código
+pnpm audit        # Verificar vulnerabilidades
+```
+
+---
 
 ## Segurança
 
-Este projeto leva segurança a sério. Consulte [SECURITY.md](SECURITY.md) para:
+⚠️ **IMPORTANTE:** Leia [SECURITY.md](SECURITY.md) antes de usar em produção.
 
-- Relatar vulnerabilidades de segurança
-- Melhores práticas de deployment
-- Checklist de segurança para produção
-- Configurações de headers de segurança
-- Compliance com GDPR/LGPD
+Highlights:
+- ✅ Bcrypt com 12 salt rounds
+- ✅ Sessões com expiração (24h)
+- ✅ Sem credenciais hardcoded
+- ⚠️ Configure rate limiting em produção
+- ⚠️ Configure CSP headers em produção
 
-### Recursos de Segurança
+---
 
-- ✅ Senhas com bcrypt (12 salt rounds)
-- ✅ Sessões com expiração automática (24h)
-- ✅ Validação de entrada de dados
-- ✅ Proteção contra SQL injection (via Supabase)
-- ✅ Node.js 22 LTS e Next.js 14.2.35 (versões seguras)
-- ✅ Dependências auditadas regularmente
-- ⚠️ Rate limiting - **Implementar em produção**
-- ⚠️ CSRF protection - **Implementar em produção**
-- ⚠️ CSP headers - **Configurar em produção**
-## Arquitetura
-
-### Stack Tecnológico
-
-- **Frontend/Backend**: Next.js 14 (App Router) + TypeScript
-- **Estilização**: Tailwind CSS + Radix UI
-- **Banco de Dados**: PostgreSQL 12+ (via driver `pg`)
-- **Autenticação**: Sistema customizado com bcrypt
-- **Deploy**: Docker + Node.js
-
-### Estrutura do Projeto
-
-\`\`\`
-app/                 # Next.js App Router
-├── api/            # API Routes
-│   ├── auth/       # Autenticação
-│   ├── surveys/    # CRUD de surveys
-│   └── projects/   # Gestão de projetos
-components/          # Componentes React
-├── ui/             # Componentes base (Radix UI)
-├── surveys/        # Componentes de surveys
-└── auth/           # Componentes de autenticação
-lib/                # Utilitários e configurações
-types/              # Definições TypeScript
-\`\`\`
-
-## Limitações Conhecidas
-
-- Sistema de autenticação customizado (não usa NextAuth.js)
-- Fluxo de migrations baseado em scripts SQL (não há histórico automático de execuções)
-- Suporte limitado a tipos de elementos de survey
-- Analytics básicos (sem integração com Google Analytics)
-
-## Contribuindo
-
-Leia o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes sobre como contribuir com o projeto.
-
-## Código de Conduta
-
-Este projeto adere ao [Código de Conduta](CODE_OF_CONDUCT.md). Ao participar, você concorda em seguir estas diretrizes.
-
-## Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+## Estrutura
