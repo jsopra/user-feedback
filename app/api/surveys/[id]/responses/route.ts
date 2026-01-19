@@ -156,8 +156,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         console.log("[v0] Found element for index", elementIndex, ":", element)
 
         if (element) {
-          // Converter arrays para JSON
-          const finalValue = Array.isArray(responseValue) ? responseValue : responseValue
+          // Converter para JSON string - a coluna answer é tipo JSON
+          const finalValue = typeof responseValue === "string" ? responseValue : JSON.stringify(responseValue)
 
           elementResponsesToInsert.push({
             response_id: mainResponse.id,
