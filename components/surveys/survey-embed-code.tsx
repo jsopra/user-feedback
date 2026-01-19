@@ -17,6 +17,18 @@ export default function SurveyEmbedCode({ survey }: SurveyEmbedCodeProps) {
   const [copied, setCopied] = useState(false)
   const { t } = useTranslation("surveys")
 
+  const recurrence = survey.target?.recurrence || "one_response"
+  const recurrenceLabel = (() => {
+    switch (recurrence) {
+      case "time_sequence":
+        return t("builder.target.timeSequence")
+      case "always":
+        return t("builder.target.always")
+      default:
+        return t("builder.target.oneResponsePerUser")
+    }
+  })()
+
   const embedUrl = `${window.location.origin}/api/embed/${survey.id}`
   const embedCode = `<script src="${embedUrl}" async></script>`
 
@@ -102,9 +114,7 @@ export default function SurveyEmbedCode({ survey }: SurveyEmbedCodeProps) {
             <div>
               <label className="text-sm font-medium text-gray-600">Recorrência</label>
               <div className="mt-1">
-                <Badge variant="outline">
-                  {survey.target?.recurrence === "one_response" ? "Uma vez" : "Recorrente"}
-                </Badge>
+                <Badge variant="outline">{recurrenceLabel}</Badge>
               </div>
             </div>
 

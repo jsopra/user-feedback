@@ -50,6 +50,18 @@ export default function SurveyCard({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteTimeout, setDeleteTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
 
+  const recurrence = survey.target?.recurrence || "one_response"
+  const recurrenceLabel = (() => {
+    switch (recurrence) {
+      case "time_sequence":
+        return t("builder.target.timeSequence")
+      case "always":
+        return t("builder.target.always")
+      default:
+        return t("builder.target.oneResponsePerUser")
+    }
+  })()
+
   const handleStatusToggle = async (checked: boolean) => {
     setIsToggling(true)
     try {
@@ -124,8 +136,8 @@ export default function SurveyCard({
           </div>
           <div className="flex items-center space-x-2">
             <Settings className="h-4 w-4 text-gray-400" />
-            <Badge variant={survey.target?.recurrence === "one_response" ? "secondary" : "outline"} className="text-xs">
-              {survey.target?.recurrence === "one_response" ? "Uma vez" : "Recorrente"}
+            <Badge variant={recurrence === "one_response" ? "secondary" : "outline"} className="text-xs">
+              {recurrenceLabel}
             </Badge>
           </div>
         </div>
