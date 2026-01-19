@@ -120,7 +120,77 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       console.error('Invalid API Base URL:', apiBaseUrl);
       apiBaseUrl = window.location.protocol + '//' + window.location.host;
     }
-    
+
+    // Traduções do widget alinhadas com o preview
+    var translations = {
+      'pt-br': {
+        askQuestions: 'Podemos te fazer algumas perguntas rápidas?',
+        yes: 'Sim',
+        no: 'Não',
+        previous: 'Anterior',
+        next: 'Próximo',
+        finish: 'Finalizar',
+        submitting: 'Enviando...',
+        completed: 'Pesquisa Concluída!',
+        closingAutomatically: 'Fechando automaticamente em alguns segundos...',
+        question: 'Pergunta',
+        of: 'de',
+        pleaseSelect: 'Por favor, selecione',
+        anOption: 'uma opção',
+        aRating: 'uma avaliação',
+        thisField: 'este campo',
+        beforeContinuing: 'antes de continuar.',
+        errorSubmitting: 'Erro ao enviar respostas. Tente novamente.',
+        errorConnection: 'Erro de conexão. Verifique sua internet e tente novamente.',
+        enterYourAnswer: 'Digite sua resposta...'
+      },
+      'en': {
+        askQuestions: 'Can we ask you a few quick questions?',
+        yes: 'Yes',
+        no: 'No',
+        previous: 'Previous',
+        next: 'Next',
+        finish: 'Finish',
+        submitting: 'Submitting...',
+        completed: 'Survey Completed!',
+        closingAutomatically: 'Closing automatically in a few seconds...',
+        question: 'Question',
+        of: 'of',
+        pleaseSelect: 'Please select',
+        anOption: 'an option',
+        aRating: 'a rating',
+        thisField: 'this field',
+        beforeContinuing: 'before continuing.',
+        errorSubmitting: 'Error submitting responses. Please try again.',
+        errorConnection: 'Connection error. Check your internet and try again.',
+        enterYourAnswer: 'Enter your answer...'
+      },
+      'es': {
+        askQuestions: '¿Podemos hacerle algunas preguntas rápidas?',
+        yes: 'Sí',
+        no: 'No',
+        previous: 'Anterior',
+        next: 'Siguiente',
+        finish: 'Finalizar',
+        submitting: 'Enviando...',
+        completed: '¡Encuesta Completada!',
+        closingAutomatically: 'Cerrando automáticamente en unos segundos...',
+        question: 'Pregunta',
+        of: 'de',
+        pleaseSelect: 'Por favor, seleccione',
+        anOption: 'una opción',
+        aRating: 'una calificación',
+        thisField: 'este campo',
+        beforeContinuing: 'antes de continuar.',
+        errorSubmitting: 'Error al enviar respuestas. Inténtelo de nuevo.',
+        errorConnection: 'Error de conexión. Verifique su internet e inténtelo de nuevo.',
+        enterYourAnswer: 'Ingrese su respuesta...'
+      }
+    };
+
+    var surveyLanguage = (surveyData.language || 'pt-br').toLowerCase();
+    var t = translations[surveyLanguage] || translations['pt-br'];
+
     var designSettings = surveyData.design_settings || {};
     var targetSettings = surveyData.target_settings || {};
     
@@ -462,11 +532,11 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       html += '<div style="padding: 12px 16px;">';
       html += '<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">';
       
-      html += '<p style="font-size: 12px; margin: 0; color: ' + config.colors.text + '; flex: 1;">Podemos te fazer algumas perguntas rápidas?</p>';
+      html += '<p style="font-size: 12px; margin: 0; color: ' + config.colors.text + '; flex: 1;">' + t.askQuestions + '</p>';
       
       html += '<div style="display: flex; align-items: center; gap: 8px;">';
-      html += '<button onclick="window.' + widgetNamespace + '.acceptSoftGate()" style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; height: 28px;">👍 Sim</button>';
-      html += '<button onclick="window.' + widgetNamespace + '.rejectSoftGate()" style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: transparent; color: ' + config.colors.text + '; border: 1px solid #d1d5db; border-radius: 4px; cursor: pointer; font-size: 12px; height: 28px;">👎 Não</button>';
+      html += '<button onclick="window.' + widgetNamespace + '.acceptSoftGate()" style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; height: 28px;">👍 ' + t.yes + '</button>';
+      html += '<button onclick="window.' + widgetNamespace + '.rejectSoftGate()" style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: transparent; color: ' + config.colors.text + '; border: 1px solid #d1d5db; border-radius: 4px; cursor: pointer; font-size: 12px; height: 28px;">👎 ' + t.no + '</button>';
       html += '</div>';
       
       html += '</div>';
@@ -544,11 +614,11 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         }
         
         if (isEmpty) {
-          var fieldType = currentElement.type === 'multiple_choice' ? 'uma opção' : 
-                          currentElement.type === 'rating' ? 'uma avaliação' : 'este campo';
+          var fieldType = currentElement.type === 'multiple_choice' ? t.anOption : 
+                          currentElement.type === 'rating' ? t.aRating : t.thisField;
           return {
             isValid: false,
-            message: 'Por favor, selecione ' + fieldType + ' antes de continuar.'
+            message: t.pleaseSelect + ' ' + fieldType + ' ' + t.beforeContinuing
           };
         }
         
@@ -619,12 +689,12 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         html += '<div style="width: 100%; background-color: #e5e7eb; border-radius: 9999px; height: 4px;">';
         html += '<div style="background-color: ' + config.colors.primary + '; height: 4px; border-radius: 9999px; transition: width 0.3s ease; width: ' + progress + '%;"></div>';
         html += '</div>';
-        html += '<p style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">' + (currentStep + 1) + ' de ' + elementsData.length + '</p>';
+        html += '<p style="font-size: 12px; color: #6b7280; margin: 4px 0 0 0;">' + (currentStep + 1) + ' ' + t.of + ' ' + elementsData.length + '</p>';
         html += '</div>';
         
         html += '<div style="margin-bottom: 16px;">';
         html += '<label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; color: ' + config.colors.text + ';">';
-        html += currentElement.question || 'Pergunta ' + (currentStep + 1);
+        html += currentElement.question || t.question + ' ' + (currentStep + 1);
         if (currentElement.required) {
           html += '<span style="color: #ef4444; margin-left: 4px;">*</span>';
         }
@@ -635,12 +705,12 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         
         html += '<div style="display: flex; justify-content: space-between;">';
         if (currentStep > 0) {
-          html += '<button onclick="window.' + widgetNamespace + '.previousStep()" style="padding: 8px 16px; background: transparent; color: ' + config.colors.text + '; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-size: 14px;">Anterior</button>';
+          html += '<button onclick="window.' + widgetNamespace + '.previousStep()" style="padding: 8px 16px; background: transparent; color: ' + config.colors.text + '; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-size: 14px;">' + t.previous + '</button>';
         } else {
           html += '<div></div>';
         }
         
-        var nextButtonText = currentStep === elementsData.length - 1 ? 'Finalizar' : 'Próximo';
+        var nextButtonText = currentStep === elementsData.length - 1 ? t.finish : t.next;
         var nextButtonId = 'next-button-' + surveyData.id;
         html += '<button id="' + nextButtonId + '" onclick="window.' + widgetNamespace + '.nextStep()" style="padding: 8px 16px; background: ' + config.colors.primary + '; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">' + nextButtonText + '</button>';
         html += '</div>';
@@ -682,7 +752,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       
       function renderElement(element) {
         var html = '';
-        var placeholder = (element.config && element.config.placeholder) || 'Digite sua resposta...';
+        var placeholder = (element.config && element.config.placeholder) || t.enterYourAnswer;
         
         switch (element.type) {
           case 'text':
@@ -739,8 +809,8 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         html += '<span style="color: white; font-size: 24px;">✓</span>';
         html += '</div>';
         html += '</div>';
-        html += '<h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: ' + config.colors.text + ';">Pesquisa Concluída!</h3>';
-        html += '<div style="font-size: 12px; color: #9ca3af;">Fechando automaticamente em alguns segundos...</div>';
+        html += '<h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: ' + config.colors.text + ';">' + t.completed + '</h3>';
+        html += '<div style="font-size: 12px; color: #9ca3af;">' + t.closingAutomatically + '</div>';
         html += '</div>';
         
         widget.innerHTML = html;
@@ -840,12 +910,12 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             response.text().then(function(text) {
               console.error('API Error Response:', response.status, text);
             });
-            showValidationError('Erro ao enviar respostas. Tente novamente.');
+            showValidationError(t.errorSubmitting);
             resetSubmitButton();
           }
         }).catch(function(error) {
           console.error('Error submitting response:', error);
-          showValidationError('Erro de conexão. Verifique sua internet e tente novamente.');
+          showValidationError(t.errorConnection);
           resetSubmitButton();
         });
       }
@@ -854,7 +924,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         isSubmitting = false;
         var nextButton = widget.querySelector('#next-button-' + surveyData.id);
         if (nextButton) {
-          nextButton.textContent = 'Finalizar';
+          nextButton.textContent = t.finish;
           nextButton.style.opacity = '1';
           nextButton.style.cursor = 'pointer';
         }
@@ -883,7 +953,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             isSubmitting = true;
             var nextButton = widget.querySelector('#next-button-' + surveyData.id);
             if (nextButton) {
-              nextButton.textContent = 'Enviando...';
+              nextButton.textContent = t.submitting;
               nextButton.style.opacity = '0.6';
               nextButton.style.cursor = 'not-allowed';
             }
