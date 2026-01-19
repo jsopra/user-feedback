@@ -61,14 +61,7 @@ export default function SurveyCard({
   }
 
   const handleDelete = () => {
-    if (showDeleteConfirm) {
-      onDelete(survey.id!)
-      setShowDeleteConfirm(false)
-    } else {
-      setShowDeleteConfirm(true)
-      // Auto-cancelar após 3 segundos
-      setTimeout(() => setShowDeleteConfirm(false), 3000)
-    }
+    onDelete(survey.id!)
   }
 
   const formatDate = (dateString: string) => {
