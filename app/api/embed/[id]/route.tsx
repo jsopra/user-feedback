@@ -58,12 +58,19 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .order("order_index")
 
     const surveyWithProject = {
-      ...survey,, apiBaseUrl
+      ...survey,
       projects: projectData,
       survey_page_rules: pageRules || [],
     }
 
-    const widgetScript = generateWidgetScript(surveyWithProject, elements || [], isPreview, isApp, !!apiKey)
+    const widgetScript = generateWidgetScript(
+      surveyWithProject,
+      elements || [],
+      isPreview,
+      isApp,
+      !!apiKey,
+      apiBaseUrl
+    )
 
     return new NextResponse(widgetScript, {
       headers: {
