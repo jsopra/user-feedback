@@ -10,6 +10,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const isApp = url.searchParams.get("app") === "true"
     const apiKey = url.searchParams.get("key")
 
+    // Get the base URL from the request (where this embed endpoint is hosted)
+    const protocol = request.headers.get('x-forwarded-proto') || url.protocol.replace(':', '')
+    const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || url.host
+    const apiBaseUrl = `${protocol}://${host}`
+
     const { data: survey, error: surveyError } = await db
       .from("surveys")
       .select("*, design_settings, target_settings")
@@ -53,7 +58,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .order("order_index")
 
     const surveyWithProject = {
-      ...survey,
+      ...survey,, apiBaseUrl
       projects: projectData,
       survey_page_rules: pageRules || [],
     }
@@ -89,7 +94,7 @@ function formatJS(code: string): string {
     .trim();
 }
 
-function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, isApp: boolean, hasApiKey: boolean) {
+function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, isApp: boolean, hasApiKey: boolean, apiBaseUrl: string) {
   const script = `
 (function() {
   'use strict';
@@ -100,12 +105,13 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
     var isPreview = ${isPreview};
     var isApp = ${isApp};
     var hasApiKey = ${hasApiKey};
-    // Ensure we always use absolute URLs for API calls - never relative URLs
-    var apiBaseUrl = 'https://v0-user-feedback-pearl.vercel.app';
+    // API Base URL is dynamically set from the server hosting this script
+    var apiBaseUrl = '${apiBaseUrl}';
     
     // Double check that we have a proper absolute URL
     if (!apiBaseUrl.startsWith('http')) {
-      apiBaseUrl = 'https://v0-user-feedback-pearl.vercel.app';
+      console.error('Invalid API Base URL:', apiBaseUrl);
+      apiBaseUrl = window.location.protocol + '//' + window.location.host;
     }
     
     var designSettings = surveyData.design_settings || {};
@@ -178,7 +184,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           hitTracked = true;
         }
       }).catch(function(error) {
-        // Silent fail
+        console.error('Error tracking hit:', error);
       });
     }
     
@@ -208,7 +214,7 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           exposureTracked = true;
         }
       }).catch(function(error) {
-        // Silent fail
+        console.error('Error tracking exposure:', error);
       });
     }
     
@@ -641,15 +647,28 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           inputs[i].addEventListener('input', clearValidationError);
           inputs[i].addEventListener('change', clearValidationError);
         }
-        
+
         if (elementsData[currentStep].type === 'rating') {
-          var slider = widget.querySelector('#response-' + currentStep);
-          var label = widget.querySelector('#rating-value-' + currentStep);
-          if (slider && label) {
-            slider.addEventListener('input', function() {
-              label.textContent = this.value;
+          var container = widget.querySelector('#rating-container-' + currentStep);
+          var stars = widget.querySelectorAll('.rating-star-' + currentStep);
+          if (container && stars.length) {
+            var currentVal = parseInt(container.getAttribute('data-value') || '0', 10);
+            function updateStars(val) {
+              container.setAttribute('data-value', String(val));
+              stars.forEach(function(star, idx) {
+                var starVal = idx + 1;
+                star.style.color = starVal <= val ? config.colors.primary : '#d1d5db';
+              });
               clearValidationError();
+            }
+            stars.forEach(function(star) {
+              var val = parseInt(star.getAttribute('data-value') || '0', 10);
+              star.addEventListener('click', function() {
+                updateStars(val);
+              });
             });
+            // Ensure initial visual state is synced
+            updateStars(currentVal);
           }
         }
       }
@@ -687,15 +706,14 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             
           case 'rating':
             var min = (element.config && element.config.ratingRange && element.config.ratingRange.min) || 1;
-            var max = (element.config && element.config.ratingRange && element.config.ratingRange.max) || 10;
+            var max = (element.config && element.config.ratingRange && element.config.ratingRange.max) || 5;
             var defaultValue = (element.config && element.config.ratingRange && element.config.ratingRange.defaultValue) || min;
-            html += '<div style="margin:16px 0;">';
-            html += '<div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:8px;">';
-            html += '<span>' + min + '</span>';
-            html += '<span id="rating-value-' + currentStep + '" style="font-weight:600;font-size:18px;color:' + config.colors.primary + ';">' + defaultValue + '</span>';
-            html += '<span>' + max + '</span>';
-            html += '</div>';
-            html += '<input type="range" id="response-' + currentStep + '" min="' + min + '" max="' + max + '" value="' + defaultValue + '" style="width:100%;height:6px;border-radius:3px;background:#e5e7eb;outline:none;-webkit-appearance:none;" />';
+            var currentValue = responses[element.id] || defaultValue;
+            html += '<div style="margin:12px 0; display:flex; gap:6px; align-items:center;" id="rating-container-' + currentStep + '" data-value="' + currentValue + '" data-max="' + max + '">';
+            for (var r = 1; r <= max; r++) {
+              var color = r <= currentValue ? config.colors.primary : '#d1d5db';
+              html += '<span class="rating-star-' + currentStep + '" data-value="' + r + '" style="cursor:pointer;font-size:22px;line-height:1;color:' + color + ';user-select:none;">★</span>';
+            }
             html += '</div>';
             break;
             
@@ -740,6 +758,10 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             var radio = widget.querySelector('input[name="response-' + currentStep + '"]:checked');
             value = radio ? radio.value : '';
           }
+        } else if (element.type === 'rating') {
+          var ratingContainer = widget.querySelector('#rating-container-' + currentStep);
+          var ratingValue = ratingContainer ? parseInt(ratingContainer.getAttribute('data-value') || '0', 10) : 0;
+          value = ratingValue;
         } else {
           var input = widget.querySelector('#response-' + currentStep);
           value = input ? input.value : '';
@@ -807,7 +829,10 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
             isCompleted = true;
             renderWidget();
           } else {
-            console.error('Error submitting response');
+            // Log response details for debugging
+            response.text().then(function(text) {
+              console.error('API Error Response:', response.status, text);
+            });
             showValidationError('Erro ao enviar respostas. Tente novamente.');
             resetSubmitButton();
           }
