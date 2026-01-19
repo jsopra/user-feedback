@@ -23,27 +23,27 @@ export default function SurveyElements({ survey, setSurvey }: SurveyElementsProp
   const elementTypes = [
     {
       type: "text" as const,
-      label: "Texto Simples",
+      label: t("builder.elements.types.text"),
       icon: Type,
-      description: "Campo de texto de uma linha",
+      description: t("builder.elements.types.textDescription"),
     },
     {
       type: "textarea" as const,
-      label: "Texto Longo",
+      label: t("builder.elements.types.textarea"),
       icon: AlignLeft,
-      description: "Campo de texto de múltiplas linhas",
+      description: t("builder.elements.types.textareaDescription"),
     },
     {
       type: "multiple_choice" as const,
-      label: "Múltipla Escolha",
+      label: t("builder.elements.types.multipleChoice"),
       icon: CheckCircle,
-      description: "Opções de escolha única ou múltipla",
+      description: t("builder.elements.types.multipleChoiceDescription"),
     },
     {
       type: "rating" as const,
-      label: "Rating",
+      label: t("builder.elements.types.rating"),
       icon: BarChart3,
-      description: "Slider de avaliação numérica",
+      description: t("builder.elements.types.ratingDescription"),
     },
   ]
 
@@ -51,12 +51,12 @@ export default function SurveyElements({ survey, setSurvey }: SurveyElementsProp
     const newElement: SurveyElement = {
       id: generateUUID(),
       type,
-      question: `Nova pergunta ${type}`,
+      question: t("newQuestion", { type }),
       required: false,
       order_index: survey.elements.length,
       config:
         type === "multiple_choice"
-          ? { options: ["Opção 1", "Opção 2"], allowMultiple: false }
+          ? { options: [t("builder.elements.optionPlaceholder", { number: "1" }), t("builder.elements.optionPlaceholder", { number: "2" })], allowMultiple: false }
           : type === "rating"
             ? { ratingRange: { min: 1, max: 10, defaultValue: undefined } }
             : {},
@@ -104,7 +104,7 @@ export default function SurveyElements({ survey, setSurvey }: SurveyElementsProp
           <CardHeader>
             <CardTitle className="flex items-center">
               <Plus className="h-5 w-5 mr-2" />
-              Adicionar Elementos
+              {t("builder.elements.addElements")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -134,14 +134,14 @@ export default function SurveyElements({ survey, setSurvey }: SurveyElementsProp
       <div className="lg:col-span-2">
         <Card>
           <CardHeader>
-            <CardTitle>Elementos da Survey ({survey.elements.length})</CardTitle>
+            <CardTitle>{t("builder.elements.addElements")} ({survey.elements.length})</CardTitle>
           </CardHeader>
           <CardContent>
             {survey.elements.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <Plus className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>Nenhum elemento adicionado ainda</p>
-                <p className="text-sm">Clique em um tipo de elemento para começar</p>
+                <p>{t("builder.elements.noElementsYet")}</p>
+                <p className="text-sm">{t("builder.elements.clickToAdd")}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -194,6 +194,7 @@ function ElementEditor({
   canMoveUp,
   canMoveDown,
 }: ElementEditorProps) {
+  const { t } = useTranslation("surveys")
   const getElementIcon = (type: SurveyElement["type"]) => {
     switch (type) {
       case "text":
@@ -212,15 +213,15 @@ function ElementEditor({
   const getElementLabel = (type: SurveyElement["type"]) => {
     switch (type) {
       case "text":
-        return "Texto Simples"
+        return t("builder.elements.types.text")
       case "textarea":
-        return "Texto Longo"
+        return t("builder.elements.types.textarea")
       case "multiple_choice":
-        return "Múltipla Escolha"
+        return t("builder.elements.types.multipleChoice")
       case "rating":
-        return "Rating"
+        return t("builder.elements.types.rating")
       default:
-        return "Elemento"
+        return "Element"
     }
   }
 
@@ -237,24 +238,24 @@ function ElementEditor({
                 <span className="text-sm font-medium text-blue-600">{getElementLabel(element.type)}</span>
               </div>
               <Button size="sm" onClick={onSave}>
-                Salvar
+                {t("builder.elements.save")}
               </Button>
             </div>
 
             <div className="space-y-3">
               <div>
-                <Label htmlFor={`question-${element.id}`}>Pergunta</Label>
+                <Label htmlFor={`question-${element.id}`}>{t("builder.elements.questionLabel")}</Label>
                 <Input
                   id={`question-${element.id}`}
                   value={element.question}
                   onChange={(e) => onUpdate({ question: e.target.value })}
-                  placeholder="Digite sua pergunta..."
+                  placeholder={t("builder.elements.questionPlaceholder")}
                 />
               </div>
 
               {element.type === "multiple_choice" && (
                 <div>
-                  <Label>Opções de Escolha</Label>
+                  <Label>{t("builder.elements.choiceOptions")}</Label>
                   <div className="space-y-2 mt-2">
                     {(element.config?.options || []).map((option: string, index: number) => (
                       <div key={index} className="flex items-center space-x-2">
@@ -270,7 +271,7 @@ function ElementEditor({
                               },
                             })
                           }}
-                          placeholder={`Opção ${index + 1}`}
+                          placeholder={t("builder.elements.optionPlaceholder", { number: String(index + 1) })}
                         />
                         <Button
                           variant="ghost"
@@ -294,7 +295,7 @@ function ElementEditor({
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        const newOptions = [...(element.config?.options || []), `Opção ${(element.config?.options || []).length + 1}`]
+                        const newOptions = [...(element.config?.options || []), t("builder.elements.optionPlaceholder", { number: String((element.config?.options || []).length + 1) })]
                         onUpdate({
                           config: {
                             ...element.config,
@@ -304,7 +305,7 @@ function ElementEditor({
                       }}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Adicionar Opção
+                      {t("builder.elements.addOption")}
                     </Button>
                   </div>
                   <div className="flex items-center space-x-2 mt-3">
@@ -320,18 +321,18 @@ function ElementEditor({
                         })
                       }
                     />
-                    <Label htmlFor={`allow-multiple-${element.id}`}>Permitir seleção múltipla</Label>
+                    <Label htmlFor={`allow-multiple-${element.id}`}>{t("builder.elements.allowMultiple")}</Label>
                   </div>
                 </div>
               )}
 
               {element.type === "rating" && (
                 <div>
-                  <Label>Escala de Rating</Label>
+                  <Label>{t("builder.elements.ratingScale")}</Label>
                   <div className="space-y-4 mt-3">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-sm">Valor Mínimo</Label>
+                        <Label className="text-sm">{t("builder.elements.minValue")}</Label>
                         <Input
                           type="number"
                           min="1"
@@ -358,7 +359,7 @@ function ElementEditor({
                         />
                       </div>
                       <div>
-                        <Label className="text-sm">Valor Máximo</Label>
+                        <Label className="text-sm">{t("builder.elements.maxValue")}</Label>
                         <Input
                           type="number"
                           min="2"
@@ -387,7 +388,7 @@ function ElementEditor({
                     </div>
 
                     <div>
-                      <Label className="text-sm">Valor Padrão (opcional)</Label>
+                      <Label className="text-sm">{t("builder.elements.defaultValue")}</Label>
                       <Input
                         type="number"
                         min={element.config?.ratingRange?.min || 1}
@@ -406,9 +407,9 @@ function ElementEditor({
                             },
                           })
                         }}
-                        placeholder="Deixe vazio para não ter valor padrão"
+                        placeholder={t("builder.elements.defaultValuePlaceholder")}
                       />
-                      <p className="text-xs text-gray-500 mt-1">Valor inicial que aparecerá selecionado no slider</p>
+                      <p className="text-xs text-gray-500 mt-1">{t("builder.elements.defaultValueDescription")}</p>
                     </div>
                   </div>
                 </div>
@@ -420,7 +421,7 @@ function ElementEditor({
                   checked={element.required}
                   onCheckedChange={(checked) => onUpdate({ required: checked })}
                 />
-                <Label htmlFor={`required-${element.id}`}>Campo obrigatório</Label>
+                <Label htmlFor={`required-${element.id}`}>{t("builder.elements.required")}</Label>
               </div>
             </div>
           </div>

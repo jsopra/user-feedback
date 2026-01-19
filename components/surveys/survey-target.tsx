@@ -79,12 +79,12 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Zap className="h-5 w-5 mr-2" />
-              Tipo de Acionamento
+              {t("builder.target.triggerType")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label>Como a survey será acionada</Label>
+              <Label>{t("builder.target.howSurveyTriggered")}</Label>
               <div className="flex space-x-2 mt-2">
                 <Button
                   variant={triggerMode === "time" ? "default" : "outline"}
@@ -93,7 +93,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   className="flex-1 flex items-center justify-center"
                 >
                   <Clock className="h-4 w-4 mr-1" />
-                  Tempo (Delay)
+                  {t("builder.target.timeDelay")}
                 </Button>
                 <Button
                   variant={triggerMode === "event" ? "default" : "outline"}
@@ -102,7 +102,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   className="flex-1 flex items-center justify-center"
                 >
                   <Code className="h-4 w-4 mr-1" />
-                  Evento (JavaScript)
+                  {t("builder.target.eventJavaScript")}
                 </Button>
               </div>
 
@@ -111,12 +111,9 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   <div className="flex items-start space-x-2">
                     <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-blue-800">Acionamento por Evento</p>
+                      <p className="text-sm font-medium text-blue-800">{t("builder.target.eventTriggering")}</p>
                       <p className="text-xs text-blue-700 mt-1">
-                        Use:{" "}
-                        <code className="bg-blue-100 px-1 rounded">
-                          window.UserFeedback.trigger(&apos;{survey.id}&apos;, {`{userId: 123, pedidoId: 456}`})
-                        </code>
+                        {t("builder.target.eventInstructions", { surveyId: survey.id || "survey-id" })}
                       </p>
                     </div>
                   </div>
@@ -132,12 +129,12 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Clock className="h-5 w-5 mr-2" />
-                Timing
+                {t("builder.target.timing")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="delay">Delay (segundos)</Label>
+                <Label htmlFor="delay">{t("builder.target.delay")}</Label>
                 <Input
                   id="delay"
                   type="number"
@@ -146,7 +143,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   onChange={(e) => updateTarget("delay", Number.parseInt(e.target.value) || 0)}
                   placeholder="0"
                 />
-                <p className="text-xs text-gray-500 mt-1">{t("targeting.delayDescription")}</p>
+                <p className="text-xs text-gray-500 mt-1">{t("builder.target.delayDescription")}</p>
               </div>
             </CardContent>
           </Card>
@@ -156,12 +153,12 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Repeat className="h-5 w-5 mr-2" />
-              Recorrência
+              {t("builder.target.recurrence")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label>Tipo de Recorrência</Label>
+              <Label>{t("builder.target.recurrenceType")}</Label>
               <div className="grid grid-cols-1 gap-2 mt-2">
                 <Button
                   variant={recurrence === "one_response" ? "default" : "outline"}
@@ -169,7 +166,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   onClick={() => updateTarget("recurrence", "one_response")}
                   className="justify-start"
                 >
-                  Uma vez por usuário
+                  {t("builder.target.oneResponsePerUser")}
                 </Button>
                 <Button
                   variant={recurrence === "time_sequence" ? "default" : "outline"}
@@ -177,7 +174,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   onClick={() => updateTarget("recurrence", "time_sequence")}
                   className="justify-start"
                 >
-                  Sequência temporal
+                  {t("builder.target.timeSequence")}
                 </Button>
                 <Button
                   variant={recurrence === "always" ? "default" : "outline"}
@@ -185,7 +182,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                   onClick={() => updateTarget("recurrence", "always")}
                   className="justify-start"
                 >
-                  Sempre (toda vez que for chamada)
+                  {t("builder.target.always")}
                 </Button>
               </div>
             </div>
@@ -193,7 +190,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             {recurrence === "time_sequence" && (
               <>
                 <div>
-                  <Label htmlFor="interval">Intervalo (dias)</Label>
+                  <Label htmlFor="interval">{t("builder.target.interval")}</Label>
                   <Input
                     id="interval"
                     type="number"
@@ -202,9 +199,10 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                     onChange={(e) => updateRecurrenceConfig("interval", Number.parseInt(e.target.value) || 1)}
                     placeholder="30"
                   />
+                  <p className="text-xs text-gray-500 mt-1">{t("builder.target.intervalDescription")}</p>
                 </div>
                 <div>
-                  <Label htmlFor="maxResponses">Máximo de Respostas</Label>
+                  <Label htmlFor="maxResponses">{t("builder.target.maxOccurrences")}</Label>
                   <Input
                     id="maxResponses"
                     type="number"
@@ -213,6 +211,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                     onChange={(e) => updateRecurrenceConfig("maxResponses", Number.parseInt(e.target.value) || 1)}
                     placeholder="3"
                   />
+                  <p className="text-xs text-gray-500 mt-1">{t("builder.target.maxOccurrencesDescription")}</p>
                 </div>
               </>
             )}
@@ -222,9 +221,9 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                 <div className="flex items-start space-x-2">
                   <Info className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-yellow-800">Recorrência "Sempre"</p>
+                    <p className="text-sm font-medium text-yellow-800">{t("builder.target.recurrenceAlways")}</p>
                     <p className="text-xs text-yellow-700 mt-1">
-                      {t("targeting.alwaysRecurrence")}
+                      {t("builder.target.alwaysRecurrenceWarning")}
                     </p>
                   </div>
                 </div>
@@ -238,7 +237,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Globe className="h-5 w-5 mr-2" />
-              {t("targeting.pageRules")}
+              {t("builder.target.pageRules")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -246,18 +245,18 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               <div className="flex items-start space-x-2">
                 <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-amber-800">{t("targeting.defaultBehavior")}</p>
+                  <p className="text-sm font-medium text-amber-800">{t("builder.target.defaultBehavior")}</p>
                   <p className="text-xs text-amber-700 mt-1">
-                    {t("targeting.defaultBehaviorDescription")}
+                    {t("builder.target.infoIncludes")}
                   </p>
                 </div>
               </div>
             </div>
             <div>
-              <Label>{t("targeting.addNewRule")}</Label>
+              <Label>{t("builder.target.addUrlPattern")}</Label>
               <div className="flex space-x-2 mt-2">
                 <div className="w-32 flex items-center justify-center bg-gray-100 border rounded-md px-3 py-2 text-sm">
-                  {t("showIn")}
+                  {t("builder.target.include")}
                 </div>
                 <Input
                   value={newPattern}
@@ -273,11 +272,11 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             </div>
 
             {/* Lista de Regras */}
-            <div className="space-y-2">não será exibida em nenhuma página
+            <div className="space-y-2">
               {survey.pageRules.length === 0 ? (
                 <div className="text-center py-4 text-gray-500 text-sm">
                   <Globe className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                  <p>Nenhuma regra definida</p>
+                  <p>{t("targeting.noRulesDefined")}</p>
                   <p className="text-xs">{t("targeting.allPagesDisplay")}</p>
                 </div>
               ) : (
@@ -291,7 +290,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
                         variant={rule.rule_type === "include" ? "default" : "destructive"}
                         className="text-xs flex-shrink-0"
                       >
-                        {rule.rule_type === "include" ? t("showIn") : t("hideFrom")}
+                        {rule.rule_type === "include" ? t("builder.target.include") : t("builder.target.exclude")}
                       </Badge>
                       <code className="text-sm bg-white px-2 py-1 rounded break-all flex-1">{rule.pattern}</code>
                       <Badge variant="secondary" className="text-xs flex-shrink-0">
@@ -311,16 +310,16 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               <div className="flex items-start space-x-2">
                 <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-blue-800">{t("targeting.regexExamples")}</p>
+                  <p className="text-sm font-medium text-blue-800">{t("builder.target.examplesOfPatterns")}</p>
                   <ul className="text-xs text-blue-700 mt-1 space-y-1">
                     <li>
-                      <code>^/$</code> - Apenas página inicial
+                      <code>{t("builder.target.allPagesPattern")}</code>
                     </li>
                     <li>
-                      <code>^/produto/.*$</code> - Páginas que começam com /produto/
+                      <code>{t("builder.target.homepagePattern")}</code>
                     </li>
                     <li>
-                      <code>.*checkout.*</code> - Páginas que contêm &quot;checkout&quot;
+                      <code>{t("builder.target.productPagesPattern")}</code>
                     </li>
                     <li>
                       <code>/categoria/(roupas|sapatos)/</code> - Categorias específicas
@@ -340,7 +339,7 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Target className="h-5 w-5 mr-2" />
-            Resumo da Configuração
+            {t("builder.target.configPreview")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -348,10 +347,10 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             <div>
               <Label className="text-sm font-medium flex items-center">
                 <Zap className="h-4 w-4 mr-1" />
-                Acionamento
+                {t("builder.target.triggerType")}
               </Label>
               <div className="mt-1">
-                <Badge variant="outline">{triggerMode === "time" ? "Por Tempo" : "Por Evento JavaScript"}</Badge>
+                <Badge variant="outline">{triggerMode === "time" ? t("builder.target.byTime") : t("builder.target.byEventJavaScript")}</Badge>
               </div>
             </div>
 
@@ -359,10 +358,10 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
               <div>
                 <Label className="text-sm font-medium flex items-center">
                   <Clock className="h-4 w-4 mr-1" />
-                  Timing
+                  {t("builder.target.timing")}
                 </Label>
                 <div className="mt-1">
-                  <Badge variant="outline">{survey.target.delay === 0 ? "Imediato" : `${survey.target.delay}s`}</Badge>
+                  <Badge variant="outline">{survey.target.delay === 0 ? t("builder.target.immediately") : `${survey.target.delay}s`}</Badge>
                 </div>
               </div>
             )}
@@ -370,13 +369,13 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             <div>
               <Label className="text-sm font-medium flex items-center">
                 <Repeat className="h-4 w-4 mr-1" />
-                Recorrência
+                {t("builder.target.recurrence")}
               </Label>
               <div className="mt-1">
                 <Badge variant="outline">
-                  {recurrence === "one_response" && "Uma vez por usuário"}
-                  {recurrence === "time_sequence" && `A cada ${survey.target.recurrenceConfig?.interval || 30} dias`}
-                  {recurrence === "always" && "Sempre (toda vez)"}
+                  {recurrence === "one_response" && t("builder.target.oneResponsePerUser")}
+                  {recurrence === "time_sequence" && `${t("builder.target.interval")}: ${survey.target.recurrenceConfig?.interval || 30} ${t("targeting.days")}`}
+                  {recurrence === "always" && t("builder.target.alwaysEveryTime")}
                 </Badge>
               </div>
             </div>
@@ -384,17 +383,17 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
             <div>
               <Label className="text-sm font-medium flex items-center">
                 <Globe className="h-4 w-4 mr-1" />
-                Regras de Páginas
+                {t("builder.target.pageRules")}
               </Label>
               <div className="mt-1">
                 {survey.pageRules.length === 0 ? (
-                  <Badge variant="destructive">Nenhuma página</Badge>
+                  <Badge variant="destructive">{t("targeting.noPages")}</Badge>
                 ) : (
                   <div className="space-y-1">
                     {survey.pageRules.map((rule, index) => (
                       <div key={index} className="flex items-center space-x-1">
                         <Badge variant={rule.rule_type === "include" ? "default" : "destructive"} className="text-xs">
-                          {rule.rule_type === "include" ? "INCLUIR" : "EXCLUIR"}
+                          {rule.rule_type === "include" ? t("builder.target.include") : t("builder.target.exclude")}
                         </Badge>
                         <code className="text-xs bg-gray-100 px-1 rounded">{rule.pattern}</code>
                       </div>
@@ -407,23 +406,20 @@ export default function SurveyTarget({ survey, setSurvey }: SurveyTargetProps) {
 
           {/* Preview da Configuração */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium text-gray-800 mb-2">{t("targeting.howItWorks")}</p>
+            <p className="text-sm font-medium text-gray-800 mb-2">{t("builder.target.surveyWillTrigger")}</p>
             <div className="text-xs text-gray-600 space-y-1">
               {triggerMode === "time" && (
                 <p>
-                  • {t("targeting.surveyWillDisplay")}{" "}
-                  {survey.target.delay === 0 ? "imediatamente" : `após ${survey.target.delay} segundos`}
+                  • {t("builder.target.byTime")}:{" "}
+                  {t("builder.target.afterSeconds", { delay: survey.target.delay || 0 })}
                 </p>
               )}
-              {triggerMode === "event" && <p>• Será exibida toda vez que for chamada pelo site externo</p>}
+              {triggerMode === "event" && <p>• {t("builder.target.byEventJavaScript")}</p>}
               <p>
-                • {survey.pageRules.length === 0 ? "Em nenhuma página (precisa adicionar regras)" : `Com ${survey.pageRules.length} regra(s) de exibição`}
-              </p>
-              <p>
-                • {recurrence === "one_response" && "Apenas uma vez por usuário"}
+                • {recurrence === "one_response" && t("builder.target.oneResponsePerUser")}
                 {recurrence === "time_sequence" &&
-                  `Pode repetir a cada ${survey.target.recurrenceConfig?.interval || 30} dias`}
-                {recurrence === "always" && "Toda vez que for acionada (ignora histórico)"}
+                  `${t("builder.target.interval")}: ${survey.target.recurrenceConfig?.interval || 30} ${t("targeting.days")}`}
+                {recurrence === "always" && t("builder.target.alwaysEveryTime")}
               </p>
             </div>
           </div>

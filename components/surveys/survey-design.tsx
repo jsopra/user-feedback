@@ -30,15 +30,15 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
   }
 
   const positions = [
-    { value: "top-left", label: "Superior Esquerda" },
-    { value: "top-center", label: "Superior Centro" },
-    { value: "top-right", label: "Superior Direita" },
-    { value: "center-left", label: "Centro Esquerda" },
-    { value: "center-center", label: "Centro" },
-    { value: "center-right", label: "Centro Direita" },
-    { value: "bottom-left", label: "Inferior Esquerda" },
-    { value: "bottom-center", label: "Inferior Centro" },
-    { value: "bottom-right", label: "Inferior Direita" },
+    { value: "top-left", label: t("builder.design.topLeft") },
+    { value: "top-center", label: t("builder.design.topCenter") },
+    { value: "top-right", label: t("builder.design.topRight") },
+    { value: "center-left", label: t("builder.design.centerLeft") },
+    { value: "center-center", label: t("builder.design.center") },
+    { value: "center-right", label: t("builder.design.centerRight") },
+    { value: "bottom-left", label: t("builder.design.bottomLeft") },
+    { value: "bottom-center", label: t("builder.design.bottomCenter") },
+    { value: "bottom-right", label: t("builder.design.bottomRight") },
   ]
 
   return (
@@ -49,34 +49,34 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Palette className="h-5 w-5 mr-2" />
-              Personalização Visual
+              {t("builder.design.visualCustomization")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Tema de Cores */}
             <div>
-              <Label className="text-base font-medium">Tema de Cores</Label>
+              <Label className="text-base font-medium">{t("builder.design.colorTheme")}</Label>
               <div className="flex space-x-2 mt-2">
                 <Button
                   variant={survey.design.colorTheme === "default" ? "default" : "outline"}
                   size="sm"
                   onClick={() => updateDesign("colorTheme", "default")}
                 >
-                  Padrão
+                  {t("builder.design.default")}
                 </Button>
                 <Button
                   variant={survey.design.colorTheme === "custom" ? "default" : "outline"}
                   size="sm"
                   onClick={() => updateDesign("colorTheme", "custom")}
                 >
-                  Personalizado
+                  {t("builder.design.custom")}
                 </Button>
               </div>
 
               {survey.design.colorTheme === "custom" && (
                 <div className="grid grid-cols-1 gap-4 mt-4">
                   <div>
-                    <Label htmlFor="primaryColor">Cor Principal</Label>
+                    <Label htmlFor="primaryColor">{t("builder.design.primaryColor")}</Label>
                     <div className="flex items-center space-x-2 mt-1">
                       <Input
                         id="primaryColor"
@@ -94,7 +94,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
                   </div>
 
                   <div>
-                    <Label htmlFor="backgroundColor">Cor de Fundo</Label>
+                    <Label htmlFor="backgroundColor">{t("builder.design.backgroundColor")}</Label>
                     <div className="flex items-center space-x-2 mt-1">
                       <Input
                         id="backgroundColor"
@@ -112,7 +112,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
                   </div>
 
                   <div>
-                    <Label htmlFor="textColor">Cor do Texto</Label>
+                    <Label htmlFor="textColor">{t("builder.design.textColor")}</Label>
                     <div className="flex items-center space-x-2 mt-1">
                       <Input
                         id="textColor"
@@ -162,17 +162,16 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Shield className="h-5 w-5 mr-2" />
-              {t("targeting.surveyBehavior")}
+              {t("builder.design.behaviorSettings")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Soft Gate */}
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-base font-medium">Soft Gate</Label>
+                <Label className="text-base font-medium">{t("builder.design.softGate")}</Label>
                 <p className="text-sm text-gray-500">
-                  Quando ativado, mostra primeiro uma pergunta pedindo permissão para responder. 
-                  Quando desativado, abre diretamente a pesquisa.
+                  {t("builder.design.softGateDescription")}
                 </p>
               </div>
               <Switch
@@ -189,7 +188,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Eye className="h-5 w-5 mr-2" />
-            Preview do Design
+            {t("builder.design.previewDesign")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -217,7 +216,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
                 {/* Conteúdo da survey */}
                 <div className="space-y-3">
                   <p className="text-sm font-medium" style={{ color: survey.design.textColor }}>
-                    Como você avalia nosso serviço?
+                    {t("builder.design.howDoYouRate")}
                   </p>
 
                   {/* Slider preview */}
@@ -249,7 +248,7 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
                     className="w-full text-sm px-3 py-2 rounded text-white"
                     style={{ backgroundColor: survey.design.primaryColor }}
                   >
-                    Enviar
+                    {t("builder.design.send")}
                   </button>
                 </div>
               </div>
@@ -257,10 +256,10 @@ export default function SurveyDesign({ survey, setSurvey }: SurveyDesignProps) {
 
             {/* Configurações ativas */}
             <div className="mt-4 flex flex-wrap gap-1">
-              {survey.design.colorTheme === "custom" && <Badge variant="secondary">Tema Personalizado</Badge>}
-              {survey.design.softGate && <Badge variant="secondary">Soft Gate Ativado</Badge>}
-              <Badge variant="secondary">Cantos Arredondados</Badge>
-              <Badge variant="secondary">Barra de Progresso</Badge>
+              {survey.design.colorTheme === "custom" && <Badge variant="secondary">{t("builder.design.customTheme")}</Badge>}
+              {survey.design.softGate && <Badge variant="secondary">{t("builder.design.softGateActive")}</Badge>}
+              <Badge variant="secondary">{t("builder.design.roundedCorners")}</Badge>
+              <Badge variant="secondary">{t("builder.design.progressBar")}</Badge>
             </div>
           </div>
         </CardContent>
