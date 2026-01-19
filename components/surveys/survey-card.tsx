@@ -48,6 +48,7 @@ export default function SurveyCard({
   const { t } = useTranslation("surveys")
   const [isToggling, setIsToggling] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteTimeout, setDeleteTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
 
   const handleStatusToggle = async (checked: boolean) => {
     setIsToggling(true)
@@ -61,7 +62,18 @@ export default function SurveyCard({
   }
 
   const handleDelete = () => {
-    onDelete(survey.id!)
+    if (showDeleteConfirm) {
+      onDelete(survey.id!)
+      setShowDeleteConfirm(false)
+      if (deleteTimeout) {
+        clearTimeout(deleteTimeout)
+        setDeleteTimeout(null)
+      }
+    } else {
+      setShowDeleteConfirm(true)
+      const timeout = setTimeout(() => setShowDeleteConfirm(false), 3000)
+      setDeleteTimeout(timeout)
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -168,7 +180,18 @@ export default function SurveyCard({
                 <Button size="sm" variant="destructive" onClick={handleDelete} className="h-7 text-xs">
                   {t("confirm")}
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => setShowDeleteConfirm(false)} className="h-7 text-xs">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setShowDeleteConfirm(false)
+                    if (deleteTimeout) {
+                      clearTimeout(deleteTimeout)
+                      setDeleteTimeout(null)
+                    }
+                  }}
+                  className="h-7 text-xs"
+                >
                   {t("cancel")}
                 </Button>
               </div>

@@ -91,24 +91,22 @@ export default function ProjectSurveysPage() {
   }
 
   const handleDeleteSurvey = async (surveyId: string) => {
-    if (!confirm(t("messages.confirm"))) {
-      return
-    }
-
+    if (!user?.id) return
+    setError(null)
     try {
-      const response = await fetch(`/api/surveys/${surveyId}`, {
+      const response = await fetch(`/api/surveys/${surveyId}?userId=${user.id}`, {
         method: "DELETE",
       })
 
       if (response.ok) {
-        await loadProjectAndSurveys()
+        setSurveys((prev) => prev.filter((survey) => survey.id !== surveyId))
       } else {
         const data = await response.json()
-        alert(`Erro ao excluir survey: ${data.error}`)
+        setError(data.error || t("messages.error"))
       }
     } catch (error) {
       console.error("Erro ao excluir survey:", error)
-      alert("Erro ao excluir survey")
+      setError(t("messages.error"))
     }
   }
 

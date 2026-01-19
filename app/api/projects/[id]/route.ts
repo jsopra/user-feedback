@@ -108,7 +108,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         base_domain: cleanDomain,
       })
       .eq("id", projectId)
-      .select()
       .single()
 
     if (error) {

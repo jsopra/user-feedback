@@ -715,7 +715,6 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         html += '</div>';
         html += '</div>';
         html += '<h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: ' + config.colors.text + ';">Pesquisa Concluída!</h3>';
-        html += '<p style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">Obrigado por sua participação. Suas respostas são muito importantes para nós.</p>';
         html += '<div style="font-size: 12px; color: #9ca3af;">Fechando automaticamente em alguns segundos...</div>';
         html += '</div>';
         

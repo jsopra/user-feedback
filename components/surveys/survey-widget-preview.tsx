@@ -26,6 +26,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
   const [exposureTracked, setExposureTracked] = useState(false)
   const [showSoftGate, setShowSoftGate] = useState(survey.design?.softGate !== false)
   const [hitTracked, setHitTracked] = useState(false)
+  const [stepError, setStepError] = useState<string | null>(null)
 
   // Inicializar valores padrão dos elementos
   useEffect(() => {
@@ -125,6 +126,9 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
 
   const handleResponse = (elementId: string, value: any) => {
     setResponses((prev) => ({ ...prev, [elementId]: value }))
+    if (stepError) {
+      setStepError(null)
+    }
   }
 
   const nextStep = async () => {
@@ -147,10 +151,12 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
       }
       
       if (isEmpty) {
-        alert(t("builder.preview.requiredField"))
+        setStepError(t("builder.preview.requiredField"))
         return // Bloqueia avanço
       }
     }
+    
+    setStepError(null)
     
     if (currentStep < survey.elements.length - 1) {
       setCurrentStep(currentStep + 1)
@@ -224,6 +230,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
 
   const renderElement = (element: SurveyElement) => {
     const value = responses[element.id || '']
+    const showError = !!stepError && element.required && element.id === survey.elements[currentStep]?.id
 
     switch (element.type) {
       case "text":
@@ -232,7 +239,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
             value={value || ""}
             onChange={(e) => handleResponse(element.id || '', e.target.value)}
             placeholder={element.config?.placeholder || t("builder.preview.enterYourAnswer")}
-            className="border-gray-300"
+            className={`border ${showError ? "border-red-500 focus-visible:ring-red-500" : "border-gray-300"}`}
           />
         )
 
@@ -243,7 +250,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
             onChange={(e) => handleResponse(element.id || '', e.target.value)}
             placeholder={element.config?.placeholder || t("builder.preview.enterYourAnswer")}
             maxLength={element.config?.maxLength}
-            className="border-gray-300"
+            className={`border ${showError ? "border-red-500 focus-visible:ring-red-500" : "border-gray-300"}`}
             rows={3}
           />
         )
@@ -301,7 +308,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
               min={min}
               max={max}
               step={1}
-              className="w-full"
+              className={`w-full ${showError ? "text-red-500" : ""}`}
               style={
                 {
                   "--slider-track": (survey.design as any).primaryColor,
@@ -417,9 +424,6 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           <h3 className="text-lg font-semibold mb-2" style={{ color: (survey.design as any).textColor }}>
             {t("builder.widget.thankYou")}
           </h3>
-          <p className="text-sm text-gray-600 mb-4">
-            {t("builder.widget.thankYou")}
-          </p>
           <div className="text-xs text-gray-400">{t("builder.widget.closePreview")}</div>
         </div>
       </div>
@@ -428,6 +432,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
 
   const currentElement = survey.elements[currentStep]
   const progress = ((currentStep + 1) / survey.elements.length) * 100
+  const hasStepError = !!stepError && currentElement.required
 
   return (
     <div
@@ -470,6 +475,13 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           {currentElement.required && <span className="text-red-500 ml-1">*</span>}
         </label>
         {renderElement(currentElement)}
+
+        {hasStepError && (
+          <div className="mt-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
+            {stepError}
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
