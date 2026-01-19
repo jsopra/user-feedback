@@ -535,8 +535,18 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
       html += '<p style="font-size: 12px; margin: 0; color: ' + config.colors.text + '; flex: 1;">' + t.askQuestions + '</p>';
       
       html += '<div style="display: flex; align-items: center; gap: 8px;">';
-      html += '<button onclick="window.' + widgetNamespace + '.acceptSoftGate()" style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; height: 28px;">👍 ' + t.yes + '</button>';
-      html += '<button onclick="window.' + widgetNamespace + '.rejectSoftGate()" style="display: flex; align-items: center; gap: 4px; padding: 6px 12px; background: transparent; color: ' + config.colors.text + '; border: 1px solid #d1d5db; border-radius: 4px; cursor: pointer; font-size: 12px; height: 28px;">👎 ' + t.no + '</button>';
+      html += '<button onclick="window.' + widgetNamespace + '.acceptSoftGate()" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; height: 32px; box-shadow: 0 1px 2px rgba(0,0,0,0.12);">';
+      html += '<span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;">';
+      html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="11" stroke="white" stroke-width="2"></circle><path d="M7 12.5l3 3 7-7" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+      html += '</span>';
+      html += '<span>' + t.yes + '</span>';
+      html += '</button>';
+      html += '<button onclick="window.' + widgetNamespace + '.rejectSoftGate()" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: transparent; color: ' + config.colors.text + '; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; height: 32px; box-shadow: 0 1px 2px rgba(0,0,0,0.06);">';
+      html += '<span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;">';
+      html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="11" stroke="#9ca3af" stroke-width="2"></circle><path d="M15 9l-6 6M9 9l6 6" stroke="#9ca3af" stroke-width="2.2" stroke-linecap="round"></path></svg>';
+      html += '</span>';
+      html += '<span>' + t.no + '</span>';
+      html += '</button>';
       html += '</div>';
       
       html += '</div>';
@@ -806,7 +816,10 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
         html += '<div style="padding: 24px; text-align: center; transition: all 0.3s ease;">';
         html += '<div style="margin-bottom: 16px;">';
         html += '<div style="width: 64px; height: 64px; margin: 0 auto; background: ' + config.colors.primary + '; border-radius: 50%; display: flex; align-items: center; justify-content: center;">';
-        html += '<span style="color: white; font-size: 24px;">✓</span>';
+        html += '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">';
+        html += '<circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"></circle>';
+        html += '<path d="M7 12.5l3 3 7-7" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>';
+        html += '</svg>';
         html += '</div>';
         html += '</div>';
         html += '<h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: ' + config.colors.text + ';">' + t.completed + '</h3>';
