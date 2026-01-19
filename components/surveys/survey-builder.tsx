@@ -50,7 +50,7 @@ export default function SurveyBuilder({
 
   const [survey, setSurvey] = useState<Survey>(
     initialSurvey || {
-      title: "Nova Survey",
+      title: t("builder.newSurvey"),
       description: t("surveyDescription"),
       language: "en",
       elements: [],
@@ -233,7 +233,7 @@ export default function SurveyBuilder({
     // Verificar se temos project_id
     const finalProjectId = currentProjectId || survey.project_id
     if (!finalProjectId) {
-      setError("ID do projeto não encontrado. Certifique-se de acessar a partir de um projeto.")
+      setError(t("builder.projectIdNotFound"))
       return
     }
 
@@ -473,10 +473,10 @@ export default function SurveyBuilder({
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="settings">Configurações</TabsTrigger>
-            <TabsTrigger value="elements">Elementos</TabsTrigger>
-            <TabsTrigger value="design">Design</TabsTrigger>
-            <TabsTrigger value="target">Alvo</TabsTrigger>
+            <TabsTrigger value="settings">{t("builder.tabs.settings")}</TabsTrigger>
+            <TabsTrigger value="elements">{t("builder.tabs.elements")}</TabsTrigger>
+            <TabsTrigger value="design">{t("builder.tabs.design")}</TabsTrigger>
+            <TabsTrigger value="target">{t("builder.tabs.target")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="settings">

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { X, Star } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
+import { useSurveyTranslation } from "@/hooks/use-translation"
 
 interface SurveyPreviewProps {
   survey: Survey
@@ -11,6 +12,8 @@ interface SurveyPreviewProps {
 }
 
 export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
+  // IMPORTANTE: Usa o idioma configurado na survey, não do usuário
+  const { t } = useSurveyTranslation("surveys", survey.language as "en" | "pt-br" | "es")
   const [formData, setFormData] = useState<Record<string, any>>({})
   const [errors, setErrors] = useState<Record<string, boolean>>({})
   const [attemptedSubmit, setAttemptedSubmit] = useState(false)
@@ -60,7 +63,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
 
     // Só chega aqui se não houver erros
     setErrors({})
-    alert("Preview: Respostas validadas com sucesso!")
+    alert(`${t("builder.preview.title")}: ${t("builder.preview.success")}`)
   }
 
   const updateFormData = (elementId: string, value: any) => {
@@ -84,13 +87,13 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
           <div>
             <input
               type="text"
-              placeholder={element.config?.placeholder || "Digite sua resposta..."}
+              placeholder={element.config?.placeholder || t("builder.preview.enterYourAnswer")}
               className={`w-full p-2 border rounded ${hasError ? "border-red-500" : ""}`}
               style={{ borderRadius: (survey.design as any).borderRadius }}
               value={formData[elementId] || ""}
               onChange={(e) => updateFormData(elementId, e.target.value)}
             />
-            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
+            {hasError && <p className="text-red-500 text-sm mt-1">{t("builder.preview.requiredField")}</p>}
           </div>
         )
 
@@ -98,7 +101,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
         return (
           <div>
             <textarea
-              placeholder={element.config?.placeholder || "Digite sua resposta..."}
+              placeholder={element.config?.placeholder || t("builder.preview.enterYourAnswer")}
               maxLength={element.config?.maxLength}
               className={`w-full p-2 border rounded ${hasError ? "border-red-500" : ""}`}
               style={{ borderRadius: (survey.design as any).borderRadius }}
@@ -106,7 +109,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
               value={formData[elementId] || ""}
               onChange={(e) => updateFormData(elementId, e.target.value)}
             />
-            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
+            {hasError && <p className="text-red-500 text-sm mt-1">{t("builder.preview.requiredField")}</p>}
           </div>
         )
 
@@ -141,7 +144,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
                 </label>
               ))}
             </div>
-            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
+            {hasError && <p className="text-red-500 text-sm mt-1">{t("builder.preview.requiredField")}</p>}
           </div>
         )
 
@@ -163,7 +166,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
                 )
               })}
             </div>
-            {hasError && <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>}
+            {hasError && <p className="text-red-500 text-sm mt-1">{t("builder.preview.requiredField")}</p>}
           </div>
         )
 
@@ -176,7 +179,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-semibold">Preview da Survey</h2>
+          <h2 className="text-lg font-semibold">{t("builder.preview.title")}</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
@@ -206,7 +209,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
                 {renderElement(element)}
                 {attemptedSubmit && element.required && element.id && !formData[element.id] && (
                   <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded">
-                    <p className="text-red-600 text-sm font-medium">⚠️ Este campo é obrigatório</p>
+                    <p className="text-red-600 text-sm font-medium">⚠️ {t("builder.preview.requiredField")}</p>
                   </div>
                 )}
               </div>
@@ -221,7 +224,7 @@ export default function SurveyPreview({ survey, onClose }: SurveyPreviewProps) {
                 borderRadius: (survey.design as any).borderRadius,
               }}
             >
-              Enviar Respostas
+              {t("builder.preview.submit")}
             </Button>
           </div>
         </div>

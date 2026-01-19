@@ -151,3 +151,47 @@ export function useTranslation(namespace: string = "common") {
     t,
   }
 }
+
+// Helper para usar tradução com locale específico (útil para surveys)
+export function useSurveyTranslation(namespace: string = "common", forceLocale?: Locale) {
+  const context = useContext(TranslationContext)
+  if (!context) {
+    throw new Error("useSurveyTranslation must be used within TranslationProvider")
+  }
+
+  const t = (key: string, params?: Record<string, string | number>): string => {
+    if (!forceLocale) {
+      return context.t(namespace, key, params)
+    }
+
+    // Usa o locale forçado ao invés do contexto
+    const locale = forceLocale
+    const namespaceData = translations[locale]?.[namespace]
+    if (!namespaceData) return key
+
+    const keys = key.split(".")
+    let value: any = namespaceData
+    
+    for (const k of keys) {
+      value = value?.[k]
+      if (value === undefined) break
+    }
+
+    if (typeof value !== "string") return key
+
+    // Replace parameters {{param}}
+    if (params) {
+      Object.entries(params).forEach(([param, val]) => {
+        value = value.replace(new RegExp(`{{${param}}}`, "g"), String(val))
+      })
+    }
+
+    return value
+  }
+
+  return {
+    locale: forceLocale || context.locale,
+    setLocale: context.setLocale,
+    t,
+  }
+}

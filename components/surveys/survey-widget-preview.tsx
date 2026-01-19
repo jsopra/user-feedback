@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider"
 import { X, CheckCircle, ThumbsUp, ThumbsDown } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
 import { getDeviceType } from "@/lib/device-parser"
-import { useTranslation } from "@/hooks/use-translation"
+import { useSurveyTranslation } from "@/hooks/use-translation"
 
 interface SurveyWidgetPreviewProps {
   survey: Survey
@@ -17,7 +17,8 @@ interface SurveyWidgetPreviewProps {
 }
 
 export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPreviewProps) {
-  const { t } = useTranslation("surveys")
+  // IMPORTANTE: Usa o idioma configurado na survey
+  const { t } = useSurveyTranslation("surveys", survey.language as "en" | "pt-br" | "es")
   const [currentStep, setCurrentStep] = useState(0)
   const [responses, setResponses] = useState<Record<string, any>>({})
   const [isCompleted, setIsCompleted] = useState(false)
@@ -192,7 +193,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           <Input
             value={value || ""}
             onChange={(e) => handleResponse(element.id || '', e.target.value)}
-            placeholder={element.config?.placeholder || "Digite sua resposta..."}
+            placeholder={element.config?.placeholder || t("builder.preview.enterYourAnswer")}
             className="border-gray-300"
           />
         )
@@ -202,7 +203,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           <Textarea
             value={value || ""}
             onChange={(e) => handleResponse(element.id || '', e.target.value)}
-            placeholder={element.config?.placeholder || "Digite sua resposta..."}
+            placeholder={element.config?.placeholder || t("builder.preview.enterYourAnswer")}
             maxLength={element.config?.maxLength}
             className="border-gray-300"
             rows={3}
@@ -317,7 +318,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
               className="h-7 px-3 text-xs bg-green-500 hover:bg-green-600 text-white flex items-center gap-1"
             >
               <ThumbsUp className="h-3 w-3" />
-              Sim
+              {t("builder.widget.yes")}
             </Button>
             <Button
               onClick={handleSoftGateReject}
@@ -326,7 +327,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
               className="h-7 px-3 text-xs bg-transparent flex items-center gap-1"
             >
               <ThumbsDown className="h-3 w-3" />
-              Não
+              {t("builder.widget.no")}
             </Button>
           </div>
         </div>
@@ -376,12 +377,12 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
             />
           </div>
           <h3 className="text-lg font-semibold mb-2" style={{ color: (survey.design as any).textColor }}>
-            Pesquisa Concluída!
+            {t("builder.widget.thankYou")}
           </h3>
           <p className="text-sm text-gray-600 mb-4">
-            Obrigado por sua participação. Suas respostas são muito importantes para nós.
+            {t("builder.widget.thankYou")}
           </p>
-          <div className="text-xs text-gray-400">Fechando automaticamente em alguns segundos...</div>
+          <div className="text-xs text-gray-400">{t("builder.widget.closePreview")}</div>
         </div>
       </div>
     )
@@ -436,7 +437,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
       {/* Navigation */}
       <div className="flex justify-between">
         <Button variant="outline" size="sm" onClick={prevStep} disabled={currentStep === 0}>
-          Anterior
+          {t("builder.widget.previous")}
         </Button>
         <Button
           size="sm"
@@ -446,7 +447,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
           }}
           className="text-white"
         >
-          {currentStep === survey.elements.length - 1 ? "Finalizar" : "Próximo"}
+          {currentStep === survey.elements.length - 1 ? t("builder.widget.finish") : t("builder.widget.next")}
         </Button>
       </div>
     </div>
