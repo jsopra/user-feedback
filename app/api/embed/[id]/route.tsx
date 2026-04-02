@@ -1016,6 +1016,10 @@ function generateWidgetScript(survey: any, elements: any[], isPreview: boolean, 
           if (event.detail && event.detail.surveyId && event.detail.surveyId !== surveyData.id) {
             return;
           }
+          customParams = {};
+          if (event.detail && event.detail.customParams && typeof event.detail.customParams === 'object') {
+            customParams = event.detail.customParams;
+          }
           if (showSoftGate) {
             createSoftGate();
           } else {
