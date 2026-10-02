@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Lock } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface ChangePasswordModalProps {
   isOpen: boolean
@@ -54,7 +55,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
     }
 
     try {
-      const response = await fetch("/api/auth/change-password", {
+      const response = await fetch(`${BASE_PATH}/api/auth/change-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { X, ExternalLink } from "lucide-react"
 import type { Survey } from "@/types/survey"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface SurveyEmbedPreviewProps {
   survey: Survey
@@ -244,7 +245,7 @@ export default function SurveyEmbedPreview({ survey, onClose }: SurveyEmbedPrevi
             setTimeout(function() {
                 // Carregar script da survey
                 var script = document.createElement('script');
-                script.src = '${window.location.origin}/api/embed/${survey.id}';
+                script.src = '${window.location.origin}${BASE_PATH}/api/embed/${survey.id}';
                 script.async = true;
                 script.onerror = function() {
                     console.error('Erro ao carregar script da survey');

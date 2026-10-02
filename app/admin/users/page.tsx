@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import UserModal from "@/components/admin/user-modal"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface UserInterface {
   id: string
@@ -55,7 +56,7 @@ export default function UsersPage() {
         headers["Authorization"] = `Bearer ${sessionToken}`
       }
 
-      const response = await fetch("/api/admin/users", { headers })
+      const response = await fetch(`${BASE_PATH}/api/admin/users`, { headers })
 
       if (response.ok) {
         const data = await response.json()
@@ -92,7 +93,7 @@ export default function UsersPage() {
         headers["Authorization"] = `Bearer ${sessionToken}`
       }
 
-      const response = await fetch(`/api/admin/users/${userId}`, {
+      const response = await fetch(`${BASE_PATH}/api/admin/users/${userId}`, {
         method: "DELETE",
         headers,
       })

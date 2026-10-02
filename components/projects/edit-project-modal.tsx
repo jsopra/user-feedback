@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useTranslation } from "@/hooks/use-translation"
 import type { Project } from "@/types/project"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface EditProjectModalProps {
   project: Project | null
@@ -51,7 +52,7 @@ export default function EditProjectModal({ project, isOpen, onClose, onSuccess }
     setError(null)
 
     try {
-      const response = await fetch(`/api/projects/${project.id}`, {
+      const response = await fetch(`${BASE_PATH}/api/projects/${project.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -10,6 +10,7 @@ import { X, CheckCircle, ThumbsUp, ThumbsDown } from "lucide-react"
 import type { Survey, SurveyElement } from "@/types/survey"
 import { getDeviceType } from "@/lib/device-parser"
 import { useSurveyTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface SurveyWidgetPreviewProps {
   survey: Survey
@@ -57,7 +58,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
         trigger_mode: survey.target.triggerMode || "time",
       }
 
-      const response = await fetch(`/api/surveys/${survey.id}/hits`, {
+      const response = await fetch(`${BASE_PATH}/api/surveys/${survey.id}/hits`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +90,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
         trigger_mode: survey.target.triggerMode || "time",
       }
 
-      const response = await fetch(`/api/surveys/${survey.id}/exposures`, {
+      const response = await fetch(`${BASE_PATH}/api/surveys/${survey.id}/exposures`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -190,7 +191,7 @@ export default function SurveyWidgetPreview({ survey, onClose }: SurveyWidgetPre
 
         console.log("Enviando dados:", requestBody)
 
-        const response = await fetch(`/api/surveys/${survey.id}/responses`, {
+        const response = await fetch(`${BASE_PATH}/api/surveys/${survey.id}/responses`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

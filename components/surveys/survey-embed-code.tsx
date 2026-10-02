@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Code, Copy, ExternalLink, Info } from "lucide-react"
 import { useSurveyTranslation } from "@/hooks/use-translation"
 import type { Survey } from "@/types/survey"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface SurveyEmbedCodeProps {
   survey: Survey
@@ -29,7 +30,7 @@ export default function SurveyEmbedCode({ survey }: SurveyEmbedCodeProps) {
     }
   })()
 
-  const embedUrl = `${window.location.origin}/api/embed/${survey.id}`
+  const embedUrl = `${window.location.origin}${BASE_PATH}/api/embed/${survey.id}`
   const embedCode = `<script src="${embedUrl}" async></script>`
 
   const handleCopy = async () => {

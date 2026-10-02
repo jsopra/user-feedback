@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useAuth } from "@/hooks/use-auth"
 import { useTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface User {
   id: string
@@ -73,7 +74,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
         return
       }
 
-      const url = user ? `/api/admin/users/${user.id}` : "/api/admin/users"
+      const url = user ? `${BASE_PATH}/api/admin/users/${user.id}` : `${BASE_PATH}/api/admin/users`
       const method = user ? "PUT" : "POST"
 
       const body: any = {

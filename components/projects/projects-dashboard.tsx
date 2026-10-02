@@ -12,6 +12,7 @@ import ProjectCard from "./project-card"
 import ProjectModal from "./project-modal"
 import EditProjectModal from "./edit-project-modal"
 import type { Project } from "@/types/project"
+import { BASE_PATH } from "@/lib/base-path"
 
 export default function ProjectsDashboard() {
   const { t } = useTranslation("projects")
@@ -37,7 +38,7 @@ export default function ProjectsDashboard() {
     setError(null)
 
     try {
-      const response = await fetch(`/api/projects?userId=${user.id}`)
+      const response = await fetch(`${BASE_PATH}/api/projects?userId=${user.id}`)
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`)
@@ -66,7 +67,7 @@ export default function ProjectsDashboard() {
     if (!user?.id) return
 
     try {
-      const response = await fetch(`/api/projects/${projectId}?userId=${user.id}`, {
+      const response = await fetch(`${BASE_PATH}/api/projects/${projectId}?userId=${user.id}`, {
         method: "DELETE",
       })
 
@@ -86,7 +87,7 @@ export default function ProjectsDashboard() {
     if (!user?.id) return
 
     try {
-      const response = await fetch("/api/projects", {
+      const response = await fetch(`${BASE_PATH}/api/projects`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

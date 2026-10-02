@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import SurveyBuilder from "@/components/surveys/survey-builder"
 import type { Survey } from "@/types/survey"
 import type { Project } from "@/types/project"
+import { BASE_PATH } from "@/lib/base-path"
 
 export default function EditSurveyPage() {
   const router = useRouter()
@@ -35,7 +36,7 @@ export default function EditSurveyPage() {
     setError(null)
 
     try {
-      const response = await fetch(`/api/surveys/${surveyId}?userId=${user.id}`)
+      const response = await fetch(`${BASE_PATH}/api/surveys/${surveyId}?userId=${user.id}`)
       const data = await response.json()
 
       if (response.ok) {
@@ -55,7 +56,7 @@ export default function EditSurveyPage() {
 
   const loadProject = async (projectId: string) => {
     try {
-      const response = await fetch(`/api/projects/${projectId}?userId=${user?.id}`)
+      const response = await fetch(`${BASE_PATH}/api/projects/${projectId}?userId=${user?.id}`)
       const data = await response.json()
 
       if (response.ok) {
@@ -72,7 +73,7 @@ export default function EditSurveyPage() {
     setError(null)
 
     try {
-      const response = await fetch(`/api/surveys/${surveyId}`, {
+      const response = await fetch(`${BASE_PATH}/api/surveys/${surveyId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

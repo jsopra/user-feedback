@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Copy, ExternalLink, Check } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
 import type { Survey } from "@/types/survey"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface SurveyEmbedModalProps {
   survey?: Survey
@@ -28,7 +29,7 @@ export default function SurveyEmbedModal({ survey, surveyId, isOpen, onClose }: 
   }
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://your-domain.com"
-  const embedUrl = `${baseUrl}/api/embed/${id}`
+  const embedUrl = `${baseUrl}${BASE_PATH}/api/embed/${id}`
 
   // Código para Google Tag Manager
   const gtmCode = `<script>

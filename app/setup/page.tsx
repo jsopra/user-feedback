@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Shield, User, Mail, Lock, CheckCircle } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 export default function SetupPage() {
   const router = useRouter()
@@ -24,7 +25,7 @@ export default function SetupPage() {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const response = await fetch("/api/setup/status")
+        const response = await fetch(`${BASE_PATH}/api/setup/status`)
         const data = await response.json()
 
         if (!data?.needsSetup) {
@@ -62,7 +63,7 @@ export default function SetupPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch("/api/setup/admin", {
+      const response = await fetch(`${BASE_PATH}/api/setup/admin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: formData.name, email: formData.email, password: formData.password }),

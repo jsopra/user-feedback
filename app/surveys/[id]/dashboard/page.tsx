@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useTranslation } from "@/hooks/use-translation"
 import SurveyDashboard from "@/components/surveys/survey-dashboard"
 import type { Survey } from "@/types/survey"
+import { BASE_PATH } from "@/lib/base-path"
 
 export default function SurveyDashboardPage() {
   const { t } = useTranslation("surveys")
@@ -33,7 +34,7 @@ export default function SurveyDashboardPage() {
     setError(null)
 
     try {
-      const response = await fetch(`/api/surveys/${surveyId}?userId=${user.id}`)
+      const response = await fetch(`${BASE_PATH}/api/surveys/${surveyId}?userId=${user.id}`)
       const data = await response.json()
 
       if (response.ok) {

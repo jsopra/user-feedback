@@ -19,6 +19,7 @@ import SurveyPreview from "./survey-preview"
 import SurveyWidgetPreview from "./survey-widget-preview"
 import { useAuth } from "@/hooks/use-auth"
 import { useTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface SurveyBuilderProps {
   onBack: (savedSurveyId?: string) => void
@@ -146,7 +147,7 @@ export default function SurveyBuilder({
     console.log("Survey ID:", id)
 
     try {
-      const response = await fetch(`/api/surveys/${id}`)
+      const response = await fetch(`${BASE_PATH}/api/surveys/${id}`)
       const responseData = await response.json()
 
       console.log("Resposta da API:", responseData)
@@ -270,7 +271,7 @@ export default function SurveyBuilder({
       console.log("User ID:", user.id)
       console.log("Dados completos:", JSON.stringify(surveyToSave, null, 2))
 
-      const url = surveyId ? `/api/surveys/${surveyId}` : "/api/surveys"
+      const url = surveyId ? `${BASE_PATH}/api/surveys/${surveyId}` : `${BASE_PATH}/api/surveys`
       const method = surveyId ? "PUT" : "POST"
 
       const response = await fetch(url, {

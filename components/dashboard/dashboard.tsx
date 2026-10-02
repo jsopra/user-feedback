@@ -6,6 +6,7 @@ import { useTranslation } from "@/hooks/use-translation"
 import ProjectsDashboard from "@/components/projects/projects-dashboard"
 import type { Project } from "@/types/project"
 import type { Survey } from "@/types/survey"
+import { BASE_PATH } from "@/lib/base-path"
 
 type ViewMode = "projects" | "project-surveys" | "survey-builder" | "survey-dashboard"
 
@@ -34,7 +35,7 @@ export default function Dashboard() {
           <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("messages.accessDenied")}</h2>
           <p className="text-gray-600 mb-6">{t("messages.mustBeLoggedIn")}</p>
           <button
-            onClick={() => (window.location.href = "/")}
+            onClick={() => (window.location.href = `${BASE_PATH}/`)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
           >
             {t("messages.login")}
@@ -74,7 +75,7 @@ function ProjectSurveysDashboard({
     setErrorSurveys(null)
 
     try {
-      const response = await fetch(`/api/surveys?projectId=${project.id}`)
+      const response = await fetch(`${BASE_PATH}/api/surveys?projectId=${project.id}`)
       const data = await response.json()
 
       if (response.ok) {

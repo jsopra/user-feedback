@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import SurveyBuilder from "@/components/surveys/survey-builder"
 import type { Project } from "@/types/project"
+import { BASE_PATH } from "@/lib/base-path"
 
 export default function CreateSurveyPage() {
   const router = useRouter()
@@ -30,7 +31,7 @@ export default function CreateSurveyPage() {
     if (!projectId || !user?.id) return
 
     try {
-      const response = await fetch(`/api/projects/${projectId}?userId=${user.id}`)
+      const response = await fetch(`${BASE_PATH}/api/projects/${projectId}?userId=${user.id}`)
       const data = await response.json()
 
       if (response.ok) {

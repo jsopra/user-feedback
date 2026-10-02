@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface RegisterFormProps {
   onSuccess?: () => void
@@ -56,7 +57,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     }
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch(`${BASE_PATH}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

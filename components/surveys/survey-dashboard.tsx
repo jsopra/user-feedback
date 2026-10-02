@@ -12,6 +12,7 @@ import AppHeader from "@/components/layout/app-header"
 import SurveyMetricsCard from "./survey-metrics-card"
 import SurveyResponsesTable from "./survey-responses-table"
 import { useTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface SurveyDashboardProps {
   surveyId: string
@@ -115,8 +116,8 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
       if (actualResponseFilter && actualResponseFilter !== "all") params.append("responseFilter", actualResponseFilter)
 
       const [dashboardResponse, metricsResponse] = await Promise.all([
-        fetch(`/api/surveys/${surveyId}/dashboard?${params}`),
-        fetch(`/api/surveys/${surveyId}/metrics?${params}`),
+        fetch(`${BASE_PATH}/api/surveys/${surveyId}/dashboard?${params}`),
+        fetch(`${BASE_PATH}/api/surveys/${surveyId}/metrics?${params}`),
       ])
 
       const dashboardData = await dashboardResponse.json()
@@ -183,7 +184,7 @@ export default function SurveyDashboard({ surveyId, onBack, onBackToHome, survey
     if (!survey?.project_id) return
 
     try {
-      const response = await fetch(`/api/projects/${survey.project_id}`)
+      const response = await fetch(`${BASE_PATH}/api/projects/${survey.project_id}`)
       const data = await response.json()
 
       if (response.ok) {

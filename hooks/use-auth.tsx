@@ -4,6 +4,7 @@ import type React from "react"
 
 import { createContext, useContext, useEffect, useState } from "react"
 import type { User } from "@/types/database"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface AuthContextType {
   user: User | null
@@ -38,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const validateStoredSession = async (sessionToken: string) => {
     try {
-      const response = await fetch("/api/auth/validate", {
+      const response = await fetch(`${BASE_PATH}/api/auth/validate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionToken }),
@@ -64,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const login = async (email: string, password: string) => {
-    const response = await fetch("/api/auth/login", {
+    const response = await fetch(`${BASE_PATH}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

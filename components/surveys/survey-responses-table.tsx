@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Search, ChevronLeft, ChevronRight, Flag, Loader2, Download } from "lucide-react"
 import { toast } from "sonner"
 import { useTranslation } from "@/hooks/use-translation"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface SurveyResponsesTableProps {
   data: any[]
@@ -91,7 +92,7 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
     setLoadingStates((prev) => ({ ...prev, [responseId]: true }))
 
     try {
-      const response = await fetch(`/api/surveys/${surveyId}/responses/${responseId}`, {
+      const response = await fetch(`${BASE_PATH}/api/surveys/${surveyId}/responses/${responseId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_test: !currentStatus }),
@@ -115,7 +116,7 @@ export default function SurveyResponsesTable({ data, elements, surveyId, onDataC
     if (!confirm(t("dashboard.confirmDelete"))) return
 
     try {
-      const response = await fetch(`/api/surveys/${surveyId}/responses/${responseId}`, {
+      const response = await fetch(`${BASE_PATH}/api/surveys/${surveyId}/responses/${responseId}`, {
         method: "DELETE",
       })
 

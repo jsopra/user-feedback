@@ -9,6 +9,7 @@ import Dashboard from "@/components/dashboard/dashboard"
 import { MessageSquare } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
 import { LanguageSelector } from "@/components/layout/language-selector"
+import { BASE_PATH } from "@/lib/base-path"
 
 export default function HomePage() {
   const router = useRouter()
@@ -19,7 +20,7 @@ export default function HomePage() {
   useEffect(() => {
     const checkSetup = async () => {
       try {
-        const response = await fetch("/api/setup/status")
+        const response = await fetch(`${BASE_PATH}/api/setup/status`)
         const data = await response.json()
 
         if (data?.needsSetup) {

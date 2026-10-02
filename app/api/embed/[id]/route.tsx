@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getDbClient } from "@/lib/dbClient"
+import { BASE_PATH } from "@/lib/base-path"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     // Get the base URL from the request (where this embed endpoint is hosted)
     const protocol = request.headers.get('x-forwarded-proto') || url.protocol.replace(':', '')
     const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || url.host
-    const apiBaseUrl = `${protocol}://${host}`
+    const apiBaseUrl = `${protocol}://${host}${BASE_PATH}`
 
     const { data: survey, error: surveyError } = await db
       .from("surveys")

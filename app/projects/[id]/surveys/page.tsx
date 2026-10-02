@@ -13,6 +13,7 @@ import SurveyWidgetPreview from "@/components/surveys/survey-widget-preview"
 import SurveyEmbedModal from "@/components/surveys/survey-embed-modal"
 import type { Project } from "@/types/project"
 import type { Survey } from "@/types/survey"
+import { BASE_PATH } from "@/lib/base-path"
 
 export default function ProjectSurveysPage() {
   const params = useParams()
@@ -44,7 +45,7 @@ export default function ProjectSurveysPage() {
     setError(null)
 
     try {
-      const projectResponse = await fetch(`/api/projects/${projectId}?userId=${user.id}`)
+      const projectResponse = await fetch(`${BASE_PATH}/api/projects/${projectId}?userId=${user.id}`)
       const projectData = await projectResponse.json()
 
       if (projectResponse.ok) {
@@ -56,7 +57,7 @@ export default function ProjectSurveysPage() {
         throw new Error(projectData.error || t("messages.error"))
       }
 
-      const surveysResponse = await fetch(`/api/surveys?projectId=${projectId}&userId=${user.id}`)
+      const surveysResponse = await fetch(`${BASE_PATH}/api/surveys?projectId=${projectId}&userId=${user.id}`)
       const surveysData = await surveysResponse.json()
 
       if (surveysResponse.ok) {
@@ -94,7 +95,7 @@ export default function ProjectSurveysPage() {
     if (!user?.id) return
     setError(null)
     try {
-      const response = await fetch(`/api/surveys/${surveyId}?userId=${user.id}`, {
+      const response = await fetch(`${BASE_PATH}/api/surveys/${surveyId}?userId=${user.id}`, {
         method: "DELETE",
       })
 
@@ -124,7 +125,7 @@ export default function ProjectSurveysPage() {
 
   const handleSurveyStatusChange = async (surveyId: string, isActive: boolean) => {
     try {
-      const response = await fetch(`/api/surveys/${surveyId}/toggle-status`, {
+      const response = await fetch(`${BASE_PATH}/api/surveys/${surveyId}/toggle-status`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

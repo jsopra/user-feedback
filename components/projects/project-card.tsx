@@ -9,6 +9,7 @@ import { Eye, Edit, Trash2, MoreHorizontal, Globe, BarChart3, CheckCircle, XCirc
 import { useAuth } from "@/hooks/use-auth"
 import { useTranslation } from "@/hooks/use-translation"
 import type { Project } from "@/types/project"
+import { BASE_PATH } from "@/lib/base-path"
 
 interface ProjectCardProps {
   project: Project
@@ -41,7 +42,7 @@ export default function ProjectCard({ project, onView, onEdit, onDelete }: Proje
     try {
       console.log("Carregando stats para projeto:", project.id, "usuário:", user.id)
 
-      const response = await fetch(`/api/projects/${project.id}/stats?userId=${user.id}`)
+      const response = await fetch(`${BASE_PATH}/api/projects/${project.id}/stats?userId=${user.id}`)
 
       if (response.ok) {
         const data = await response.json()
